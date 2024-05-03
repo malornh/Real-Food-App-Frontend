@@ -13,6 +13,12 @@ const App = () => {
     { lat: 42.69851650460869, lng: 23.31830978393555 }
   ];
 
+  const exampleProducts =[
+    {
+      id: 1,
+      
+    }
+  ];
   const exampleCards = [
     {
       imgUrl: 'https://images.pexels.com/photos/235725/pexels-photo-235725.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
@@ -31,24 +37,6 @@ const App = () => {
       name: 'Tonev Farm ',
       id: 3,
       rating: 4.6
-    },
-    {
-      imgUrl: 'https://images.pexels.com/photos/4533849/pexels-photo-4533849.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      name: 'Corn Farm',
-      id: 4,
-      rating: 4.4
-    },
-    {
-      imgUrl: 'https://images.pexels.com/photos/4533849/pexels-photo-4533849.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      name: 'Corn Farm',
-      id: 4,
-      rating: 4.4
-    },
-    {
-      imgUrl: 'https://images.pexels.com/photos/4533849/pexels-photo-4533849.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      name: 'Corn Farm',
-      id: 4,
-      rating: 4.4
     },
     {
       imgUrl: 'https://images.pexels.com/photos/4533849/pexels-photo-4533849.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',

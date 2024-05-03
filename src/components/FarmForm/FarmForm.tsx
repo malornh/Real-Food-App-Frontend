@@ -18,6 +18,7 @@ const FarmForm = ({ data }: Props) => {
               {data.rating} / 5.0
             </div>
           </div>
+          <div></div>
         </div>
       )}
     </div>

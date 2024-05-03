@@ -5,6 +5,7 @@ import FarmForm from '../FarmForm/FarmForm'
 import UserForm from '../UserForm/UserForm';
 import { MdAccountCircle } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
+import { CiCirclePlus } from 'react-icons/ci';
 
 export interface Card {
   imgUrl: string,
@@ -39,6 +40,10 @@ const AccountForm = ({ cards }: Props) => {
     setSelectedCardId(card.id);
   };
 
+  const handleAddNewCard = () =>{
+
+  };
+
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}
     >
@@ -54,12 +59,15 @@ const AccountForm = ({ cards }: Props) => {
       {showForm && (
         <div className="formContainerStyle">
           <div className="cardsContainerStyle">
-            {cards.map((card) => (
+            {cards.map((card, index) => (
               <div key={card.id} className='cardStyle' onClick={() => handleCardClick(card)}>
               <img src={card.imgUrl} alt={card.name} style={{ width: '80px', height: '80px', borderRadius: '50px'}} className={card.id === selectedCardId ? 'selectedCardBorder' : 'nonSelectedCardBorder'} />
                 <div style={{ color: 'black' }}>{card.name}</div>
               </div>
             ))}
+            <div className='cardStyle' >
+              <CiCirclePlus className="plusIcon" onClick={handleAddNewCard} />
+            </div>
           </div>
           <IoMdCloseCircle className="closeButtonStyle" onClick={toggleForm} />
           {selectedCard ? <FarmForm data={selectedCard} /> : <UserForm/>}

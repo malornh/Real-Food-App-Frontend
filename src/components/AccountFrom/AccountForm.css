@@ -59,8 +59,8 @@
   display: flex;               /* Use flexbox layout */
   overflow-x: auto;            /* Enable horizontal scrolling */
   white-space: nowrap;         /* Prevent wrapping of cards */
-  margin-left: 100px;          /* Starts 50px from the beginning of the form */
-  margin-right: 100px;         /* Ends 50px before the end of the form */
+  margin-left: 95px;          /* Starts 50px from the beginning of the form */
+  margin-right: 90px;         /* Ends 50px before the end of the form */
   border-radius: 45px;
 }
 
@@ -106,4 +106,10 @@
 .nonSelectedCardBorder{
   border: 5px solid rgba(254, 216, 65, 0.0);
   border-radius: 5px;
+}
+
+.plusIcon{
+  color: rgba(0, 0, 0, 0.4);
+  width: 90px;
+  height: 90px;
 }

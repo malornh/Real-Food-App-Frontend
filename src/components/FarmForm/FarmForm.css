@@ -2,7 +2,7 @@
 .farmCardContainer {
   display: flex;
   flex-direction: row;
-  margin-top: 15px;
+  margin-top: 10px;
   background: rgba(254, 216, 65, 0.8);
   border-radius: 5px;
 }
