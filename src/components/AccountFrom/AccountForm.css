@@ -1,0 +1,109 @@
+/* AccountForm.css */
+
+/* Button styles */
+.buttonStyle {
+  position: absolute;
+  top: 28px;
+  right: 20px;
+  z-index: 999;
+  padding: 10px;
+  width: 90px;
+  height: 90px;
+  color: rgba(0, 0, 255, 0.8);
+  border: none;
+  border-radius: 5px;
+  transition: right 0.4s;
+}
+
+/* Close button styles */
+.closeButtonStyle {
+  position: absolute;
+  top: 8px;
+  right: 0px;
+  z-index: 999;
+  padding: 10px;
+  width: 90px;
+  height: 90px;
+  color: rgba(255, 0, 0, 0.8);
+  border: none;
+  border-radius: 5px;
+}
+
+/* Form container styles */
+.formContainerStyle {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  bottom: 15px;
+  width: calc(50% - 60px);
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 20px;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
+  z-index: 998;
+  border-radius: 8px;
+  box-sizing: border-box;
+  opacity: 0; /* Initially hide the form container */
+  animation: showForm 0s 0.3s forwards; /* Apply animation with a 0.5s delay */
+}
+
+/* Animation keyframes */
+@keyframes showForm {
+  to {
+      opacity: 1; /* End with opacity 1 */
+  }
+}
+
+/* Cards container styles */
+.cardsContainerStyle {
+  /* Styling for the cards container */
+  display: flex;               /* Use flexbox layout */
+  overflow-x: auto;            /* Enable horizontal scrolling */
+  white-space: nowrap;         /* Prevent wrapping of cards */
+  margin-left: 100px;          /* Starts 50px from the beginning of the form */
+  margin-right: 100px;         /* Ends 50px before the end of the form */
+  border-radius: 45px;
+}
+
+/* Custom scrollbar styles */
+.cardsContainerStyle::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+    background-color: rgba(255, 255, 255, 0); /* Background color of the scrollbar track */
+    
+}
+
+.cardsContainerStyle::-webkit-scrollbar-track-piece {
+    background-color: rgba(255, 255, 255, 0); /* Background color of the scrollbar track */
+}
+
+.cardsContainerStyle::-webkit-scrollbar-thumb {
+    background-color: #adadad; /* Color of the scrollbar thumb */
+    outline: 2px solid #FFF; /* Outline around the thumb */
+    outline-offset: -2px; /* Offset to align with the track */
+    border: .1px solid #B7B7B7; /* Border around the thumb */
+    border-radius: 50px;
+}
+
+.cardsContainerStyle::-webkit-scrollbar-thumb:hover {
+    background-color: #909090; /* Color of the thumb on hover */
+}
+
+/* Individual card styles */
+.cardStyle {
+  /* Styling for individual cards */
+  display: inline-block;
+  width: 100px;  /* Match this to your button sizes if needed */
+  margin-right: 5px;
+  text-align: center;
+}
+
+/* Selected card border */
+.selectedCardBorder {
+  border: 5px solid rgba(254, 216, 65, 0.8);
+  border-radius: 5px;
+}
+
+/* Non-selected card border */
+.nonSelectedCardBorder{
+  border: 5px solid rgba(254, 216, 65, 0.0);
+  border-radius: 5px;
+}
