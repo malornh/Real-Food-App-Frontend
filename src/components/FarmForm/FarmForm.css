@@ -46,3 +46,21 @@
   border: 2px solid black;
   font-size: 14px;
 }
+
+/* styles.css */
+
+.foodTabMenu {
+  margin-top: 20px;
+}
+
+.tab {
+  margin-right: 10px;
+  color: black;
+  background-color: rgba(254, 216, 65, 0.8);
+}
+
+.tabPanel {
+  background-color: rgba(254, 216, 65, 0.8);
+  border-radius: 5px;
+  margin-top: 10px;
+}

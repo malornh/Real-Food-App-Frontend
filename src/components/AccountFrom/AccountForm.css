@@ -94,6 +94,8 @@
   width: 100px;  /* Match this to your button sizes if needed */
   margin-right: 5px;
   text-align: center;
+  color: black;
+  margin-bottom: 10px;
 }
 
 /* Selected card border */

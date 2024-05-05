@@ -12,13 +12,7 @@ const App = () => {
     { lat: 42.68842292714096, lng: 23.29633712768555 },
     { lat: 42.69851650460869, lng: 23.31830978393555 }
   ];
-
-  const exampleProducts =[
-    {
-      id: 1,
-      
-    }
-  ];
+  
   const exampleCards = [
     {
       imgUrl: 'https://images.pexels.com/photos/235725/pexels-photo-235725.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
