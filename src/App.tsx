@@ -1,16 +1,17 @@
 //import Farms from './components/Farms';
 //import SofiaVectorMap from './components/SofiaVectorMap';
+import { useState } from 'react';
 import AccountForm from './components/AccountFrom/AccountForm';
 import SofiaVectorMap from './components/SofiaVectorMap';
 
 const App = () => {
   const initialCoordinates = [
-    { lat: 42.70141810451674, lng: 23.28586578369141 },
-    { lat: 42.7113834366729, lng: 23.309383392333988 },
-    { lat: 42.701544257958545, lng: 23.34028244018555 },
-    { lat: 42.67769670366036, lng: 23.32929611206055 },
-    { lat: 42.68842292714096, lng: 23.29633712768555 },
-    { lat: 42.69851650460869, lng: 23.31830978393555 }
+    { id: 1, lat: 42.70141810451674, lng: 23.28586578369141 },
+    { id: 2, lat: 42.7113834366729, lng: 23.309383392333988 },
+    { id: 3, lat: 42.701544257958545, lng: 23.34028244018555 },
+    { id: 4, lat: 42.67769670366036, lng: 23.32929611206055 },
+    { id: 5, lat: 42.68842292714096, lng: 23.29633712768555 },
+    { id: 6, lat: 42.69851650460869, lng: 23.31830978393555 }
   ];
   
   const exampleCards = [
@@ -40,10 +41,12 @@ const App = () => {
     }
   ];
 
+  const [clickedShopId, setClickedShopId] = useState<number>();
+
   return (
     <div>
-        <AccountForm cards={exampleCards}/>
-        <SofiaVectorMap initialCoordinates={initialCoordinates} />
+        <AccountForm cards={exampleCards} />
+        <SofiaVectorMap initialCoordinates={initialCoordinates} handleShopClick={(id)=> setClickedShopId(id)} />
         <div>
         </div>
     </div>

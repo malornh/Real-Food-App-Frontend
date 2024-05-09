@@ -5,15 +5,17 @@ import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 import customIconUrl from '../assets/storeIcon.png';
 
 interface Coordinate {
+  id: number;
   lat: number;
   lng: number;
 }
 
 interface Props {
+  handleShopClick: (shopId: number)=>void;
   initialCoordinates?: Coordinate[];
 }
 
-const SofiaMap = ({ initialCoordinates }: Props) => {
+const SofiaMap = ({ initialCoordinates, handleShopClick }: Props) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -26,23 +28,27 @@ const SofiaMap = ({ initialCoordinates }: Props) => {
       }).addTo(map);
 
       if (initialCoordinates && initialCoordinates.length > 0) {
-        initialCoordinates.forEach(({ lat, lng }) => {
+        initialCoordinates.forEach(({ id, lat, lng }) => {
           // Create a custom DivIcon with the text label
           const customIcon = L.divIcon({
             className: 'custom-div-icon',
             html: `<div style="color: black;">
                       <img src="${customIconUrl}" alt="Icon" style="width: 50px; height: 50px;">
-                      <div style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -10px; background-color: lime; border-radius: 20px; border: 1px solid black;">5/5</div>
+                      <div id="custom-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -10px; background-color: lime; border-radius: 20px; border: 1px solid black;">5/5</div>
                    </div>`,
             iconSize: [50, 50], // Adjust the size of the icon and text container
             iconAnchor: [25, 50], // Adjust the anchor point to position the icon and text correctly
           });
       
           // Create a marker with the custom DivIcon
-          L.marker([lat, lng], { icon: customIcon }).addTo(map);
+          const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+
+          // Add click event listener to the custom icon
+          marker.on('click', () => {
+            handleShopClick(id);
+          });
         });
       }
-      
 
       return () => {
         map.remove(); // Cleanup the map instance when the component unmounts

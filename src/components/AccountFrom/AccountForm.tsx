@@ -15,7 +15,7 @@ export interface Card {
 }
 
 interface Props {
-  cards: Card[]
+  cards: Card[],
 }
 
 const AccountForm = ({ cards }: Props) => {
@@ -26,15 +26,29 @@ const AccountForm = ({ cards }: Props) => {
 
   const products= [
     {
+      Id: 0,
+      Name: "Corn",
+      Description: "Farmer's Corn: Freshly Harvested, Sustainably Grown.",
+      FarmId: 2,
+      UnitOfMeasurement: "Kilogram",
+      Quantity: 80,
+      PricePerUnit: 6.8,
+      DeliveryRadius: 80.0,
+      MinUnitOrder: 20,
+      DateUpdated: new Date("2024-05-02"),
+      Image: "https://www.greendna.in/cdn/shop/products/sweetcorn3_1024x1024@2x.jpg?v=1595912260",
+      Type: "Fruit"
+    },
+    {
       Id: 1,
       Name: "Eggs",
       Description: "Farm-fresh eggs from free-range chickens",
       FarmId: 1,
       UnitOfMeasurement: "Piece",
-      Quantity: 90,
+      Quantity: 500,
       PricePerUnit: 0.55,
       DeliveryRadius: 10.0,
-      MinUnitOrder: 1,
+      MinUnitOrder: 100,
       DateUpdated: new Date("2024-05-01"),
       Image: "https://cdn.britannica.com/94/151894-050-F72A5317/Brown-eggs.jpg",
       Type: "Eggs&Dairy"
@@ -42,13 +56,13 @@ const AccountForm = ({ cards }: Props) => {
     {
       Id: 2,
       Name: "Strawberries",
-      Description: "Organic ripe strawberries, picked daily",
+      Description: "Organic ripe strawberries, picked daily asdsdfgdgdfsdfsdfdr s sdfsdfsdfsdfdf dfgdfg dfg fdg dfgasdsadsds  sdfsdfdsfsd sdfsdfsdf sdfs ndf jlsdnlfk sdkf mdismf iksdm flisdm fklsmdkfsmd fkmsdkl fmsdkl asfjk sdnfj nsdjfnn fjdsn sdf sdf sdf sdfsd ",
       FarmId: 2,
       UnitOfMeasurement: "Kilogram",
-      Quantity: 30,
+      Quantity: 150,
       PricePerUnit: 3.5,
       DeliveryRadius: 8.0,
-      MinUnitOrder: 1,
+      MinUnitOrder: 50,
       DateUpdated: new Date("2024-05-02"),
       Image: "https://images.immediate.co.uk/production/volatile/sites/10/2018/03/2048x1365-Best-strawberries-to-grow-LI1834878-9b05a14.jpg?quality=90&webp=true&crop=9px,11px,2031px,1354px&resize=1200,800",
       Type: "Fruit"
@@ -62,7 +76,7 @@ const AccountForm = ({ cards }: Props) => {
       Quantity: 40,
       PricePerUnit: 1.8,
       DeliveryRadius: 7.0,
-      MinUnitOrder: 1,
+      MinUnitOrder: 10,
       DateUpdated: new Date("2024-05-03"),
       Image: "https://www.vincenzosonline.com/userContent/images/Blog/Tomatoes/tomatoes-5.jpg",
       Type: "Fruit"
@@ -90,6 +104,12 @@ const AccountForm = ({ cards }: Props) => {
 
   };
 
+  const getFarms = (products: any) => {
+    
+
+    return products;
+  }
+
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
       {selectedAccount ? 'selectedCardBorder' : 'nonSelectedCardBorder'}
@@ -113,7 +133,7 @@ const AccountForm = ({ cards }: Props) => {
           </div>
           <IoMdCloseCircle className="closeButtonStyle" onClick={toggleForm} />
           <div className="scrollableContent">
-            {selectedCard ? <FarmForm products={products} data={selectedCard} /> : <UserForm/>}
+            {selectedCard ? <FarmForm products={getFarms(products)} data={selectedCard} /> : <UserForm/>}
           </div>
         </div>
       )}

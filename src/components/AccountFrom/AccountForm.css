@@ -119,8 +119,8 @@
 
 /* Custom scrollbar styles for .scrollableContent within formContainerStyle */
 .formContainerStyle .scrollableContent::-webkit-scrollbar {
-  width: 10px; /* Width of the scrollbar */
-  background-color: rgba(255, 255, 255, 0); /* Transparent background */
+  width: 0px; /* Width of the scrollbar */
+  background-color: rgba(255, 255, 255, 0);
 }
 
 .formContainerStyle .scrollableContent::-webkit-scrollbar-track {
@@ -145,3 +145,4 @@
   height: calc(100% - 100px); /* Adjust height as needed, the 150px accounts for other UI elements */
   overflow-y: auto; /* Enable vertical scrolling */
 }
+
