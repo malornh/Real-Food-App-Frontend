@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import AccountForm from './components/AccountFrom/AccountForm';
 import SofiaVectorMap from './components/SofiaVectorMap';
+import ShopForm from './components/ShopForm/ShopForm';
 
 const App = () => {
   const initialCoordinates = [
@@ -41,14 +42,12 @@ const App = () => {
     }
   ];
 
-  const [clickedShopId, setClickedShopId] = useState<number>();
+  const [clickedShopId, setClickedShopId] = useState<number | undefined>();
 
   return (
     <div>
-        <AccountForm cards={exampleCards} />
+        <AccountForm cards={exampleCards} clickedShopId={clickedShopId} resetShopId={()=>setClickedShopId(undefined)} />
         <SofiaVectorMap initialCoordinates={initialCoordinates} handleShopClick={(id)=> setClickedShopId(id)} />
-        <div>
-        </div>
     </div>
   );
 };

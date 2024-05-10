@@ -53,7 +53,7 @@ const FarmForm = ({ data, products }: Props) => {
 
   const [farms, setFarms] = useState<Farm[]>([]);
 
-  const [hoveredProductId, setHoveredProductId] = useState<number | undefined>(undefined);
+  const [hoveredProductId, setHoveredProductId] = useState<number>();
 
 
   useEffect(() => {
