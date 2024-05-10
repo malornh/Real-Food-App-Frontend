@@ -34,18 +34,15 @@ const AccountForm = ({ cards, clickedShopId, resetShopId }: Props) => {
 
   const toggleShopForm = () => {
     setShowForm(prevState => !prevState);
-    resetShopId(undefined);
   };
 
   const toggleAccount = () => {
     setAccountSelected(false);
-    resetShopId(undefined);
   };
 
   const handleCardClick = (shopId: number) => {
     setAccountSelected(true);
     setSelectedShopId(shopId);
-    resetShopId(undefined);
   };
 
   const handleAddNewCard = () => {
