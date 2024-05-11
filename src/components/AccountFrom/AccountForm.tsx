@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import './AccountForm.css';
-import FarmForm from '../FarmForm/FarmForm';
 import UserForm from '../UserForm/UserForm';
 import { MdAccountCircle } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
@@ -16,32 +15,46 @@ export interface Card {
 
 interface Props {
   cards: Card[];
-  clickedShopId: number | undefined;
+  clickedMapShopId?: number | undefined; // Make clickedMapShopId optional
   resetShopId: (n: number | undefined)=>void;
 }
 
-const AccountForm = ({ cards, clickedShopId, resetShopId }: Props) => {
+const AccountForm = ({ cards, clickedMapShopId, resetShopId }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState(0);
-  const [selectedShopId, setSelectedShopId] = useState<number | undefined>(); //-1 for selected account
-  const [accountSelected, setAccountSelected] = useState(false);
+  const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
+  const [firstStart, setFirstStart] = useState(true);
 
   useEffect(() => {
-    setAccountSelected(true);
-    setSelectedShopId(clickedShopId);
-    setShowForm(true);
-  }, [clickedShopId]);
+    if(clickedMapShopId!=undefined)
+    {
+      setSelectedShopId(clickedMapShopId);
+    }
+
+    if (firstStart) {
+      setShowForm(false);
+      setFirstStart(false);
+    } else {
+      setShowForm(true);
+    }
+  }, [clickedMapShopId]);
+
 
   const toggleShopForm = () => {
-    setShowForm(prevState => !prevState);
+    setShowForm((prevState) => !prevState);
+  };
+
+  const closeForm = () => {
+    setShowForm((prevState) => !prevState);
+    resetShopId(undefined);
   };
 
   const toggleAccount = () => {
-    setAccountSelected(false);
+    setSelectedShopId(undefined);
+    resetShopId(undefined);
   };
 
   const handleCardClick = (shopId: number) => {
-    setAccountSelected(true);
     setSelectedShopId(shopId);
   };
 
@@ -68,9 +81,9 @@ const AccountForm = ({ cards, clickedShopId, resetShopId }: Props) => {
               <CiCirclePlus className="plusIcon" onClick={handleAddNewCard} />
             </div>
           </div>
-          <IoMdCloseCircle className="closeButtonStyle" onClick={toggleShopForm} />
+          <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
-            {accountSelected ? <ShopForm key={selectedShopId} shopId={selectedShopId} /> : <UserForm/>}
+            {selectedShopId !=undefined ? <ShopForm shopId={selectedShopId} /> : <UserForm/>}
           </div>
         </div>
       )}
@@ -79,4 +92,3 @@ const AccountForm = ({ cards, clickedShopId, resetShopId }: Props) => {
 };
 
 export default AccountForm;
-
