@@ -42,18 +42,25 @@ const App = () => {
   ];
 
   const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(undefined);
-  
+  const [markerClicked, setMarkerClicked] = useState(false);
+
+  const handleShopClick = (id: number) => {
+    setClickedMapShopId(id);
+    setMarkerClicked(prevState => !prevState);
+  };
 
   return (
     <div>
       <AccountForm
         cards={exampleCards}
         resetShopId={(n) => setClickedMapShopId(n)}
-        {...(clickedMapShopId !== undefined ? { clickedMapShopId } : {})}
+        clickedMapShopId={clickedMapShopId}
+        markerClicked={markerClicked}
       />
       <SofiaVectorMap
         initialCoordinates={initialCoordinates}
-        handleShopClick={(id) => setClickedMapShopId(id)}
+        handleShopClick={handleShopClick}
+        markerClicked={markerClicked} 
       />
     </div>
   );

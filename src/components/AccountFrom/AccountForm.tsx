@@ -15,19 +15,20 @@ export interface Card {
 
 interface Props {
   cards: Card[];
-  clickedMapShopId?: number | undefined; // Make clickedMapShopId optional
+  clickedMapShopId?: number | undefined;
+  markerClicked: boolean;
   resetShopId: (n: number | undefined)=>void;
+  
 }
 
-const AccountForm = ({ cards, clickedMapShopId, resetShopId }: Props) => {
+const AccountForm = ({ cards, clickedMapShopId, markerClicked, resetShopId }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState(0);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
 
   useEffect(() => {
-    if(clickedMapShopId!=undefined)
-    {
+    if (clickedMapShopId !== undefined) {
       setSelectedShopId(clickedMapShopId);
     }
 
@@ -37,8 +38,7 @@ const AccountForm = ({ cards, clickedMapShopId, resetShopId }: Props) => {
     } else {
       setShowForm(true);
     }
-  }, [clickedMapShopId]);
-
+  }, [clickedMapShopId, markerClicked]);
 
   const toggleShopForm = () => {
     setShowForm((prevState) => !prevState);
@@ -46,7 +46,6 @@ const AccountForm = ({ cards, clickedMapShopId, resetShopId }: Props) => {
 
   const closeForm = () => {
     setShowForm((prevState) => !prevState);
-    resetShopId(undefined);
   };
 
   const toggleAccount = () => {
@@ -58,8 +57,7 @@ const AccountForm = ({ cards, clickedMapShopId, resetShopId }: Props) => {
     setSelectedShopId(shopId);
   };
 
-  const handleAddNewCard = () => {
-  };
+  const handleAddNewCard = () => {};
 
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
@@ -83,7 +81,7 @@ const AccountForm = ({ cards, clickedMapShopId, resetShopId }: Props) => {
           </div>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
-            {selectedShopId !=undefined ? <ShopForm shopId={selectedShopId} /> : <UserForm/>}
+            {selectedShopId !== undefined ? <ShopForm shopId={selectedShopId} /> : <UserForm/>}
           </div>
         </div>
       )}

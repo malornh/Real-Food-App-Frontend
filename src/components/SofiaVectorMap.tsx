@@ -1,4 +1,5 @@
-import { useRef, useEffect } from 'react';
+// SofiaMap.tsx
+import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
@@ -11,17 +12,17 @@ interface Coordinate {
 }
 
 interface Props {
-  handleShopClick: (shopId: number)=>void;
   initialCoordinates?: Coordinate[];
+  handleShopClick: (shopId: number) => void;
+  markerClicked: boolean; // State variable to trigger re-render
 }
 
-const SofiaMap = ({ initialCoordinates, handleShopClick }: Props) => {
+const SofiaMap: React.FC<Props> = ({ initialCoordinates, handleShopClick, markerClicked }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<L.Map | null>(null); // Updated type to allow null
+  const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
     if (mapContainer.current && !mapRef.current) {
-      // Initialize the map instance only once
       mapRef.current = L.map(mapContainer.current).setView([42.6977, 23.3219], 13);
 
       new MaptilerLayer({
@@ -33,7 +34,6 @@ const SofiaMap = ({ initialCoordinates, handleShopClick }: Props) => {
 
   useEffect(() => {
     if (mapRef.current && initialCoordinates && initialCoordinates.length > 0) {
-      // Clear existing markers
       mapRef.current.eachLayer(layer => {
         if (layer instanceof L.Marker) {
           mapRef.current?.removeLayer(layer);
@@ -51,14 +51,14 @@ const SofiaMap = ({ initialCoordinates, handleShopClick }: Props) => {
           iconAnchor: [25, 50],
         });
 
-        const marker = L.marker([lat, lng], { icon: customIcon }).addTo(mapRef.current!); // Assert non-null
+        const marker = L.marker([lat, lng], { icon: customIcon }).addTo(mapRef.current!);
 
         marker.on('click', () => {
           handleShopClick(id);
         });
       });
     }
-  }, [initialCoordinates, handleShopClick]);
+  }, [initialCoordinates, handleShopClick, markerClicked]);
 
   return (
     <div ref={mapContainer} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
