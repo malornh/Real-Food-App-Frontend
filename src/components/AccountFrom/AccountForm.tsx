@@ -5,6 +5,7 @@ import { MdAccountCircle } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
 import { CiCirclePlus } from 'react-icons/ci';
 import ShopForm from '../ShopForm/ShopForm';
+import axios from 'axios';
 
 export interface Card {
   imgUrl: string;
@@ -13,7 +14,14 @@ export interface Card {
   rating: number;
 }
 
+interface ShortShop{
+  id: number,
+  name: string,
+  image: string
+}
+
 interface Props {
+  userId: string;
   cards: Card[];
   clickedMapShopId?: number | undefined;
   markerClicked: boolean;
@@ -21,11 +29,24 @@ interface Props {
   
 }
 
-const AccountForm = ({ cards, clickedMapShopId, markerClicked, resetShopId }: Props) => {
+const AccountForm = ({ userId, cards, clickedMapShopId, markerClicked, resetShopId }: Props) => {
   const [showForm, setShowForm] = useState(false);
-  const [selectedCardId, setSelectedCardId] = useState(0);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
+  const [userShops, setUserShops] = useState<ShortShop[]>();
+
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const response = await axios.get(`https://localhost:7218/api/Shop/ByUser/${userId}`);
+        setUserShops(response.data);
+      } catch (error: any) {
+        console.error('Error fetching shops:', error.message);
+      }
+    };
+
+    fetchShops();
+  }, [userId]);
 
   useEffect(() => {
     if (clickedMapShopId !== undefined) {
@@ -69,10 +90,10 @@ const AccountForm = ({ cards, clickedMapShopId, markerClicked, resetShopId }: Pr
       {showForm && (
         <div className="formContainerStyle">
           <div className="cardsContainerStyle">
-            {cards.map((card) => (
-              <div key={card.id} className='cardStyle' onClick={() => handleCardClick(card.id)}>
-                <img src={card.imgUrl} alt={card.name} style={{ width: '80px', height: '80px', borderRadius: '50px'}} className={card.id === selectedCardId ? 'selectedCardBorder' : 'nonSelectedCardBorder'} />
-                <div style={{marginTop: '-10px'}}>{card.name}</div>
+            {userShops && userShops.map((shop: ShortShop) => (
+              <div key={shop.id} className='cardStyle' onClick={() => handleCardClick(shop.id)}>
+                <img src={shop.image} alt={shop.name} style={{ width: '80px', height: '80px', borderRadius: '50px'}} className={shop.id === selectedShopId ? 'selectedCardBorder' : 'nonSelectedCardBorder'} />
+                <div style={{marginTop: '-10px'}}>{shop.name}</div>
               </div>
             ))}
             <div className='cardStyle'>

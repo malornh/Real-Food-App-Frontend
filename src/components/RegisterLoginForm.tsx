@@ -1,15 +1,22 @@
 import { useState } from 'react';
 
-interface Props{
-  accessToken: (token: string)=>void;
-  getEmail: (email: string)=>void;
+interface UserData{
+  accessToken: string;
+  email: string;
+  id: string;
 }
 
-function RegisterLoginForm({accessToken, getEmail}: Props) {
+interface Props{
+  handleUserData: (userData: UserData | undefined)=>void;
+}
+
+function RegisterLoginForm({handleUserData}: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loggedInUser, setLoggedInUser] = useState(null); // Track logged-in user
   const [errorMessage, setErrorMessage] = useState(''); // Track error message
+
+  const [userData, setUserData] = useState<UserData>();
 
   const handleLogin = async (formData: any) => {
     try {
@@ -22,9 +29,8 @@ function RegisterLoginForm({accessToken, getEmail}: Props) {
       });
       if (response.ok) {
         const user = await response.json();
-        accessToken(user.accessToken);
-        setLoggedInUser(user.email); // Set logged-in user
-        getEmail(formData.email);
+        setUserData({accessToken: user.accessToken, email: user.email, id: user.id});
+        handleUserData(userData);
         setErrorMessage('Login'); // Set success message
       } else {
         setErrorMessage('Wrong Data!'); // Set error message

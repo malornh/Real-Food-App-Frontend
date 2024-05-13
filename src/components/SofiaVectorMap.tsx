@@ -1,14 +1,25 @@
 // SofiaMap.tsx
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 import customIconUrl from '../assets/storeIcon.png';
+import axios from 'axios';
 
 interface Coordinate {
   id: number;
   lat: number;
   lng: number;
+}
+
+interface Shop{
+  id: number;
+  name: string;
+  rating: number;
+  image: string;
+  description: string;
+  latitude: number;
+  longitude: number;
 }
 
 interface Props {
@@ -20,10 +31,12 @@ interface Props {
 const SofiaMap: React.FC<Props> = ({ initialCoordinates, handleShopClick, markerClicked }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
+  const [shops, setShops] = useState<Shop[]>([]);
+  const [mapView, setMapView] = useState();
 
   useEffect(() => {
     if (mapContainer.current && !mapRef.current) {
-      mapRef.current = L.map(mapContainer.current).setView([42.6977, 23.3219], 13);
+      mapRef.current = L.map(mapContainer.current).setView([42.69, 23.35], 13);
 
       new MaptilerLayer({
         apiKey: 'dJS38j47jXwMgeCxB2ha',
@@ -33,14 +46,28 @@ const SofiaMap: React.FC<Props> = ({ initialCoordinates, handleShopClick, marker
   }, []);
 
   useEffect(() => {
-    if (mapRef.current && initialCoordinates && initialCoordinates.length > 0) {
+    const fetchShops = async () => {
+      try {
+        const response = await axios.get('https://localhost:7218/api/Shop');
+
+        setShops(response.data);
+      } catch (error: any) {
+        console.error('Error fetching cards:', error.message);
+      }
+    };
+
+    fetchShops();
+  }, []);
+
+  useEffect(() => {
+    if (mapRef.current && shops && shops.length > 0) {
       mapRef.current.eachLayer(layer => {
         if (layer instanceof L.Marker) {
           mapRef.current?.removeLayer(layer);
         }
       });
 
-      initialCoordinates.forEach(({ id, lat, lng }) => {
+      shops.forEach(({ id, name, image, description, latitude, longitude }) => {
         const customIcon = L.divIcon({
           className: 'custom-div-icon',
           html: `<div style="color: black;">
@@ -51,14 +78,18 @@ const SofiaMap: React.FC<Props> = ({ initialCoordinates, handleShopClick, marker
           iconAnchor: [25, 50],
         });
 
-        const marker = L.marker([lat, lng], { icon: customIcon }).addTo(mapRef.current!);
+        const marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(mapRef.current!);
 
         marker.on('click', () => {
-          handleShopClick(id);
+          handleShopClick(id); //To be optimized (passing only the Id and fetching same data again, that we already got fetched)
+          console.log(id);
+        });
+        marker.on('mouseover', () => {
+          //implement shop info bubble
         });
       });
     }
-  }, [initialCoordinates, handleShopClick, markerClicked]);
+  }, [shops, handleShopClick, markerClicked]);
 
   return (
     <div ref={mapContainer} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
