@@ -6,12 +6,6 @@ import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 import customIconUrl from '../assets/storeIcon.png';
 import axios from 'axios';
 
-interface Coordinate {
-  id: number;
-  lat: number;
-  lng: number;
-}
-
 interface Shop{
   id: number;
   name: string;
@@ -23,16 +17,14 @@ interface Shop{
 }
 
 interface Props {
-  initialCoordinates?: Coordinate[];
   handleShopClick: (shopId: number) => void;
   markerClicked: boolean; // State variable to trigger re-render
 }
 
-const SofiaMap: React.FC<Props> = ({ initialCoordinates, handleShopClick, markerClicked }) => {
+const SofiaMap: React.FC<Props> = ({handleShopClick, markerClicked }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const [shops, setShops] = useState<Shop[]>([]);
-  const [mapView, setMapView] = useState();
 
   useEffect(() => {
     if (mapContainer.current && !mapRef.current) {
