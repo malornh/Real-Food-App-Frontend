@@ -74,7 +74,7 @@ const SofiaMap: React.FC<Props> = ({handleShopClick, markerClicked }) => {
 
         marker.on('click', () => {
           handleShopClick(id); //To be optimized (passing only the Id and fetching same data again, that we already got fetched)
-          console.log(id);
+          mapRef.current?.setView([latitude, longitude + 0.06], 13); // To be optimized. It's hardcoded for now.
         });
         marker.on('mouseover', () => {
           //implement shop info bubble
