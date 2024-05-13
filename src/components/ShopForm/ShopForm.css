@@ -149,5 +149,28 @@
     border-radius: 15px;
     padding: 10px;
   }
+
+  .settingsIcon {
+    font-size: 35px;
+    color: gray;
+    margin-top: 1px;
+    margin-right: 11px;
+  }
+  
+  .shoppingCartIcon {
+    font-size: 35px;
+    color: black;
+    border-radius: 5px;
+    margin-right: 12px;
+    margin-bottom: -5px;
+  }
+  
+  .iconContainer {
+    background: rgba(126, 222, 252);
+    border-radius: 5px;
+    border: 2px solid black;
+    margin-bottom: 5px;
+  }
+  
   
   

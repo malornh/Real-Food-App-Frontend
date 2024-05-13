@@ -62,7 +62,7 @@
   white-space: nowrap;         /* Prevent wrapping of cards */
   margin-left: 95px;          /* Starts 50px from the beginning of the form */
   margin-right: 90px;         /* Ends 50px before the end of the form */
-  border-radius: 45px;
+  border-radius: 30px;
 }
 
 /* Custom scrollbar styles */

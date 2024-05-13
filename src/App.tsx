@@ -55,7 +55,6 @@ const App = () => {
     <div>
       <AccountForm
         userId={userId}
-        cards={exampleCards}
         resetShopId={(n) => setClickedMapShopId(n)}
         clickedMapShopId={clickedMapShopId}
         markerClicked={markerClicked}

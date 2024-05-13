@@ -22,14 +22,13 @@ interface ShortShop{
 
 interface Props {
   userId: string;
-  cards: Card[];
   clickedMapShopId?: number | undefined;
   markerClicked: boolean;
   resetShopId: (n: number | undefined)=>void;
   
 }
 
-const AccountForm = ({ userId, cards, clickedMapShopId, markerClicked, resetShopId }: Props) => {
+const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
@@ -78,6 +77,11 @@ const AccountForm = ({ userId, cards, clickedMapShopId, markerClicked, resetShop
     setSelectedShopId(shopId);
   };
 
+  const isOwnedByUser = (shopIds: number[] | undefined, id: number) => {
+    return shopIds?.includes(id);
+  };
+
+
   const handleAddNewCard = () => {};
 
   return (
@@ -102,7 +106,7 @@ const AccountForm = ({ userId, cards, clickedMapShopId, markerClicked, resetShop
           </div>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
-            {selectedShopId !== undefined ? <ShopForm shopId={selectedShopId} /> : <UserForm/>}
+            {selectedShopId !== undefined ? <ShopForm shopId={selectedShopId} isShopOwned={isOwnedByUser(userShops?.map(s=>s.id), selectedShopId)} /> : <UserForm/>}
           </div>
         </div>
       )}
