@@ -17,16 +17,14 @@ interface Shop{
 }
 
 interface Props {
-  isRightFormOpen: boolean | undefined;
   handleShopClick: (shopId: number) => void;
-  markerClicked: boolean; // State variable to trigger re-render
+  clickedMapShopId: number | undefined;
 }
 
-const SofiaMap: React.FC<Props> = ({isRightFormOpen, handleShopClick, markerClicked }) => {
+const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const [shops, setShops] = useState<Shop[]>([]);
-  const [selectedMarkerId, setSelectedMarkerId] = useState<number>();
 
   useEffect(() => {
     if (mapContainer.current && !mapRef.current) {
@@ -53,6 +51,7 @@ const SofiaMap: React.FC<Props> = ({isRightFormOpen, handleShopClick, markerClic
     fetchShops();
   }, []);
 
+
   useEffect(() => {
     if (mapRef.current && shops && shops.length > 0) {
       mapRef.current.eachLayer(layer => {
@@ -64,7 +63,7 @@ const SofiaMap: React.FC<Props> = ({isRightFormOpen, handleShopClick, markerClic
       shops.forEach(({ id, name, image, description, latitude, longitude }) => {
         const customIcon = L.divIcon({
           className: 'custom-div-icon',
-          html: `<div style="color: black; ${id === selectedMarkerId ? 'border-radius: 5px; background: blue;' : ''}">
+          html: `<div style="color: black; ${id === clickedMapShopId ? 'border-radius: 50px; background: blue; font-size: 30px;' : ''}">
                     <img src="${customIconUrl}" alt="Icon" style="width: 50px; height: 50px;">
                     <div id="custom-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -10px; background-color: lime; border-radius: 20px; border: 1px solid black;">5/5</div>
                  </div>`,
@@ -76,15 +75,18 @@ const SofiaMap: React.FC<Props> = ({isRightFormOpen, handleShopClick, markerClic
 
         marker.on('click', () => {
           handleShopClick(id); //To be optimized (passing only the Id and fetching same data again, that we already got fetched)
-          setSelectedMarkerId(id);
-          mapRef.current?.setView([latitude, longitude + 0.06], 13); // To be optimized. It's hardcoded for now.
         });
+
         marker.on('mouseover', () => {
           //implement shop info bubble
         });
+        
+        if (id === clickedMapShopId) {
+          mapRef.current?.setView([latitude, longitude + 0.06], 13); // To be optimized. It's hardcoded for now.
+        }
       });
     }
-  }, [shops, handleShopClick, markerClicked]);
+  }, [shops, handleShopClick, clickedMapShopId]);
 
   return (
     <div ref={mapContainer} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>

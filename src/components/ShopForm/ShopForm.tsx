@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { BsArrowRepeat } from 'react-icons/bs';
@@ -50,7 +50,6 @@ interface Props{
 
 function ShopForm({ shopId, isShopOwned }: Props) {
   const [shopData, setShopData] = useState<Shop | undefined>(undefined);
-  const [selectedType, setSelectedType] = useState('');
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
 
   const typeList = Array.from(new Set(shopData?.orders.map(o => o.product.type)));
@@ -111,8 +110,7 @@ function ShopForm({ shopId, isShopOwned }: Props) {
           {typeList.map((type) => (
             <Tab
               className="tab"
-              key={type as string}
-              onClick={() => setSelectedType(type as string)}>
+              key={type as string}>
               {type as string}
             </Tab>
           ))}

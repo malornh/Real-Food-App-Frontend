@@ -17,7 +17,9 @@ export interface Card {
 interface ShortShop{
   id: number,
   name: string,
-  image: string
+  image: string,
+  latitude: number,
+  longitude: number,
 }
 
 interface Props {
@@ -25,10 +27,10 @@ interface Props {
   clickedMapShopId?: number | undefined;
   markerClicked: boolean;
   resetShopId: (n: number | undefined)=>void;
-  handleIsFormOpen: (f: boolean)=>void;
+  handleShopClick: (shopId: number)=>void;
 }
 
-const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleIsFormOpen }: Props) => {
+const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleShopClick }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
@@ -66,7 +68,6 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
 
   const closeForm = () => {
     setShowForm((prevState) => !prevState);
-    handleIsFormOpen(false);
   };
 
   const toggleAccount = () => {
@@ -76,6 +77,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
 
   const handleCardClick = (shopId: number) => {
     setSelectedShopId(shopId);
+    handleShopClick(shopId);
   };
 
   const isOwnedByUser = (shopIds: number[] | undefined, id: number) => {
