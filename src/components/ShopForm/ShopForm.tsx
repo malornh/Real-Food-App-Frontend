@@ -4,6 +4,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { BsArrowRepeat } from 'react-icons/bs';
 import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
 import { FcSettings } from "react-icons/fc";
+import { HiMiniPlusCircle } from "react-icons/hi2";
 import './ShopForm.css'
 
 // Define interfaces
@@ -94,7 +95,7 @@ function ShopForm({ shopId, isShopOwned }: Props) {
           <div className="farmInfoContainer">
             <div style={{display: 'flex', width: '330px', marginLeft: '5px'}}>
               <h1 className="farmTitle">{shopData.name}</h1>
-              <FcSettings className="FormSettingsBtn" />
+              {isShopOwned && <FcSettings className="FormSettingsBtn" />}
             </div>
             <p className="farmDescription">
               {
@@ -106,6 +107,10 @@ function ShopForm({ shopId, isShopOwned }: Props) {
         </div>
       )}
       <Tabs>
+        
+
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+
         <TabList className="foodTabMenu">
           {typeList.map((type) => (
             <Tab
@@ -115,6 +120,8 @@ function ShopForm({ shopId, isShopOwned }: Props) {
             </Tab>
           ))}
         </TabList>
+          {isShopOwned && <HiMiniPlusCircle className="productPlusButton"/>}
+        </div>
 
         <TabPanels>
           {typeList.map((type) => (
