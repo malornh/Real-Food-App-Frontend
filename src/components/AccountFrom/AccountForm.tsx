@@ -25,10 +25,10 @@ interface Props {
   clickedMapShopId?: number | undefined;
   markerClicked: boolean;
   resetShopId: (n: number | undefined)=>void;
-  
+  handleIsFormOpen: (f: boolean)=>void;
 }
 
-const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId }: Props) => {
+const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleIsFormOpen }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
@@ -66,6 +66,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId }: P
 
   const closeForm = () => {
     setShowForm((prevState) => !prevState);
+    handleIsFormOpen(false);
   };
 
   const toggleAccount = () => {
@@ -97,7 +98,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId }: P
             {userShops && userShops.map((shop: ShortShop) => (
               <div key={shop.id} className='cardStyle' onClick={() => handleCardClick(shop.id)}>
                 <img src={shop.image} alt={shop.name} style={{ width: '80px', height: '80px', borderRadius: '50px'}} className={shop.id === selectedShopId ? 'selectedCardBorder' : 'nonSelectedCardBorder'} />
-                <div style={{marginTop: '-10px'}}>{shop.name}</div>
+                <div>{shop.name.length > 14 ? shop.name.substring(0, 12) + '...' : shop.name}</div>
               </div>
             ))}
             <div className='cardStyle'>

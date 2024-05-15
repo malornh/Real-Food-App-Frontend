@@ -10,6 +10,7 @@ const App = () => {
 
   const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(undefined);
   const [markerClicked, setMarkerClicked] = useState(false);
+  const [isRightFormOpen, setIsRightFormOpen] = useState<boolean>();
 
   const userId = '0f17881d-b0cd-45b1-afdc-b15f93eeabcc';
 
@@ -25,8 +26,10 @@ const App = () => {
         resetShopId={(n) => setClickedMapShopId(n)}
         clickedMapShopId={clickedMapShopId}
         markerClicked={markerClicked}
+        handleIsFormOpen={(f)=>setIsRightFormOpen(f)}
       />
       <SofiaVectorMap
+        isRightFormOpen={isRightFormOpen}
         handleShopClick={handleShopClick}
         markerClicked={markerClicked} 
       />

@@ -17,14 +17,16 @@ interface Shop{
 }
 
 interface Props {
+  isRightFormOpen: boolean | undefined;
   handleShopClick: (shopId: number) => void;
   markerClicked: boolean; // State variable to trigger re-render
 }
 
-const SofiaMap: React.FC<Props> = ({handleShopClick, markerClicked }) => {
+const SofiaMap: React.FC<Props> = ({isRightFormOpen, handleShopClick, markerClicked }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const [shops, setShops] = useState<Shop[]>([]);
+  const [selectedMarkerId, setSelectedMarkerId] = useState<number>();
 
   useEffect(() => {
     if (mapContainer.current && !mapRef.current) {
@@ -62,7 +64,7 @@ const SofiaMap: React.FC<Props> = ({handleShopClick, markerClicked }) => {
       shops.forEach(({ id, name, image, description, latitude, longitude }) => {
         const customIcon = L.divIcon({
           className: 'custom-div-icon',
-          html: `<div style="color: black;">
+          html: `<div style="color: black; ${id === selectedMarkerId ? 'border-radius: 5px; background: blue;' : ''}">
                     <img src="${customIconUrl}" alt="Icon" style="width: 50px; height: 50px;">
                     <div id="custom-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -10px; background-color: lime; border-radius: 20px; border: 1px solid black;">5/5</div>
                  </div>`,
@@ -74,6 +76,7 @@ const SofiaMap: React.FC<Props> = ({handleShopClick, markerClicked }) => {
 
         marker.on('click', () => {
           handleShopClick(id); //To be optimized (passing only the Id and fetching same data again, that we already got fetched)
+          setSelectedMarkerId(id);
           mapRef.current?.setView([latitude, longitude + 0.06], 13); // To be optimized. It's hardcoded for now.
         });
         marker.on('mouseover', () => {

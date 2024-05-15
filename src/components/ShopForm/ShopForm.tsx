@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import { TiShoppingCart } from 'react-icons/ti';
 import { BsArrowRepeat } from 'react-icons/bs';
-import { IoSettingsSharp } from 'react-icons/io5';
+import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
+import { FcSettings } from "react-icons/fc";
 import './ShopForm.css'
 
 // Define interfaces
@@ -12,6 +12,7 @@ interface Shop {
   image: string;
   userId: string;
   name: string;
+  description: string;
   latitude: number;
   longitude: number;
   rating: number;
@@ -69,6 +70,7 @@ function ShopForm({ shopId, isShopOwned }: Props) {
     fetchShopData();
   }, [shopId]);
 
+
   function flipImage(orderId: number) {
     setHoveredOrderId(orderId);
     const cardInner = document.querySelector(`#flip-card-inner-${orderId}`) as HTMLElement;
@@ -91,12 +93,14 @@ function ShopForm({ shopId, isShopOwned }: Props) {
         <div className="farmCardContainer">
           <img src={shopData.image} className="farmImage" />
           <div className="farmInfoContainer">
-            <h1 className="farmTitle">{shopData.name}</h1>
+            <div style={{display: 'flex', width: '330px', marginLeft: '5px'}}>
+              <h1 className="farmTitle">{shopData.name}</h1>
+              <FcSettings className="FormSettingsBtn" />
+            </div>
             <p className="farmDescription">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit
-              nisi atque velit minus ipsum ratione, enim magnam, sed voluptas
-              similique voluptates laboriosam est cupiditate, commodi accusamus
-              ducimus distinctio dolorum consequuntur!
+              {
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi."
+              }
             </p>
             <div className="farmRatingContainer">{shopData.rating} / 5.0</div>
           </div>
@@ -184,11 +188,11 @@ function ShopForm({ shopId, isShopOwned }: Props) {
                         flexDirection: "column",
                         padding: "10px",
                       }}>
-                      <div className="iconContainer">
+                      <div>
                         {!isShopOwned || undefined ? (
-                          <TiShoppingCart className="shoppingCartIcon" />
+                          <PiShoppingCartSimpleDuotone className="cartButton" />
                         ) : (
-                          <IoSettingsSharp className="settingsIcon" />
+                          <FcSettings className="ProductsettingsButton" />
                         )}
                       </div>
                       <div className="productRatingContainer">{4.5} / 5.0</div>
