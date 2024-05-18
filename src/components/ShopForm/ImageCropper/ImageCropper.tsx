@@ -22,6 +22,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [uploaded, setUploaded] = useState(false);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -68,6 +69,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
       if (imageSrc && croppedAreaPixels) {
         const croppedImageBase64 = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
         handlePhotoChange(croppedImageBase64);
+        setSelectedImage(croppedImageBase64);
         setUploaded(true);
         setImageSrc(null);
         //setCroppedImage(croppedImageBase64);
@@ -78,7 +80,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
   };
 
   return (
-    <Box p={3} sx={{ marginLeft: '10px' }}>
+    <Box p={3} sx={{ marginLeft: "10px" }}>
       {imageSrc ? (
         <>
           <Box className="crop-container">
@@ -104,8 +106,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
               position="absolute"
               top="5"
               right="5"
-              zIndex="1"
-            >
+              zIndex="1">
               X
             </Button>
           </Box>
@@ -117,8 +118,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
                 min={1}
                 max={3}
                 step={0.1}
-                onChange={(value) => setZoom(value as number)}
-              >
+                onChange={(value) => setZoom(value as number)}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
@@ -127,7 +127,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
               <Icon as={TbZoomIn} className="slider-icon" />
             </Box>
 
-               {/*
+            {/*
             //Rotation slider. To be optimized before u
             <Box className="slider-container">
               <Slider
@@ -149,35 +149,40 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
             <Button
               className="crop-button"
               onClick={showCroppedImage}
-              colorScheme="teal"
-            >
+              colorScheme="teal">
               Show Result
             </Button>
 
             <Button
               className="save-button"
               onClick={handleSave}
-              colorScheme="teal"
-            >
+              colorScheme="teal">
               Save
             </Button>
           </Box>
         </>
       ) : (
-        <div style={{ padding: '30px' }}>
-          <label
+        <div>
+          <div>
+            {selectedImage && <Image src={selectedImage} style={{width: '350px', height: '300px', borderRadius: '10px', border: '2px solid black', marginTop: '-2px'}} />}
+          </div>
+          <div
             style={{
-              borderRadius: '10px',
-              background: 'teal',
-              padding: '10px',
-            }}
-          >
-            <input name="" type="file" onChange={onFileChange} hidden />
-            Upload Photo
-          </label>
-          {uploaded && (
-            <p style={{ color: 'lime', marginLeft: '10px' }}>Photo saved!</p>
-          )}
+              marginLeft: "120px",
+              marginTop: "15px",
+              marginBottom: "25px",
+            }}>
+            <label
+              style={{
+                borderRadius: "10px",
+                background: "teal",
+                padding: "10px",
+              }}>
+              <input name="" type="file" onChange={onFileChange} hidden />
+              Upload Photo
+            </label>
+           
+          </div>
         </div>
       )}
       <ImageDialog img={croppedImage} onClose={onClose} />

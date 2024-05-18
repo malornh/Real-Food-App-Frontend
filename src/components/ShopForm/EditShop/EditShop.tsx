@@ -90,39 +90,39 @@ const EditShop = () => {
                 <Box mt={4}>
                 <ImageCropper handlePhotoChange={(imgSrc)=>setImageSrc(imgSrc)}/>
                   <Box
-                    mt={10}
+                    mt={-7}
                     ref={mapContainer}
                     style={{
                       borderRadius: '10px',
                       height: "260px",
-                      width: "300px",
+                      width: "355px",
                       position: "relative",
+                      marginLeft: '15px',
+                      border: '2px solid black',
                     }}>
                   </Box>
                 </Box>
 
-                <Box ml={20} mt={20}>
+                <Box ml={15} mt={5}>
                   <FormControl mb={4}>
-                    <FormLabel>Name</FormLabel>
                     <Input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Enter name"
                       fontSize='40px'
                       height="70px" // Adjust the height as needed
-                      width='600px'
+                      width='540px'
                       borderRadius='5px'
                     />
                   </FormControl>
-                  <FormControl mt={10}>
-                    <FormLabel>Description</FormLabel>
+                  <FormControl mr={15} mt={10}>
                     <Textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Enter description"
                       fontSize='20px'
-                      height="420px" // Adjust the height as needed
-                      width='600px'
+                      height="540px" // Adjust the height as needed
+                      width='540px'
                       borderRadius='5px'
 
                     />

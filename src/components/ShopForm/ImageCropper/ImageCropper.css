@@ -1,8 +1,8 @@
 /* styles.css */
 .crop-container {
     position: relative;
-    width: 400px;
-    height: 300px;
+    width: 350px;
+    height: 250px;
     background-color: #e2e8f0; /* gray.200 */
     border-radius: 8px;
     overflow: hidden;
