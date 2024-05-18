@@ -1,8 +1,10 @@
 //import Farms from './components/Farms';
 //import SofiaVectorMap from './components/SofiaVectorMap';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AccountForm from './components/AccountFrom/AccountForm';
 import SofiaVectorMap from './components/SofiaVectorMap';
+import EditShop from './components/ShopForm/EditShop/EditShop';
+import ImageCropper from './components/ShopForm/ImageCropper/ImageCropper';
 
 const App = () => {
 
@@ -18,19 +20,26 @@ const App = () => {
     setMarkerClicked(prevState => !prevState);
   };
 
+  const [imgSrc, setImageSrc] = useState<string | null>(null);
+
+  useEffect(()=>{
+    console.log(imgSrc);
+  }, [imgSrc]);
+
   return (
     <div>
-      <AccountForm
+     { /*<AccountForm
         userId={userId}
         resetShopId={(n) => setClickedMapShopId(n)}
         clickedMapShopId={clickedMapShopId}
         markerClicked={markerClicked}
         handleShopClick={(shopId)=>setClickedMapShopId(shopId)}
       />
-      <SofiaVectorMap
+      <SofiaVectorMap 
         handleShopClick={handleShopClick}
         clickedMapShopId={clickedMapShopId}
-      />
+  />*/}
+      <EditShop />
     </div>
   );
 };

@@ -15,13 +15,18 @@
     "@emotion/styled": "^11.11.5",
     "@maptiler/leaflet-maptilersdk": "^2.0.0",
     "axios": "^1.6.8",
-    "framer-motion": "^11.1.7",
+    "framer-motion": "^11.2.4",
+    "get-orientation": "^1.1.2",
     "leaflet": "^1.9.4",
+    "leaflet-control-geocoder": "^2.4.0",
     "mui": "^0.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-easy-crop": "^5.0.7",
     "react-icons": "^5.2.0",
-    "react-leaflet": "^4.2.1"
+    "react-leaflet": "^4.2.1",
+    "react-leaflet-control": "^2.1.2",
+    "react-map-gl": "^7.1.7"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.8",

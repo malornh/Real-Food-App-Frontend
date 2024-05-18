@@ -1,0 +1,13 @@
+.modalContent {
+    position: absolute;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 20%;
+    margin-left: 20%;
+    background: black;
+    border: 2px solid red;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 15px;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
+}

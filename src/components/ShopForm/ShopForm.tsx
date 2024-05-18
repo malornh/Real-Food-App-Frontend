@@ -6,6 +6,8 @@ import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
 import { FcSettings } from "react-icons/fc";
 import { HiMiniPlusCircle } from "react-icons/hi2";
 import './ShopForm.css'
+import EditShop from './EditShop/EditShop';
+import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 
 // Define interfaces
 interface Shop {
@@ -93,7 +95,7 @@ function ShopForm({ shopId, isShopOwned }: Props) {
         <div className="farmCardContainer">
           <img src={shopData.image} className="farmImage" />
           <div className="farmInfoContainer">
-            <div style={{display: 'flex', width: '330px', marginLeft: '5px'}}>
+            <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{shopData.name}</h1>
               {isShopOwned && <FcSettings className="FormSettingsBtn" />}
             </div>
@@ -107,20 +109,15 @@ function ShopForm({ shopId, isShopOwned }: Props) {
         </div>
       )}
       <Tabs>
-        
-
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-
-        <TabList className="foodTabMenu">
-          {typeList.map((type) => (
-            <Tab
-              className="tab"
-              key={type as string}>
-              {type as string}
-            </Tab>
-          ))}
-        </TabList>
-          {isShopOwned && <HiMiniPlusCircle className="productPlusButton"/>}
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <TabList className="foodTabMenu">
+            {typeList.map((type) => (
+              <Tab className="tab" key={type as string}>
+                {type as string}
+              </Tab>
+            ))}
+          </TabList>
+          {isShopOwned && <HiMiniPlusCircle className="productPlusButton" />}
         </div>
 
         <TabPanels>
@@ -197,7 +194,10 @@ function ShopForm({ shopId, isShopOwned }: Props) {
                         {!isShopOwned || undefined ? (
                           <PiShoppingCartSimpleDuotone className="cartButton" />
                         ) : (
-                          <FcSettings className="ProductsettingsButton" />
+                          <FcSettings
+                            className="ProductsettingsButton"
+                            onClick={()=>(console.log())}
+                          />
                         )}
                       </div>
                       <div className="productRatingContainer">{4.5} / 5.0</div>

@@ -1,0 +1,15 @@
+/* Additional styles for ImgDialog */
+.img-dialog-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+  
+  .img-dialog-image {
+    width: 500px;
+    height: 500px; /* Adjust image height based on viewport */
+    border-radius: 10px;
+  }
+  
+  
