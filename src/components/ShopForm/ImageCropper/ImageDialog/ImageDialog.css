@@ -7,8 +7,8 @@
   }
   
   .img-dialog-image {
-    width: 500px;
-    height: 500px; /* Adjust image height based on viewport */
+    width: 600px;
+    height: 600px; /* Adjust image height based on viewport */
     border-radius: 10px;
   }
   

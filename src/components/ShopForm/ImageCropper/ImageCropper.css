@@ -24,6 +24,7 @@
   .slider-icon {
     margin-top: 10px;
     font-size: 25px;
+    margin-left: 20px;
   }
   
   
@@ -65,5 +66,8 @@
     color: white;
   }
 
-  
+  .save-button {
+    background-color: teal;
+    margin-top: 5px;
+  }
   

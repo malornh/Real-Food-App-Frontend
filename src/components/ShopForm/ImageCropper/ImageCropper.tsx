@@ -6,6 +6,7 @@ import { getOrientation } from 'get-orientation/browser';
 import { getCroppedImg, getRotatedImage } from './canvasUtils';
 import './ImageCropper.css';
 import { TbRotateClockwise, TbZoomIn } from 'react-icons/tb';
+import ImageDialog from './ImageDialog/ImageDialog';
 
 const ORIENTATION_TO_ANGLE: { [key: number]: number } = {
   3: 180,
@@ -19,7 +20,8 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
   const [rotation, setRotation] = useState<number>(0);
   const [zoom, setZoom] = useState<number>(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [uploaded, SetUploaded] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
+  const [croppedImage, setCroppedImage] = useState<string | null>(null);
 
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -30,6 +32,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
       if (imageSrc && croppedAreaPixels) {
         const croppedImageBase64 = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
         handlePhotoChange(croppedImageBase64);
+        setCroppedImage(croppedImageBase64);
       }
     } catch (e) {
       console.error(e);
@@ -37,7 +40,8 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
   };
 
   const onClose = () => {
-    setImageSrc(null);
+    setCroppedImage(null);
+    handlePhotoChange(null);
   };
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,8 +68,9 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
       if (imageSrc && croppedAreaPixels) {
         const croppedImageBase64 = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
         handlePhotoChange(croppedImageBase64);
-        SetUploaded(true);
+        setUploaded(true);
         setImageSrc(null);
+        //setCroppedImage(croppedImageBase64);
       }
     } catch (e) {
       console.error(e);
@@ -73,7 +78,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
   };
 
   return (
-    <Box p={4} sx={{ marginLeft: "10px" }}>
+    <Box p={3} sx={{ marginLeft: '10px' }}>
       {imageSrc ? (
         <>
           <Box className="crop-container">
@@ -90,12 +95,17 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
             />
             <Button
               className="reset-button"
-              onClick={() => (setImageSrc(null), SetUploaded(false), handlePhotoChange(null))}
+              onClick={() => {
+                setImageSrc(null);
+                setUploaded(false);
+                handlePhotoChange(null);
+              }}
               colorScheme="red"
               position="absolute"
-              top="0"
-              right="0"
-              zIndex="1">
+              top="5"
+              right="5"
+              zIndex="1"
+            >
               X
             </Button>
           </Box>
@@ -107,7 +117,8 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
                 min={1}
                 max={3}
                 step={0.1}
-                onChange={(value) => setZoom(value as number)}>
+                onChange={(value) => setZoom(value as number)}
+              >
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
@@ -116,37 +127,60 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
               <Icon as={TbZoomIn} className="slider-icon" />
             </Box>
 
+               {/*
+            //Rotation slider. To be optimized before u
+            <Box className="slider-container">
+              <Slider
+                className="slider"
+                value={rotation}
+                min={0}
+                max={360}
+                step={1}
+                onChange={(value) => setRotation(value as number)}>
+                <SliderTrack>
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb />
+              </Slider>
+              <Icon as={TbRotateClockwise} className="slider-icon" />
+            </Box>
+          */}
+
             <Button
               className="crop-button"
               onClick={showCroppedImage}
-              colorScheme="teal">
+              colorScheme="teal"
+            >
               Show Result
             </Button>
 
             <Button
               className="save-button"
               onClick={handleSave}
-              colorScheme="blue">
+              colorScheme="teal"
+            >
               Save
             </Button>
           </Box>
         </>
       ) : (
-        <div style={{ padding: "30px" }}>
+        <div style={{ padding: '30px' }}>
           <label
             style={{
-              borderRadius: "10px",
-              background: "teal",
-              padding: "10px",
-            }}>
+              borderRadius: '10px',
+              background: 'teal',
+              padding: '10px',
+            }}
+          >
             <input name="" type="file" onChange={onFileChange} hidden />
             Upload Photo
           </label>
           {uploaded && (
-            <p style={{ color: "lime", marginLeft: "10px" }}>Photo saved!</p>
+            <p style={{ color: 'lime', marginLeft: '10px' }}>Photo saved!</p>
           )}
         </div>
       )}
+      <ImageDialog img={croppedImage} onClose={onClose} />
     </Box>
   );
 };
