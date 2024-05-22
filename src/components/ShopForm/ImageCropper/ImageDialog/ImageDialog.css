@@ -3,12 +3,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 24px;
+    padding: 25px;
   }
   
   .img-dialog-image {
-    width: 600px;
-    height: 600px; /* Adjust image height based on viewport */
+    width: 1000px;
     border-radius: 10px;
   }
   

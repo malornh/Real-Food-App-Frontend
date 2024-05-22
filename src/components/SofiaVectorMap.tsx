@@ -89,7 +89,7 @@ const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId }) => {
   }, [shops, handleShopClick, clickedMapShopId]);
 
   return (
-    <div ref={mapContainer} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+    <div ref={mapContainer} style={{ position: 'absolute', top: 0, left: 0, width: '50%', height: '50%' }}>
     </div>
   );
 };

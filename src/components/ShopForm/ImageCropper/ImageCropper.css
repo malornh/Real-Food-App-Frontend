@@ -51,7 +51,8 @@
     background-color: #4FD1C5; /* Teal */
     border: 2px solid #fff; /* White border */
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Shadow */
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-top: 10px
   }
   
   
@@ -68,6 +69,4 @@
 
   .save-button {
     background-color: teal;
-    margin-top: 5px;
   }
-  

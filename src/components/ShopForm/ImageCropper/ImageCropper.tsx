@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Cropper, { Area, Point } from 'react-easy-crop';
-import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, Button, Box, Icon, Image } from '@chakra-ui/react';
+import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, Button, Box, Icon, Image, Flex } from '@chakra-ui/react';
 import { getOrientation } from 'get-orientation/browser';
 import { getCroppedImg, getRotatedImage } from './canvasUtils';
 import './ImageCropper.css';
@@ -80,7 +80,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
   };
 
   return (
-    <Box p={3} sx={{ marginLeft: "10px" }}>
+    <Box mt={4} mb={2} sx={{ marginLeft: "20px" }}>
       {imageSrc ? (
         <>
           <Box className="crop-container">
@@ -104,14 +104,14 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
               }}
               colorScheme="red"
               position="absolute"
-              top="5"
-              right="5"
+              top="1"
+              right="1"
               zIndex="1">
               X
             </Button>
           </Box>
           <Box className="controls">
-            <Box className="slider-container">
+            <Box className="slider-container" mb={3} mt={1}>
               <Slider
                 className="slider"
                 value={zoom}
@@ -146,42 +146,53 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
             </Box>
           */}
 
-            <Button
-              className="crop-button"
-              onClick={showCroppedImage}
-              colorScheme="teal">
-              Show Result
-            </Button>
+            <Flex justify="space-between">
+              <Button
+                className="crop-button"
+                onClick={showCroppedImage}
+                colorScheme="teal">
+                Show Result
+              </Button>
 
-            <Button
-              className="save-button"
-              onClick={handleSave}
-              colorScheme="teal">
-              Save
-            </Button>
+              <Button
+                className="save-button"
+                onClick={handleSave}
+                colorScheme="teal">
+                Save
+              </Button>
+            </Flex>
           </Box>
         </>
       ) : (
         <div>
           <div>
-            {selectedImage && <Image src={selectedImage} style={{width: '350px', height: '300px', borderRadius: '10px', border: '2px solid black', marginTop: '-2px'}} />}
+            {selectedImage && (
+              <Image
+                src={selectedImage}
+                style={{
+                  width: "380px",
+                  borderRadius: "10px",
+                  border: "2px solid black",
+                }}
+              />
+            )}
           </div>
-          <div
-            style={{
-              marginLeft: "120px",
-              marginTop: "15px",
-              marginBottom: "25px",
-            }}>
-            <label
-              style={{
-                borderRadius: "10px",
-                background: "teal",
-                padding: "10px",
-              }}>
-              <input name="" type="file" onChange={onFileChange} hidden />
+          <div style={{ marginTop: "20px", marginBottom: "21px" }}>
+            <Button
+              as="label"
+              htmlFor="file-upload"
+              colorScheme="teal"
+              borderRadius="10px"
+              padding="10px"
+              cursor="pointer">
               Upload Photo
-            </label>
-           
+              <input
+                id="file-upload"
+                type="file"
+                onChange={onFileChange}
+                hidden
+              />
+            </Button>
           </div>
         </div>
       )}
