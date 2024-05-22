@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { BsArrowRepeat } from 'react-icons/bs';
 import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
 import { FcSettings } from "react-icons/fc";
 import { HiMiniPlusCircle } from "react-icons/hi2";
-import './ShopForm.css';
-import EditShop from './EditShop/EditShop';
+import './ShopForm.css'
 
 // Define interfaces
 interface Shop {
@@ -45,15 +44,15 @@ interface Farm {
   image: string;
 }
 
-interface Props {
-  shopId: number | undefined,
-  isShopOwned: boolean | undefined
+interface Props{
+    shopId: number | undefined,
+    isShopOwned: boolean | undefined,
+    isEditModalOpen: (b: boolean)=>void
 }
 
-const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
+function ShopForm({ shopId, isShopOwned, isEditModalOpen }: Props) {
   const [shopData, setShopData] = useState<Shop | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const typeList = Array.from(new Set(shopData?.orders.map(o => o.product.type)));
 
@@ -72,6 +71,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
     fetchShopData();
   }, [shopId]);
 
+
   function flipImage(orderId: number) {
     setHoveredOrderId(orderId);
     const cardInner = document.querySelector(`#flip-card-inner-${orderId}`) as HTMLElement;
@@ -79,23 +79,15 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
       cardInner.style.transform = "rotateY(180deg)";
     }
   }
-
+  
   function unflipImage(orderId: number) {
     setHoveredOrderId(null);
-    const cardInner = document.querySelector(`#flip-card-inner-${orderId}`) as HTMLElement;
+    const cardInner = document.querySelector(`#flip-card-inner-${orderId}`) as HTMLElement;  
     if (cardInner) {
       cardInner.style.transform = "rotateY(0deg)";
     }
   }
-
-  const handleEditModalOpen = () => {
-    setIsEditModalOpen(true);
-  };
-
-  const handleEditModalClose = () => {
-    setIsEditModalOpen(false);
-  };
-
+  
   return (
     <div>
       {shopData && (
@@ -104,7 +96,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
           <div className="farmInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{shopData.name}</h1>
-              {isShopOwned && <FcSettings className="FormSettingsBtn" onClick={handleEditModalOpen} />}
+              {isShopOwned && <FcSettings className="FormSettingsBtn" onClick={()=>isEditModalOpen(true)} />}
             </div>
             <p className="farmDescription">
               {
@@ -115,6 +107,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
           </div>
         </div>
       )}
+
       <Tabs>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <TabList className="foodTabMenu">
@@ -148,7 +141,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
                         onMouseOver={() => flipImage(order.id)}
                         onMouseOut={() => unflipImage(order.id)}>
                         <div className="flip-card">
-                          <div className="flip-card-inner" id={`flip-card-inner-${order.id}`}>
+                          <div className="flip-card-inner">
                             <div className="flip-card-front">
                               <img
                                 className="original-image"
@@ -198,12 +191,12 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
                         padding: "10px",
                       }}>
                       <div>
-                        {!isShopOwned ? (
+                        {!isShopOwned || undefined ? (
                           <PiShoppingCartSimpleDuotone className="cartButton" />
                         ) : (
                           <FcSettings
                             className="ProductsettingsButton"
-                            onClick={() => console.log()}
+                            onClick={()=>console.log()}
                           />
                         )}
                       </div>
@@ -215,7 +208,6 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
           ))}
         </TabPanels>
       </Tabs>
-      <EditShop isOpen={true} onClose={handleEditModalClose} />
     </div>
   );
 }

@@ -54,7 +54,6 @@ const EditShop: React.FC<EditShopProps> = ({ isOpen, onClose }) => {
     }, [isOpen]);
 
     const handleSave = () => {
-        // Implement your save logic here
         onClose();
     };
 

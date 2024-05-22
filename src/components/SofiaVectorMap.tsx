@@ -65,7 +65,7 @@ const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId }) => {
           className: 'custom-div-icon',
           html: `<div style="color: black; ${id === clickedMapShopId ? 'border-radius: 50px; background: blue; font-size: 30px;' : ''}">
                     <img src="${customIconUrl}" alt="Icon" style="width: 50px; height: 50px;">
-                    <div id="custom-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -10px; background-color: lime; border-radius: 20px; border: 1px solid black;">5/5</div>
+                    <div id="custom-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -2px; background-color: lime; border-radius: 20px; border: 1px solid black;">5/5</div>
                  </div>`,
           iconSize: [50, 50],
           iconAnchor: [25, 50],
@@ -89,7 +89,7 @@ const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId }) => {
   }, [shops, handleShopClick, clickedMapShopId]);
 
   return (
-    <div ref={mapContainer} style={{ position: 'absolute', top: 0, left: 0, width: '50%', height: '50%' }}>
+    <div ref={mapContainer} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
     </div>
   );
 };
