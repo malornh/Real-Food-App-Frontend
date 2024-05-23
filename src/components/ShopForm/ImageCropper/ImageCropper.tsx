@@ -15,11 +15,10 @@ const ORIENTATION_TO_ANGLE: { [key: number]: number } = {
 };
 
 interface ImageCropperProps {
-  handlePhotoChange: (imgSrc: string | null) => void; // Function to handle image changes
   initialImage: string | undefined; // Initial value for the image
 }
 
-const ImageCropper: React.FC<ImageCropperProps> = ({ handlePhotoChange, initialImage }) => {
+const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage }) => {
   const [imageSrc, setImageSrc] = useState<string | undefined>(initialImage);
   const [newImageSrc, setNewImageSrc] = useState<string | undefined>();
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
@@ -38,7 +37,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ handlePhotoChange, initialI
     try {
       if (newImageSrc && croppedAreaPixels) {
         const croppedImageBase64 = await getCroppedImg(newImageSrc, croppedAreaPixels, rotation);
-        handlePhotoChange(croppedImageBase64);
         setCroppedImage(croppedImageBase64);
       }
     } catch (e) {
@@ -48,7 +46,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ handlePhotoChange, initialI
 
   const onClose = () => {
     setCroppedImage(null);
-    handlePhotoChange(null);
   };
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,11 +72,8 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ handlePhotoChange, initialI
     try {
       if (newImageSrc && croppedAreaPixels) {
         const croppedImageBase64 = await getCroppedImg(newImageSrc, croppedAreaPixels, rotation);
-        //handlePhotoChange(croppedImageBase64);
-        //setSelectedImage(croppedImageBase64);
         setImageSrc(croppedImageBase64);
         setIsEditMode(false);
-        //setCroppedImage(croppedImageBase64);
       }
     } catch (e) {
       console.error(e);
@@ -217,7 +211,7 @@ function readFile(file: File): Promise<string> {
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
-  ReactDOM.render(<ImageCropper initialImage={undefined} handlePhotoChange={(imgSrc) => console.log('Cropped Image:', imgSrc)} />, rootElement);
+  ReactDOM.render(<ImageCropper initialImage={undefined} />, rootElement);
 }
 
 export default ImageCropper;
