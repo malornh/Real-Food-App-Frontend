@@ -28,10 +28,9 @@ interface Props {
   markerClicked: boolean;
   resetShopId: (n: number | undefined)=>void;
   handleShopClick: (shopId: number)=>void;
-  isEditModalOpen: (b: boolean)=>void;
 }
 
-const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleShopClick, isEditModalOpen }: Props) => {
+const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleShopClick }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
@@ -110,7 +109,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
           </div>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
-            {selectedShopId !== undefined ? <ShopForm shopId={selectedShopId} isShopOwned={isOwnedByUser(userShops?.map(s=>s.id), selectedShopId)} isEditModalOpen={(b)=>isEditModalOpen(b)} /> : <UserForm/>}
+            {selectedShopId !== undefined ? <ShopForm shopId={selectedShopId} isShopOwned={isOwnedByUser(userShops?.map(s=>s.id), selectedShopId)} /> : <UserForm/>}
           </div>
         </div>
       )}

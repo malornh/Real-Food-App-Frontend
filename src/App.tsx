@@ -15,7 +15,6 @@ const App = () => {
   };
 
   const [imgSrc, setImageSrc] = useState<string | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     console.log(imgSrc);
@@ -30,13 +29,11 @@ const App = () => {
           clickedMapShopId={clickedMapShopId}
           markerClicked={markerClicked}
           handleShopClick={(shopId) => setClickedMapShopId(shopId)}
-          isEditModalOpen={(b)=>setIsEditModalOpen(b)}
         />
         <SofiaVectorMap
           handleShopClick={handleShopClick}
           clickedMapShopId={clickedMapShopId}
         />
-        {isEditModalOpen && <EditShop isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} />}
       </div>
     </ChakraProvider>
   );

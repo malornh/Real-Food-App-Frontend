@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { BsArrowRepeat } from 'react-icons/bs';
 import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
 import { FcSettings } from "react-icons/fc";
 import { HiMiniPlusCircle } from "react-icons/hi2";
-import './ShopForm.css'
+import './ShopForm.css';
+import EditShop, { ShortShop } from './EditShop/EditShop';
 
-// Define interfaces
 interface Shop {
   id: number;
   image: string;
@@ -44,15 +44,15 @@ interface Farm {
   image: string;
 }
 
-interface Props{
-    shopId: number | undefined,
-    isShopOwned: boolean | undefined,
-    isEditModalOpen: (b: boolean)=>void
+interface Props {
+  shopId: number | undefined;
+  isShopOwned: boolean | undefined;
 }
 
-function ShopForm({ shopId, isShopOwned, isEditModalOpen }: Props) {
+const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
   const [shopData, setShopData] = useState<Shop | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const typeList = Array.from(new Set(shopData?.orders.map(o => o.product.type)));
 
@@ -71,23 +71,31 @@ function ShopForm({ shopId, isShopOwned, isEditModalOpen }: Props) {
     fetchShopData();
   }, [shopId]);
 
-
-  function flipImage(orderId: number) {
+  const flipImage = (orderId: number) => {
     setHoveredOrderId(orderId);
     const cardInner = document.querySelector(`#flip-card-inner-${orderId}`) as HTMLElement;
     if (cardInner) {
       cardInner.style.transform = "rotateY(180deg)";
     }
-  }
-  
-  function unflipImage(orderId: number) {
+  };
+
+  const unflipImage = (orderId: number) => {
     setHoveredOrderId(null);
-    const cardInner = document.querySelector(`#flip-card-inner-${orderId}`) as HTMLElement;  
+    const cardInner = document.querySelector(`#flip-card-inner-${orderId}`) as HTMLElement;
     if (cardInner) {
       cardInner.style.transform = "rotateY(0deg)";
     }
-  }
-  
+  };
+
+  const mapToShortShop = (shop: Shop): ShortShop => ({
+    id: shop.id,
+    image: shop.image,
+    name: shop.name,
+    description: shop.description,
+    latitude: shop.latitude,
+    longitude: shop.longitude,
+  });
+
   return (
     <div>
       {shopData && (
@@ -96,12 +104,10 @@ function ShopForm({ shopId, isShopOwned, isEditModalOpen }: Props) {
           <div className="farmInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{shopData.name}</h1>
-              {isShopOwned && <FcSettings className="FormSettingsBtn" onClick={()=>isEditModalOpen(true)} />}
+              {isShopOwned && <FcSettings className="FormSettingsBtn" onClick={() => setIsEditModalOpen(true)} />}
             </div>
             <p className="farmDescription">
-              {
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi."
-              }
+              {"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi."}
             </p>
             <div className="farmRatingContainer">{shopData.rating} / 5.0</div>
           </div>
@@ -135,26 +141,15 @@ function ShopForm({ shopId, isShopOwned, isEditModalOpen }: Props) {
                       background: "rgba(254, 216, 65, 0.8)",
                       borderRadius: "5px",
                     }}>
-                    <div
-                      style={{ display: "flex", justifyContent: "flex-start" }}>
-                      <div
-                        onMouseOver={() => flipImage(order.id)}
-                        onMouseOut={() => unflipImage(order.id)}>
+                    <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                      <div onMouseOver={() => flipImage(order.id)} onMouseOut={() => unflipImage(order.id)}>
                         <div className="flip-card">
                           <div className="flip-card-inner">
                             <div className="flip-card-front">
-                              <img
-                                className="original-image"
-                                src={order.product.image}
-                                alt="Original Image"
-                              />
+                              <img className="original-image" src={order.product.image} alt="Original Image" />
                             </div>
                             <div className="flip-card-back">
-                              <img
-                                className="hover-image"
-                                src={order.shortFarm.image}
-                                alt="Hover Image"
-                              />
+                              <img className="hover-image" src={order.shortFarm.image} alt="Hover Image" />
                             </div>
                           </div>
                           <BsArrowRepeat
@@ -167,37 +162,19 @@ function ShopForm({ shopId, isShopOwned, isEditModalOpen }: Props) {
                           />
                         </div>
                       </div>
-                      <div
-                        style={{
-                          marginTop: "-20px",
-                          marginLeft: "20px",
-                          color: "black",
-                        }}>
-                        <h2>
-                          {hoveredOrderId == order.id
-                            ? order.shortFarm.name
-                            : order.product.name}
-                        </h2>
+                      <div style={{ marginTop: "-20px", marginLeft: "20px", color: "black" }}>
+                        <h2>{hoveredOrderId === order.id ? order.shortFarm.name : order.product.name}</h2>
                         <div className="descriptionContainer">
                           <p>{order.product.description}</p>
                         </div>
                       </div>
                     </div>
-                    <div
-                      style={{
-                        textAlign: "right",
-                        display: "flex",
-                        flexDirection: "column",
-                        padding: "10px",
-                      }}>
+                    <div style={{ textAlign: "right", display: "flex", flexDirection: "column", padding: "10px" }}>
                       <div>
-                        {!isShopOwned || undefined ? (
+                        {!isShopOwned ? (
                           <PiShoppingCartSimpleDuotone className="cartButton" />
                         ) : (
-                          <FcSettings
-                            className="ProductsettingsButton"
-                            onClick={()=>console.log()}
-                          />
+                          <FcSettings className="ProductsettingsButton" onClick={() => console.log()} />
                         )}
                       </div>
                       <div className="productRatingContainer">{4.5} / 5.0</div>
@@ -208,8 +185,11 @@ function ShopForm({ shopId, isShopOwned, isEditModalOpen }: Props) {
           ))}
         </TabPanels>
       </Tabs>
+      {isEditModalOpen && shopData && (
+        <EditShop isOpen={isEditModalOpen} onClose={()=>setIsEditModalOpen(false)} shortShop={mapToShortShop(shopData)} />
+      )}
     </div>
   );
-}
+};
 
 export default ShopForm;

@@ -14,13 +14,19 @@ const ORIENTATION_TO_ANGLE: { [key: number]: number } = {
   8: -90,
 };
 
-const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => void }> = ({ handlePhotoChange }) => {
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+interface ImageCropperProps {
+  handlePhotoChange: (imgSrc: string | null) => void; // Function to handle image changes
+  initialImage: string | undefined; // Initial value for the image
+}
+
+const ImageCropper: React.FC<ImageCropperProps> = ({ handlePhotoChange, initialImage }) => {
+  const [imageSrc, setImageSrc] = useState<string | undefined>(initialImage);
+  const [newImageSrc, setNewImageSrc] = useState<string | undefined>();
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [rotation, setRotation] = useState<number>(0);
   const [zoom, setZoom] = useState<number>(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-  const [uploaded, setUploaded] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -30,8 +36,8 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
 
   const showCroppedImage = async () => {
     try {
-      if (imageSrc && croppedAreaPixels) {
-        const croppedImageBase64 = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
+      if (newImageSrc && croppedAreaPixels) {
+        const croppedImageBase64 = await getCroppedImg(newImageSrc, croppedAreaPixels, rotation);
         handlePhotoChange(croppedImageBase64);
         setCroppedImage(croppedImageBase64);
       }
@@ -60,18 +66,19 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
         console.warn('Failed to detect the orientation');
       }
 
-      setImageSrc(imageDataUrl);
+      setNewImageSrc(imageDataUrl);
+      setIsEditMode(true);
     }
   };
 
   const handleSave = async () => {
     try {
-      if (imageSrc && croppedAreaPixels) {
-        const croppedImageBase64 = await getCroppedImg(imageSrc, croppedAreaPixels, rotation);
-        handlePhotoChange(croppedImageBase64);
-        setSelectedImage(croppedImageBase64);
-        setUploaded(true);
-        setImageSrc(null);
+      if (newImageSrc && croppedAreaPixels) {
+        const croppedImageBase64 = await getCroppedImg(newImageSrc, croppedAreaPixels, rotation);
+        //handlePhotoChange(croppedImageBase64);
+        //setSelectedImage(croppedImageBase64);
+        setImageSrc(croppedImageBase64);
+        setIsEditMode(false);
         //setCroppedImage(croppedImageBase64);
       }
     } catch (e) {
@@ -81,11 +88,44 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
 
   return (
     <Box mt={4} mb={2} sx={{ marginLeft: "20px" }}>
-      {imageSrc ? (
+      {!isEditMode ? (
+        <div>
+          <div>
+            {imageSrc && (
+              <Image
+                src={imageSrc}
+                style={{
+                  width: "380px",
+                  height: '267px',
+                  borderRadius: "10px",
+                  border: "2px solid black",
+                }}
+              />
+            )}
+          </div>
+          <div style={{ marginTop: "20px", marginBottom: "21px" }}>
+            <Button
+              as="label"
+              htmlFor="file-upload"
+              colorScheme="teal"
+              borderRadius="10px"
+              padding="10px"
+              cursor="pointer">
+              Upload Photo
+              <input
+                id="file-upload"
+                type="file"
+                onChange={onFileChange}
+                hidden
+              />
+            </Button>
+          </div>
+        </div>
+      ) : (
         <>
           <Box className="crop-container">
             <Cropper
-              image={imageSrc}
+              image={newImageSrc}
               crop={crop}
               rotation={rotation}
               zoom={zoom}
@@ -98,9 +138,7 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
             <Button
               className="reset-button"
               onClick={() => {
-                setImageSrc(null);
-                setUploaded(false);
-                handlePhotoChange(null);
+                setIsEditMode(false);
               }}
               colorScheme="red"
               position="absolute"
@@ -128,23 +166,23 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
             </Box>
 
             {/*
-            //Rotation slider. To be optimized before u
-            <Box className="slider-container">
-              <Slider
-                className="slider"
-                value={rotation}
-                min={0}
-                max={360}
-                step={1}
-                onChange={(value) => setRotation(value as number)}>
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb />
-              </Slider>
-              <Icon as={TbRotateClockwise} className="slider-icon" />
-            </Box>
-          */}
+          //Rotation slider. To be optimized before u
+          <Box className="slider-container">
+            <Slider
+              className="slider"
+              value={rotation}
+              min={0}
+              max={360}
+              step={1}
+              onChange={(value) => setRotation(value as number)}>
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
+            <Icon as={TbRotateClockwise} className="slider-icon" />
+          </Box>
+        */}
 
             <Flex justify="space-between">
               <Button
@@ -163,38 +201,6 @@ const ImageCropper: React.FC<{ handlePhotoChange: (imgSrc: string | null) => voi
             </Flex>
           </Box>
         </>
-      ) : (
-        <div>
-          <div>
-            {selectedImage && (
-              <Image
-                src={selectedImage}
-                style={{
-                  width: "380px",
-                  borderRadius: "10px",
-                  border: "2px solid black",
-                }}
-              />
-            )}
-          </div>
-          <div style={{ marginTop: "20px", marginBottom: "21px" }}>
-            <Button
-              as="label"
-              htmlFor="file-upload"
-              colorScheme="teal"
-              borderRadius="10px"
-              padding="10px"
-              cursor="pointer">
-              Upload Photo
-              <input
-                id="file-upload"
-                type="file"
-                onChange={onFileChange}
-                hidden
-              />
-            </Button>
-          </div>
-        </div>
       )}
       <ImageDialog img={croppedImage} onClose={onClose} />
     </Box>
@@ -211,7 +217,7 @@ function readFile(file: File): Promise<string> {
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
-  ReactDOM.render(<ImageCropper handlePhotoChange={(imgSrc) => console.log('Cropped Image:', imgSrc)} />, rootElement);
+  ReactDOM.render(<ImageCropper initialImage={undefined} handlePhotoChange={(imgSrc) => console.log('Cropped Image:', imgSrc)} />, rootElement);
 }
 
 export default ImageCropper;

@@ -6,17 +6,28 @@ import 'leaflet/dist/leaflet.css';
 import './EditShop.css';
 import ImageCropper from '../ImageCropper/ImageCropper';
 
-interface EditShopProps {
-    isOpen: boolean;
-    onClose: () => void;
+export interface ShortShop {
+    id: number;
+    image: string;
+    name: string;
+    description: string;
+    latitude: number;
+    longitude: number;
 }
 
-const EditShop: React.FC<EditShopProps> = ({ isOpen, onClose }) => {
+interface Props {
+    isOpen: boolean;
+    onClose: () => void;
+    shortShop: ShortShop;
+}
+
+const EditShop: React.FC<Props> = ({ isOpen, onClose, shortShop }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const mapContainer = useRef<HTMLDivElement | null>(null);
     const mapRef = useRef<L.Map | null>(null);
     const [imgSrc, setImageSrc] = useState<string | null>(null);
+    const [newShop, setNewShop] = useState<ShortShop>();
 
     useEffect(() => {
         console.log(isOpen);
@@ -68,7 +79,7 @@ const EditShop: React.FC<EditShopProps> = ({ isOpen, onClose }) => {
                 <ModalBody style={{ overflowY: "auto" }} mt={-2}>
                     <Flex>
                         <Box mt={-5}>
-                            <ImageCropper handlePhotoChange={(imgSrc) => setImageSrc(imgSrc)} />
+                            <ImageCropper initialImage={shortShop.image} handlePhotoChange={(imgSrc) => setImageSrc(imgSrc)} />
                             <Box
                                 mt={0}
                                 ref={mapContainer}
@@ -86,8 +97,11 @@ const EditShop: React.FC<EditShopProps> = ({ isOpen, onClose }) => {
                         <Box ml={5} mt={-1}>
                             <FormControl mb={4}>
                                 <Input
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    value={shortShop.name}
+                                    onChange={(e) => setNewShop(prevState => ({
+                                        ...prevState!,
+                                        name: e.target.value
+                                      }))}
                                     placeholder="Enter name"
                                     fontSize='40px'
                                     height="70px" // Adjust the height as needed
