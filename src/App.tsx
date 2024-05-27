@@ -21,7 +21,6 @@ const App = () => {
   }, [imgSrc]);
 
   return (
-    <ChakraProvider>
       <div>
         <AccountForm
           userId={userId}
@@ -35,7 +34,6 @@ const App = () => {
           clickedMapShopId={clickedMapShopId}
         />
       </div>
-    </ChakraProvider>
   );
 };
 

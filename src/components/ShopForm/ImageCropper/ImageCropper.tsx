@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
 import Cropper, { Area, Point } from 'react-easy-crop';
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, Button, Box, Icon, Image, Flex } from '@chakra-ui/react';
 import { getOrientation } from 'get-orientation/browser';
 import { getCroppedImg, getRotatedImage } from './canvasUtils';
 import './ImageCropper.css';
-import { TbRotateClockwise, TbZoomIn } from 'react-icons/tb';
+import { TbZoomIn } from 'react-icons/tb';
 import ImageDialog from './ImageDialog/ImageDialog';
 
 const ORIENTATION_TO_ANGLE: { [key: number]: number } = {
@@ -15,10 +14,11 @@ const ORIENTATION_TO_ANGLE: { [key: number]: number } = {
 };
 
 interface ImageCropperProps {
-  initialImage: string | undefined; // Initial value for the image
+  initialImage: string | undefined;
+  onImageChange: (newImage: string) => void; // Add this prop
 }
 
-const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage }) => {
+const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage, onImageChange }) => {
   const [imageSrc, setImageSrc] = useState<string | undefined>(initialImage);
   const [newImageSrc, setNewImageSrc] = useState<string | undefined>();
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
@@ -74,10 +74,17 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage }) => {
         const croppedImageBase64 = await getCroppedImg(newImageSrc, croppedAreaPixels, rotation);
         setImageSrc(croppedImageBase64);
         setIsEditMode(false);
+        onImageChange(croppedImageBase64); // Call the callback with the new image
       }
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const handleDiscardChanges = () => {
+    setNewImageSrc(undefined);
+    setImageSrc(initialImage);
+    setIsEditMode(false);
   };
 
   return (
@@ -92,19 +99,19 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage }) => {
                   width: "380px",
                   height: '267px',
                   borderRadius: "10px",
-                  border: "2px solid black",
                 }}
               />
             )}
           </div>
-          <div style={{ marginTop: "20px", marginBottom: "21px" }}>
+          <Flex style={{ marginTop: "20px", marginBottom: "21px", justifyContent: 'space-between' }}>
             <Button
               as="label"
               htmlFor="file-upload"
               colorScheme="teal"
               borderRadius="10px"
               padding="10px"
-              cursor="pointer">
+              cursor="pointer"
+            >
               Upload Photo
               <input
                 id="file-upload"
@@ -113,7 +120,17 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage }) => {
                 hidden
               />
             </Button>
-          </div>
+            <Button
+              as="label"
+              colorScheme="red"
+              borderRadius="10px"
+              padding="10px"
+              onClick={handleDiscardChanges}
+              disabled={!imageSrc || imageSrc === initialImage}
+            >
+              Discard Changes
+            </Button>
+          </Flex>
         </div>
       ) : (
         <>
@@ -130,6 +147,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage }) => {
               onZoomChange={setZoom}
             />
             <Button
+              as="label"
               className="reset-button"
               onClick={() => {
                 setIsEditMode(false);
@@ -159,27 +177,9 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage }) => {
               <Icon as={TbZoomIn} className="slider-icon" />
             </Box>
 
-            {/*
-          //Rotation slider. To be optimized before u
-          <Box className="slider-container">
-            <Slider
-              className="slider"
-              value={rotation}
-              min={0}
-              max={360}
-              step={1}
-              onChange={(value) => setRotation(value as number)}>
-              <SliderTrack>
-                <SliderFilledTrack />
-              </SliderTrack>
-              <SliderThumb />
-            </Slider>
-            <Icon as={TbRotateClockwise} className="slider-icon" />
-          </Box>
-        */}
-
             <Flex justify="space-between">
               <Button
+                as="label"
                 className="crop-button"
                 onClick={showCroppedImage}
                 colorScheme="teal">
@@ -187,6 +187,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage }) => {
               </Button>
 
               <Button
+                as="label"
                 className="save-button"
                 onClick={handleSave}
                 colorScheme="teal">
@@ -207,11 +208,6 @@ function readFile(file: File): Promise<string> {
     reader.addEventListener('load', () => resolve(reader.result as string), false);
     reader.readAsDataURL(file);
   });
-}
-
-const rootElement = document.getElementById('root');
-if (rootElement) {
-  ReactDOM.render(<ImageCropper initialImage={undefined} />, rootElement);
 }
 
 export default ImageCropper;

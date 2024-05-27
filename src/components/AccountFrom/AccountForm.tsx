@@ -6,6 +6,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { CiCirclePlus } from 'react-icons/ci';
 import ShopForm from '../ShopForm/ShopForm';
 import axios from 'axios';
+import { Shop } from '../ShopForm/EditShop/EditShop';
 
 export interface Card {
   imgUrl: string;
@@ -14,7 +15,7 @@ export interface Card {
   rating: number;
 }
 
-interface ShortShop{
+interface ShortShops{
   id: number,
   name: string,
   image: string,
@@ -34,7 +35,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
-  const [userShops, setUserShops] = useState<ShortShop[]>();
+  const [userShops, setUserShops] = useState<Shop[]>();
 
   useEffect(() => {
     const fetchShops = async () => {
@@ -62,6 +63,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
     }
   }, [clickedMapShopId, markerClicked]);
 
+
   const toggleShopForm = () => {
     setShowForm((prevState) => !prevState);
   };
@@ -85,7 +87,25 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
   };
 
 
-  const handleAddNewCard = () => {};
+  const handleAddNewCard = () => {
+
+  };
+
+  function handleShopUpdate(shop: Shop): void {
+    setUserShops(currentShops => {
+      // Map through existing shops and replace the one with the same ID
+      return currentShops?.map(currentShop => {
+        if (currentShop.id === shop.id) {
+          // If the IDs match, replace the existing shop with the new one
+          return shop;
+        } else {
+          // Otherwise, return the shop as it was
+          return currentShop;
+        }
+      });
+    });
+  }
+  
 
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
@@ -97,7 +117,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
       {showForm && (
         <div className="formContainerStyle">
           <div className="cardsContainerStyle">
-            {userShops && userShops.map((shop: ShortShop) => (
+            {userShops && userShops.map((shop: Shop) => (
               <div key={shop.id} className='cardStyle' onClick={() => handleCardClick(shop.id)}>
                 <img src={shop.image} alt={shop.name} style={{ width: '80px', height: '80px', borderRadius: '50px'}} className={shop.id === selectedShopId ? 'selectedCardBorder' : 'nonSelectedCardBorder'} />
                 <div>{shop.name.length > 14 ? shop.name.substring(0, 12) + '...' : shop.name}</div>
@@ -109,7 +129,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
           </div>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
-            {selectedShopId !== undefined ? <ShopForm shopId={selectedShopId} isShopOwned={isOwnedByUser(userShops?.map(s=>s.id), selectedShopId)} /> : <UserForm/>}
+            {selectedShopId !== undefined ? <ShopForm forwardShopUpdate={(shop)=>handleShopUpdate(shop)} shopId={selectedShopId} isShopOwned={isOwnedByUser(userShops?.map(s=>s.id), selectedShopId)} /> : <UserForm/>}
           </div>
         </div>
       )}

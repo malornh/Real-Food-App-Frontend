@@ -6,9 +6,9 @@ import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
 import { FcSettings } from "react-icons/fc";
 import { HiMiniPlusCircle } from "react-icons/hi2";
 import './ShopForm.css';
-import EditShop, { ShortShop } from './EditShop/EditShop';
+import EditShop, { Shop } from './EditShop/EditShop';
 
-interface Shop {
+interface ShopData {
   id: number;
   image: string;
   userId: string;
@@ -47,10 +47,11 @@ interface Farm {
 interface Props {
   shopId: number | undefined;
   isShopOwned: boolean | undefined;
+  forwardShopUpdate: (shop: Shop)=>void;
 }
 
-const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
-  const [shopData, setShopData] = useState<Shop | undefined>(undefined);
+const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate }) => {
+  const [shopData, setShopData] = useState<ShopData | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -60,7 +61,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
     const fetchShopData = async () => {
       try {
         if (shopId !== undefined) {
-          const response = await axios.get<Shop>(`https://localhost:7218/api/Shop/${shopId}/OrdersWithFarms`);
+          const response = await axios.get<ShopData>(`https://localhost:7218/api/Shop/${shopId}/OrdersWithFarms`);
           setShopData(response.data);
         }
       } catch (error) {
@@ -87,14 +88,33 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
     }
   };
 
-  const mapToShortShop = (shop: Shop): ShortShop => ({
+  const mapToShop = (shop: ShopData): Shop => ({
     id: shop.id,
+    userId: shop.userId,
     image: shop.image,
     name: shop.name,
     description: shop.description,
     latitude: shop.latitude,
     longitude: shop.longitude,
+    rating: shop.rating
   });
+
+  function handleShopUpdate(shop: Shop): void {
+    forwardShopUpdate(shop);  // Forwarding the updated shop data
+    setShopData(currentShopData => {
+      if (!currentShopData) return currentShopData;  // Check for null or undefined
+      return {
+        ...currentShopData,  // Spread all existing properties
+        // Only overwrite properties that are present in the updated shop data
+        name: shop.name,
+        description: shop.description,
+        image: shop.image,
+        latitude: shop.latitude,
+        longitude: shop.longitude
+      };
+    });
+  }
+  
 
   return (
     <div>
@@ -186,7 +206,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned }) => {
         </TabPanels>
       </Tabs>
       {isEditModalOpen && shopData && (
-        <EditShop isOpen={isEditModalOpen} onClose={()=>setIsEditModalOpen(false)} shortShop={mapToShortShop(shopData)} />
+        <EditShop onUpdate={(shop)=>handleShopUpdate(shop)} isOpen={isEditModalOpen} onClose={()=>setIsEditModalOpen(false)} shop={mapToShop(shopData)} />
       )}
     </div>
   );
