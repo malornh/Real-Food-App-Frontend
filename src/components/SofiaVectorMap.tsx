@@ -19,14 +19,28 @@ interface Shop{
 interface Props {
   handleShopClick: (shopId: number) => void;
   clickedMapShopId: number | undefined;
+  updatedShop: Shop | undefined;
 }
 
-const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId }) => {
+const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId, updatedShop }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const [shops, setShops] = useState<Shop[]>([]);
 
   useEffect(() => {
+    if (!updatedShop) return; // If updatedShop is undefined, exit the function
+  
+    const updatedIndex = shops.findIndex(s => s.id === updatedShop.id); // Find the index of the shop with the matching id
+    if (updatedIndex !== -1) { // Check if the shop with the matching id exists in the array
+      const updatedShops = [...shops]; // Create a copy of the original array
+      updatedShops[updatedIndex].latitude = updatedShop.latitude; // Update the latitude of the shop at the found index
+      updatedShops[updatedIndex].longitude = updatedShop.longitude; // Update the longitude of the shop at the found index
+      setShops(updatedShops); // Update the state with the new array of shops
+    }
+  }, [updatedShop]);
+
+  useEffect(() => {
+    console.log(mapContainer.current);
     if (mapContainer.current && !mapRef.current) {
       mapRef.current = L.map(mapContainer.current).setView([42.69, 23.35], 13);
 

@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import './EditShop.css';
 import ImageCropper from '../ImageCropper/ImageCropper';
 import theme from './theme'; // Import the custom theme
+import MapComponent from './MapComponent';
 
 export interface Shop {
   id: number;
@@ -22,29 +23,36 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   shop: Shop;
-  onUpdate: (shop: Shop)=>void;
+  onUpdate: (shop: Shop) => void;
 }
 
 const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
   const [newShop, setNewShop] = useState<Shop>({ ...shop });
-  const mapContainer = useRef<HTMLDivElement>(null);
+  const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
 
   useEffect(() => {
-    if (isOpen && mapContainer.current) {
+    console.log(mapContainer.current);
+    if (isOpen && mapContainer.current) { // Check if the modal is open and the container is available
+      console.log("Inside if");
+      // Perform map initialization
       if (mapRef.current) {
         mapRef.current.remove();
+        console.log('Map removed');
       }
 
       mapRef.current = L.map(mapContainer.current).setView([shop.latitude, shop.longitude], 13);
+      console.log('New map created');
 
       const mapTilerLayer = new MaptilerLayer({
         apiKey: 'dJS38j47jXwMgeCxB2ha',
         styleUrl: 'https://api.maptiler.com/maps/5361eb74-ae67-4d68-aa6f-bed66c17018c/style.json?key=dJS38j47jXwMgeCxB2ha'
       }).addTo(mapRef.current);
+      console.log("MapTiler layer added");
 
       markerRef.current = L.marker([shop.latitude, shop.longitude]).addTo(mapRef.current);
+      console.log('Marker added');
 
       mapRef.current.on('click', (event: L.LeafletMouseEvent) => {
         const { lat, lng } = event.latlng;
@@ -54,7 +62,9 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
           latitude: lat,
           longitude: lng
         }));
+        console.log('Marker position updated', { lat, lng });
       });
+      console.log('Map initialization done');
     }
   }, [isOpen, shop]);
 
@@ -102,15 +112,24 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
           <ModalBody style={{ overflowY: "auto" }} mt={-2}>
             <Flex>
               <Box mt={-5} ml={-6}>
-                <ImageCropper initialImage={shop.image} onImageChange={handleImageChange} />
-                <Box
-                  mt={0}
-                  ref={mapContainer}
-                  style={{
-                    borderRadius: "10px",
-                    height: "260px",
-                    position: "relative",
-                    marginLeft: "16px",
+                <ImageCropper
+                  initialImage={shop.image}
+                  onImageChange={handleImageChange}
+                />
+                <MapComponent
+                  lat={shop.latitude}
+                  long={shop.longitude}
+                  outLat={(lat) =>
+                    setNewShop((prevState) => ({
+                      ...prevState,
+                      latitude: lat,
+                    }))
+                  }
+                  outLong={(long) => {
+                    setNewShop((prevState) => ({
+                      ...prevState,
+                      longitude: long,
+                    }));
                   }}
                 />
               </Box>
@@ -130,7 +149,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
                     width="575px"
                     borderRadius="5px"
                     color="black"
-                    background='rgba(254, 190, 65, 0.9)'
+                    background="rgba(254, 190, 65, 0.9)"
                   />
                 </FormControl>
                 <FormControl>
@@ -148,7 +167,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
                     width="575px"
                     borderRadius="5px"
                     color="black"
-                    background='rgba(254, 190, 65, 0.9)'
+                    background="rgba(254, 190, 65, 0.9)"
                   />
                 </FormControl>
               </Box>
@@ -163,7 +182,11 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
               onClick={handleSave}>
               Save
             </Button>
-            <Button style={{color: 'black', background: 'rgba(145, 150, 150, 0.2)'}} onClick={onClose}>Close</Button>
+            <Button
+              style={{ color: "black", background: "rgba(145, 150, 150, 0.2)" }}
+              onClick={onClose}>
+              Close
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

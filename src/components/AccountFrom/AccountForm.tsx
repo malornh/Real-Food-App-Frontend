@@ -29,9 +29,10 @@ interface Props {
   markerClicked: boolean;
   resetShopId: (n: number | undefined)=>void;
   handleShopClick: (shopId: number)=>void;
+  forwardShopUpdate: (shop: Shop)=>void;
 }
 
-const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleShopClick }: Props) => {
+const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleShopClick, forwardShopUpdate }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
@@ -92,6 +93,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
   };
 
   function handleShopUpdate(shop: Shop): void {
+    forwardShopUpdate(shop);
     setUserShops(currentShops => {
       // Map through existing shops and replace the one with the same ID
       return currentShops?.map(currentShop => {

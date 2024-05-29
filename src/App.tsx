@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import AccountForm from './components/AccountFrom/AccountForm';
 import SofiaVectorMap from './components/SofiaVectorMap';
-import EditShop from './components/ShopForm/EditShop/EditShop';
+import EditShop, { Shop } from './components/ShopForm/EditShop/EditShop';
+import MapComponent from './components/ShopForm/EditShop/MapComponent';
 
 const App = () => {
   const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(undefined);
   const [markerClicked, setMarkerClicked] = useState(false);
   const userId = '0f17881d-b0cd-45b1-afdc-b15f93eeabcc';
+  const [updatedShop, setUpdatedShop] = useState<Shop>();
 
   const handleShopClick = (id: number) => {
     setClickedMapShopId(id);
@@ -21,19 +23,21 @@ const App = () => {
   }, [imgSrc]);
 
   return (
-      <div>
-        <AccountForm
-          userId={userId}
-          resetShopId={(n) => setClickedMapShopId(n)}
-          clickedMapShopId={clickedMapShopId}
-          markerClicked={markerClicked}
-          handleShopClick={(shopId) => setClickedMapShopId(shopId)}
-        />
-        <SofiaVectorMap
-          handleShopClick={handleShopClick}
-          clickedMapShopId={clickedMapShopId}
-        />
-      </div>
+    <div>
+      <AccountForm
+        userId={userId}
+        resetShopId={(n) => setClickedMapShopId(n)}
+        clickedMapShopId={clickedMapShopId}
+        markerClicked={markerClicked}
+        handleShopClick={(shopId) => setClickedMapShopId(shopId)}
+        forwardShopUpdate={(shop)=>setUpdatedShop(shop)}
+      />
+      <SofiaVectorMap
+        handleShopClick={handleShopClick}
+        clickedMapShopId={clickedMapShopId}
+        updatedShop={updatedShop}
+      />
+    </div>
   );
 };
 
