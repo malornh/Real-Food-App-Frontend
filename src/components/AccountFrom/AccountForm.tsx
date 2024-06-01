@@ -7,6 +7,8 @@ import { CiCirclePlus } from 'react-icons/ci';
 import ShopForm from '../ShopForm/ShopForm';
 import axios from 'axios';
 import { Shop } from '../ShopForm/EditShop/EditShop';
+import { Box, useDisclosure } from '@chakra-ui/react';
+import Create from '../Create'
 
 export interface Card {
   imgUrl: string;
@@ -15,21 +17,21 @@ export interface Card {
   rating: number;
 }
 
-interface ShortShops{
-  id: number,
-  name: string,
-  image: string,
-  latitude: number,
-  longitude: number,
+interface ShortShops {
+  id: number;
+  name: string;
+  image: string;
+  latitude: number;
+  longitude: number;
 }
 
 interface Props {
   userId: string;
   clickedMapShopId?: number | undefined;
   markerClicked: boolean;
-  resetShopId: (n: number | undefined)=>void;
-  handleShopClick: (shopId: number)=>void;
-  forwardShopUpdate: (shop: Shop)=>void;
+  resetShopId: (n: number | undefined) => void;
+  handleShopClick: (shopId: number) => void;
+  forwardShopUpdate: (shop: Shop) => void;
 }
 
 const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleShopClick, forwardShopUpdate }: Props) => {
@@ -37,6 +39,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
   const [userShops, setUserShops] = useState<Shop[]>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const fetchShops = async () => {
@@ -64,7 +67,6 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
     }
   }, [clickedMapShopId, markerClicked]);
 
-
   const toggleShopForm = () => {
     setShowForm((prevState) => !prevState);
   };
@@ -87,27 +89,23 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
     return shopIds?.includes(id);
   };
 
-
   const handleAddNewCard = () => {
-
+    console.log("Add new card clicked");
+    onOpen();
   };
 
   function handleShopUpdate(shop: Shop): void {
     forwardShopUpdate(shop);
     setUserShops(currentShops => {
-      // Map through existing shops and replace the one with the same ID
       return currentShops?.map(currentShop => {
         if (currentShop.id === shop.id) {
-          // If the IDs match, replace the existing shop with the new one
           return shop;
         } else {
-          // Otherwise, return the shop as it was
           return currentShop;
         }
       });
     });
   }
-  
 
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
@@ -121,20 +119,21 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
           <div className="cardsContainerStyle">
             {userShops && userShops.map((shop: Shop) => (
               <div key={shop.id} className='cardStyle' onClick={() => handleCardClick(shop.id)}>
-                <img src={shop.image} alt={shop.name} style={{ width: '80px', height: '80px', borderRadius: '50px'}} className={shop.id === selectedShopId ? 'selectedCardBorder' : 'nonSelectedCardBorder'} />
-                <div>{shop.name.length > 14 ? shop.name.substring(0, 12) + '...' : shop.name}</div>
+                <img src={shop.image} alt={shop.name} style={{ width: '80px', height: '80px', borderRadius: '50px' }} className={shop.id === selectedShopId ? 'selectedCardBorder' : 'nonSelectedCardBorder'} />
+                <div>{shop.name.length > 14 ? shop.name.substring(0, 10) + '...' : shop.name}</div>
               </div>
             ))}
-            <div className='cardStyle'>
-              <CiCirclePlus className="plusIcon" onClick={handleAddNewCard} />
-            </div>
+            <Box className='cardStyle' onClick={handleAddNewCard}>
+              <CiCirclePlus className="plusIcon" />
+            </Box>
           </div>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
-            {selectedShopId !== undefined ? <ShopForm forwardShopUpdate={(shop)=>handleShopUpdate(shop)} shopId={selectedShopId} isShopOwned={isOwnedByUser(userShops?.map(s=>s.id), selectedShopId)} /> : <UserForm/>}
+            {selectedShopId !== undefined ? <ShopForm forwardShopUpdate={(shop) => handleShopUpdate(shop)} shopId={selectedShopId} isShopOwned={isOwnedByUser(userShops?.map(s => s.id), selectedShopId)} /> : <UserForm />}
           </div>
         </div>
       )}
+      <Create isOpen={isOpen} onClose={onClose} />
     </div>
   );
 };

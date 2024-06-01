@@ -97,21 +97,34 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage, onImageChange
                 src={imageSrc}
                 style={{
                   width: "380px",
-                  height: '267px',
+                  height: "267px",
                   borderRadius: "10px",
                 }}
               />
             )}
           </div>
-          <Flex style={{ marginTop: "20px", marginBottom: "21px", justifyContent: 'space-between' }}>
+          <Flex
+            style={{
+              marginTop: "20px",
+              marginBottom: "21px",
+              justifyContent: "space-between",
+            }}>
+            <Button
+              as="label"
+              colorScheme="red"
+              borderRadius="10px"
+              padding="10px"
+              onClick={handleDiscardChanges}
+              disabled={!imageSrc || imageSrc === initialImage}>
+              Discard Changes
+            </Button>
             <Button
               as="label"
               htmlFor="file-upload"
               colorScheme="teal"
               borderRadius="10px"
               padding="10px"
-              cursor="pointer"
-            >
+              cursor="pointer">
               Upload Photo
               <input
                 id="file-upload"
@@ -119,16 +132,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage, onImageChange
                 onChange={onFileChange}
                 hidden
               />
-            </Button>
-            <Button
-              as="label"
-              colorScheme="red"
-              borderRadius="10px"
-              padding="10px"
-              onClick={handleDiscardChanges}
-              disabled={!imageSrc || imageSrc === initialImage}
-            >
-              Discard Changes
             </Button>
           </Flex>
         </div>
@@ -182,7 +185,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage, onImageChange
                 as="label"
                 className="crop-button"
                 onClick={showCroppedImage}
-                colorScheme="teal">
+                colorScheme="green">
                 Show Result
               </Button>
 

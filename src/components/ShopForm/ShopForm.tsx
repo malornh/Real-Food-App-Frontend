@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Text, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { BsArrowRepeat } from 'react-icons/bs';
 import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
 import { FcSettings } from "react-icons/fc";
@@ -124,10 +124,17 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate }) =
           <div className="farmInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{shopData.name}</h1>
-              {isShopOwned && <FcSettings className="FormSettingsBtn" onClick={() => setIsEditModalOpen(true)} />}
+              {isShopOwned && (
+                <FcSettings
+                  className="FormSettingsBtn"
+                  onClick={() => setIsEditModalOpen(true)}
+                />
+              )}
             </div>
             <p className="farmDescription">
-              {"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi."}
+              {
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi."
+              }
             </p>
             <div className="farmRatingContainer">{shopData.rating} / 5.0</div>
           </div>
@@ -146,6 +153,22 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate }) =
           {isShopOwned && <HiMiniPlusCircle className="productPlusButton" />}
         </div>
 
+        {/* Content to display when there are no orders */}
+        {shopData?.orders.length === 0 && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "10px",
+              background: "rgba(254, 216, 65, 0.8)",
+              borderRadius: "5px",
+              color: 'grey',
+              height: 150
+            }}>
+            <Text fontSize={25} alignContent={'center'} ml={230}>No products available!</Text>
+          </div>
+        )}
+
         <TabPanels>
           {typeList.map((type) => (
             <TabPanel className="tabPanel" key={type as string}>
@@ -161,15 +184,26 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate }) =
                       background: "rgba(254, 216, 65, 0.8)",
                       borderRadius: "5px",
                     }}>
-                    <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                      <div onMouseOver={() => flipImage(order.id)} onMouseOut={() => unflipImage(order.id)}>
+                    <div
+                      style={{ display: "flex", justifyContent: "flex-start" }}>
+                      <div
+                        onMouseOver={() => flipImage(order.id)}
+                        onMouseOut={() => unflipImage(order.id)}>
                         <div className="flip-card">
                           <div className="flip-card-inner">
                             <div className="flip-card-front">
-                              <img className="original-image" src={order.product.image} alt="Original Image" />
+                              <img
+                                className="original-image"
+                                src={order.product.image}
+                                alt="Original Image"
+                              />
                             </div>
                             <div className="flip-card-back">
-                              <img className="hover-image" src={order.shortFarm.image} alt="Hover Image" />
+                              <img
+                                className="hover-image"
+                                src={order.shortFarm.image}
+                                alt="Hover Image"
+                              />
                             </div>
                           </div>
                           <BsArrowRepeat
@@ -182,19 +216,37 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate }) =
                           />
                         </div>
                       </div>
-                      <div style={{ marginTop: "-20px", marginLeft: "20px", color: "black" }}>
-                        <h2>{hoveredOrderId === order.id ? order.shortFarm.name : order.product.name}</h2>
+                      <div
+                        style={{
+                          marginTop: "-20px",
+                          marginLeft: "20px",
+                          color: "black",
+                        }}>
+                        <h2>
+                          {hoveredOrderId === order.id
+                            ? order.shortFarm.name
+                            : order.product.name}
+                        </h2>
                         <div className="descriptionContainer">
                           <p>{order.product.description}</p>
                         </div>
                       </div>
                     </div>
-                    <div style={{ textAlign: "right", display: "flex", flexDirection: "column", padding: "10px" }}>
+                    <div
+                      style={{
+                        textAlign: "right",
+                        display: "flex",
+                        flexDirection: "column",
+                        padding: "10px",
+                      }}>
                       <div>
                         {!isShopOwned ? (
                           <PiShoppingCartSimpleDuotone className="cartButton" />
                         ) : (
-                          <FcSettings className="ProductsettingsButton" onClick={() => console.log()} />
+                          <FcSettings
+                            className="ProductsettingsButton"
+                            onClick={() => console.log()}
+                          />
                         )}
                       </div>
                       <div className="productRatingContainer">{4.5} / 5.0</div>
@@ -206,7 +258,12 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate }) =
         </TabPanels>
       </Tabs>
       {isEditModalOpen && shopData && (
-        <EditShop onUpdate={(shop)=>handleShopUpdate(shop)} isOpen={isEditModalOpen} onClose={()=>setIsEditModalOpen(false)} shop={mapToShop(shopData)} />
+        <EditShop
+          onUpdate={(shop) => handleShopUpdate(shop)}
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          shop={mapToShop(shopData)}
+        />
       )}
     </div>
   );

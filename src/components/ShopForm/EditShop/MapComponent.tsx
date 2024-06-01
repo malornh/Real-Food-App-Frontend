@@ -34,7 +34,7 @@ const MapComponent: React.FC<Props> = ({ lat, long, outLat, outLong }: Props) =>
         const { lat, lng } = event.latlng;
         markerRef.current?.setLatLng([lat, lng]);
         outLat(lat);
-        outLong(long);
+        outLong(lng);
         console.log('Marker position updated', { lat, lng });
       });
     }

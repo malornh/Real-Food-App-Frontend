@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay, FormControl, Input, Textarea, Box, Flex, ChakraProvider } from '@chakra-ui/react';
-import L from 'leaflet';
-import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
+import React, { useState, useRef } from 'react';
+import { Text, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay, FormControl, Input, Textarea, Box, Flex, ChakraProvider, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
 import './EditShop.css';
 import ImageCropper from '../ImageCropper/ImageCropper';
@@ -28,45 +26,8 @@ interface Props {
 
 const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
   const [newShop, setNewShop] = useState<Shop>({ ...shop });
-  const mapContainer = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.Marker | null>(null);
-
-  useEffect(() => {
-    console.log(mapContainer.current);
-    if (isOpen && mapContainer.current) { // Check if the modal is open and the container is available
-      console.log("Inside if");
-      // Perform map initialization
-      if (mapRef.current) {
-        mapRef.current.remove();
-        console.log('Map removed');
-      }
-
-      mapRef.current = L.map(mapContainer.current).setView([shop.latitude, shop.longitude], 13);
-      console.log('New map created');
-
-      const mapTilerLayer = new MaptilerLayer({
-        apiKey: 'dJS38j47jXwMgeCxB2ha',
-        styleUrl: 'https://api.maptiler.com/maps/5361eb74-ae67-4d68-aa6f-bed66c17018c/style.json?key=dJS38j47jXwMgeCxB2ha'
-      }).addTo(mapRef.current);
-      console.log("MapTiler layer added");
-
-      markerRef.current = L.marker([shop.latitude, shop.longitude]).addTo(mapRef.current);
-      console.log('Marker added');
-
-      mapRef.current.on('click', (event: L.LeafletMouseEvent) => {
-        const { lat, lng } = event.latlng;
-        markerRef.current?.setLatLng([lat, lng]);
-        setNewShop(prevState => ({
-          ...prevState,
-          latitude: lat,
-          longitude: lng
-        }));
-        console.log('Marker position updated', { lat, lng });
-      });
-      console.log('Map initialization done');
-    }
-  }, [isOpen, shop]);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
   const updateShop = async (shop: Shop) => {
     try {
@@ -99,6 +60,26 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
       image: newImage
     }));
   };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`https://localhost:7218/api/Shop/${shop.id}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Error: ${response.status} - ${error}`);
+      }
+
+      onClose();
+    } catch (error) {
+      console.error('Error deleting shop:', error);
+    }
+  };
+
+  const openDeleteConfirm = () => setIsDeleteConfirmOpen(true);
+  const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);
 
   return (
     <ChakraProvider theme={theme}>
@@ -147,7 +128,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
                     fontSize="40px"
                     height="70px"
                     width="575px"
-                    borderRadius="5px"
+                    borderRadius="10px"
                     color="black"
                     background="rgba(254, 190, 65, 0.9)"
                   />
@@ -165,7 +146,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
                     fontSize="20px"
                     height="520px"
                     width="575px"
-                    borderRadius="5px"
+                    borderRadius="10px"
                     color="black"
                     background="rgba(254, 190, 65, 0.9)"
                   />
@@ -173,23 +154,81 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
               </Box>
             </Flex>
           </ModalBody>
-          <ModalFooter mb={-6}>
+          <ModalFooter
+            mb={-6}
+            flexDirection="row"
+            justifyContent="space-between">
             <Button
               as="label"
-              colorScheme="teal"
-              mr={5}
+              colorScheme="red"
+              ml={383}
               width={100}
-              onClick={handleSave}>
-              Save
+              onClick={openDeleteConfirm}>
+              Delete Shop
             </Button>
-            <Button
-              style={{ color: "black", background: "rgba(145, 150, 150, 0.2)" }}
-              onClick={onClose}>
-              Close
-            </Button>
+            <Box>
+              <Button
+                as="label"
+                colorScheme="teal"
+                mr={5}
+                width={100}
+                onClick={handleSave}>
+                Save
+              </Button>
+              <Button
+                style={{
+                  color: "black",
+                  background: "rgba(145, 150, 150, 0.2)",
+                }}
+                onClick={onClose}>
+                Close
+              </Button>
+            </Box>
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <AlertDialog
+        isOpen={isDeleteConfirmOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={closeDeleteConfirm}>
+        <AlertDialogOverlay>
+          <AlertDialogContent
+            mt={250}
+            color="black"
+            background="rgba(255, 255, 255, 0.95)">
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Shop
+            </AlertDialogHeader>
+
+            <AlertDialogBody color="black">
+              Are you sure you want to delete{" "}
+              <Text as="span" fontWeight="bold">
+                {shop.name}
+              </Text>
+              ?
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button
+                color="black"
+                ref={cancelRef}
+                onClick={closeDeleteConfirm}>
+                No
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  handleDelete();
+                  closeDeleteConfirm();
+                }}
+                ml={3}>
+                Yes
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </ChakraProvider>
   );
 };
