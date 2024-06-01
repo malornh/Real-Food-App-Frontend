@@ -48,9 +48,10 @@ interface Props {
   shopId: number | undefined;
   isShopOwned: boolean | undefined;
   forwardShopUpdate: (shop: Shop)=>void;
+  forwardShopDelete: (shopId: number)=>void;
 }
 
-const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate }) => {
+const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, forwardShopDelete }) => {
   const [shopData, setShopData] = useState<ShopData | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -263,6 +264,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate }) =
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           shop={mapToShop(shopData)}
+          onDelete={(shopId)=>forwardShopDelete(shopId)}
         />
       )}
     </div>

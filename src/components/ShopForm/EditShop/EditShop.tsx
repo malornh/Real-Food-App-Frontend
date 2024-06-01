@@ -22,9 +22,10 @@ interface Props {
   onClose: () => void;
   shop: Shop;
   onUpdate: (shop: Shop) => void;
+  onDelete: (shopId: number) => void;
 }
 
-const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
+const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }) => {
   const [newShop, setNewShop] = useState<Shop>({ ...shop });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -106,7 +107,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
         const error = await response.text();
         throw new Error(`Error: ${response.status} - ${error}`);
       }
-
+      {shop.id !== undefined && onDelete(shop.id);}
       onClose();
     } catch (error) {
       console.error('Error deleting shop:', error);

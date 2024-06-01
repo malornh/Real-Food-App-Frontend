@@ -32,9 +32,10 @@ interface Props {
   resetShopId: (n: number | undefined) => void;
   handleShopClick: (shopId: number) => void;
   forwardShopUpdate: (shop: Shop) => void;
+  forwardShopDelete: (shopId: number) => void;
 }
 
-const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleShopClick, forwardShopUpdate }: Props) => {
+const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleShopClick, forwardShopUpdate, forwardShopDelete }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
@@ -118,32 +119,74 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
 }
 
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
       <MdAccountCircle
-        className='buttonStyle'
-        style={{ right: showForm ? 'calc(40%)' : '20px' }}
+        className="buttonStyle"
+        style={{ right: showForm ? "calc(40%)" : "20px" }}
         onClick={showForm ? toggleAccount : toggleShopForm}
       />
       {showForm && (
         <div className="formContainerStyle">
           <div className="cardsContainerStyle">
-            {userShops && userShops.map((shop: Shop) => (
-              <div key={shop.id} className='cardStyle' onClick={() => shop.id !== undefined && handleCardClick(shop.id)}>
-                <img src={shop.image} alt={shop.name} style={{ width: '80px', height: '80px', borderRadius: '50px' }} className={shop.id === selectedShopId ? 'selectedCardBorder' : 'nonSelectedCardBorder'} />
-                <div>{shop.name.length > 14 ? shop.name.substring(0, 10) + '...' : shop.name}</div>
-              </div>
-            ))}
-            <Box className='cardStyle' onClick={handleAddNewCard}>
+            {userShops &&
+              userShops.map((shop: Shop) => (
+                <div
+                  key={shop.id}
+                  className="cardStyle"
+                  onClick={() =>
+                    shop.id !== undefined && handleCardClick(shop.id)
+                  }>
+                  <img
+                    src={shop.image}
+                    alt={shop.name}
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "50px",
+                    }}
+                    className={
+                      shop.id === selectedShopId
+                        ? "selectedCardBorder"
+                        : "nonSelectedCardBorder"
+                    }
+                  />
+                  <div>
+                    {shop.name.length > 14
+                      ? shop.name.substring(0, 10) + "..."
+                      : shop.name}
+                  </div>
+                </div>
+              ))}
+            <Box className="cardStyle" onClick={handleAddNewCard}>
               <CiCirclePlus className="plusIcon" />
             </Box>
           </div>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
-            {selectedShopId !== undefined ? <ShopForm forwardShopUpdate={(shop) => handleShopUpdate(shop)} shopId={selectedShopId} isShopOwned={isOwnedByUser(userShopIds, selectedShopId)} /> : <UserForm />}
+            {selectedShopId !== undefined ? (
+              <ShopForm
+                forwardShopUpdate={(shop) => handleShopUpdate(shop)}
+                shopId={selectedShopId}
+                isShopOwned={isOwnedByUser(userShopIds, selectedShopId)}
+                forwardShopDelete={(shopId) => {
+                  setUserShops(prevUserShops => (prevUserShops ?? []).filter(shop => shop.id !== shopId));
+                  forwardShopDelete(shopId);
+              }}
+              />
+            ) : (
+              <UserForm />
+            )}
           </div>
         </div>
       )}
-      {isOpen && <Create isOpen={isOpen} onClose={onClose} userId={userId} handleNewShop={(shop)=>handleCreateShop(shop)} />}
+      {isOpen && (
+        <Create
+          isOpen={isOpen}
+          onClose={onClose}
+          userId={userId}
+          handleNewShop={(shop) => handleCreateShop(shop)}
+        />
+      )}
     </div>
   );
 };

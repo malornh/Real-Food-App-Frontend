@@ -78,6 +78,7 @@ const Create = ({ isOpen, onClose, userId, handleNewShop }: Props) => {
           isOpen={showEditShop}
           onClose={() => setShowEditShop(false)}
           shop={mapToShop()}
+          onDelete={()=>null}
         />}
     </ChakraProvider>
   );
