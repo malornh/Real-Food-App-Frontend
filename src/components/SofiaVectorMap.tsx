@@ -5,16 +5,8 @@ import 'leaflet/dist/leaflet.css';
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 import customIconUrl from '../assets/storeIcon.png';
 import axios from 'axios';
+import { Shop } from './ShopForm/EditShop/EditShop';
 
-interface Shop{
-  id: number;
-  name: string;
-  rating: number;
-  image: string;
-  description: string;
-  latitude: number;
-  longitude: number;
-}
 
 interface Props {
   handleShopClick: (shopId: number) => void;
@@ -29,15 +21,20 @@ const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId, updatedSh
 
   useEffect(() => {
     if (!updatedShop) return; // If updatedShop is undefined, exit the function
-  
+    
     const updatedIndex = shops.findIndex(s => s.id === updatedShop.id); // Find the index of the shop with the matching id
-    if (updatedIndex !== -1) { // Check if the shop with the matching id exists in the array
+    
+    if (updatedIndex !== -1) { // If shop with updatedShop.id exists in the array
       const updatedShops = [...shops]; // Create a copy of the original array
       updatedShops[updatedIndex].latitude = updatedShop.latitude; // Update the latitude of the shop at the found index
       updatedShops[updatedIndex].longitude = updatedShop.longitude; // Update the longitude of the shop at the found index
       setShops(updatedShops); // Update the state with the new array of shops
+    } else {
+      // If updatedShop.id doesn't exist in the array, add it as a new shop
+      setShops(prevShops => [...prevShops, updatedShop]);
+      {updatedShop.id !== undefined && handleShopClick(updatedShop.id);}
     }
-  }, [updatedShop]);
+}, [updatedShop]); 
 
   useEffect(() => {
     console.log(mapContainer.current);
@@ -88,8 +85,11 @@ const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId, updatedSh
         const marker = L.marker([latitude, longitude], { icon: customIcon }).addTo(mapRef.current!);
 
         marker.on('click', () => {
-          handleShopClick(id); //To be optimized (passing only the Id and fetching same data again, that we already got fetched)
-        });
+          if (id !== undefined) {
+              handleShopClick(id);
+          }
+      });
+      
 
         marker.on('mouseover', () => {
           //implement shop info bubble

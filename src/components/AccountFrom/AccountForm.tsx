@@ -111,6 +111,12 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
 
   const userShopIds = userShops?.map(s => s.id).filter((id): id is number => id !== undefined);
 
+  function handleCreateShop(shop: Shop): void {
+    forwardShopUpdate(shop);
+
+    setUserShops(prevUserShops => [...(prevUserShops ?? []), shop]);
+}
+
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
       <MdAccountCircle
@@ -137,7 +143,7 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
           </div>
         </div>
       )}
-      {isOpen && <Create isOpen={isOpen} onClose={onClose} userId={userId} handleNewShop={(shop)=>forwardShopUpdate(shop)} />}
+      {isOpen && <Create isOpen={isOpen} onClose={onClose} userId={userId} handleNewShop={(shop)=>handleCreateShop(shop)} />}
     </div>
   );
 };
