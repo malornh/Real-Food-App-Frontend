@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './AccountForm.css';
 import UserForm from '../UserForm/UserForm';
 import { MdAccountCircle } from "react-icons/md";
@@ -7,8 +7,8 @@ import { CiCirclePlus } from 'react-icons/ci';
 import ShopForm from '../ShopForm/ShopForm';
 import axios from 'axios';
 import { Shop } from '../ShopForm/EditShop/EditShop';
-import { Box, useDisclosure } from '@chakra-ui/react';
-import Create from '../Create'
+import { Box, useDisclosure } from '@chakra-ui/react'; // Ensure you import Box from Chakra UI
+import Create from '../Create';
 
 export interface Card {
   imgUrl: string;
@@ -85,40 +85,44 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
     handleShopClick(shopId);
   };
 
-  const isOwnedByUser = (shopIds: number[] | undefined, id: number) => {
+  const isOwnedByUser = (shopIds: (number | undefined)[] | undefined, id: number) => {
     return shopIds?.includes(id);
   };
 
   const handleAddNewCard = () => {
-    console.log("Add new card clicked");
     onOpen();
   };
 
   function handleShopUpdate(shop: Shop): void {
     forwardShopUpdate(shop);
     setUserShops(currentShops => {
+      // Map through existing shops and replace the one with the same ID
       return currentShops?.map(currentShop => {
         if (currentShop.id === shop.id) {
+          // If the IDs match, replace the existing shop with the new one
           return shop;
         } else {
+          // Otherwise, return the shop as it was
           return currentShop;
         }
       });
     });
   }
 
+  const userShopIds = userShops?.map(s => s.id).filter((id): id is number => id !== undefined);
+
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
       <MdAccountCircle
         className='buttonStyle'
-        style={{ right: showForm ? 'calc(40%)' : '20px', }}
+        style={{ right: showForm ? 'calc(40%)' : '20px' }}
         onClick={showForm ? toggleAccount : toggleShopForm}
       />
       {showForm && (
         <div className="formContainerStyle">
           <div className="cardsContainerStyle">
             {userShops && userShops.map((shop: Shop) => (
-              <div key={shop.id} className='cardStyle' onClick={() => handleCardClick(shop.id)}>
+              <div key={shop.id} className='cardStyle' onClick={() => shop.id !== undefined && handleCardClick(shop.id)}>
                 <img src={shop.image} alt={shop.name} style={{ width: '80px', height: '80px', borderRadius: '50px' }} className={shop.id === selectedShopId ? 'selectedCardBorder' : 'nonSelectedCardBorder'} />
                 <div>{shop.name.length > 14 ? shop.name.substring(0, 10) + '...' : shop.name}</div>
               </div>
@@ -129,11 +133,11 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
           </div>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
-            {selectedShopId !== undefined ? <ShopForm forwardShopUpdate={(shop) => handleShopUpdate(shop)} shopId={selectedShopId} isShopOwned={isOwnedByUser(userShops?.map(s => s.id), selectedShopId)} /> : <UserForm />}
+            {selectedShopId !== undefined ? <ShopForm forwardShopUpdate={(shop) => handleShopUpdate(shop)} shopId={selectedShopId} isShopOwned={isOwnedByUser(userShopIds, selectedShopId)} /> : <UserForm />}
           </div>
         </div>
       )}
-      <Create isOpen={isOpen} onClose={onClose} />
+      {isOpen && <Create isOpen={isOpen} onClose={onClose} userId={userId} handleNewShop={(shop)=>forwardShopUpdate(shop)} />}
     </div>
   );
 };

@@ -97,6 +97,8 @@
   text-align: center;
   color: black;
   margin-bottom: 10px;
+  cursor: pointer;
+  display: inline-block;
 }
 
 /* Selected card border */

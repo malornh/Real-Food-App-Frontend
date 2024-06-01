@@ -7,14 +7,14 @@ import theme from './theme'; // Import the custom theme
 import MapComponent from './MapComponent';
 
 export interface Shop {
-  id: number;
+  id: number | undefined;
   userId: string;
   image: string;
   name: string;
   description: string;
   latitude: number;
   longitude: number;
-  rating: number;
+  rating: number | undefined;
 }
 
 interface Props {
@@ -48,10 +48,45 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate }) => {
     }
   };
 
+  const createShop = async (shop: Shop) => {
+    try {
+        const response = await fetch(`https://localhost:7218/api/Shop`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(shop)
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`Error: ${response.status} - ${error}`);
+        }
+
+        // If response is okay, parse the JSON response
+        const responseShop = await response.json();
+
+        // Call onUpdate with the newShop data
+        onUpdate(responseShop);
+        onClose();
+    } catch (error) {
+        console.error('Error updating shop:', error);
+    }
+};
+
+
   const handleSave = async () => {
-    await updateShop(newShop);
-    onUpdate(newShop);
-    onClose();
+    if(newShop.id === undefined)
+      {
+        await createShop(newShop);
+      }else
+      {
+        await updateShop(newShop);
+        onUpdate(newShop);
+        onClose();
+      }
+    
+    
   };
 
   const handleImageChange = (newImage: string) => {
