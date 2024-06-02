@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './AccountForm.css';
 import UserForm from '../UserForm/UserForm';
-import { MdAccountCircle } from "react-icons/md";
+import { RiAccountCircleFill } from "react-icons/ri";
 import { IoMdCloseCircle } from "react-icons/io";
 import { CiCirclePlus } from 'react-icons/ci';
 import ShopForm from '../ShopForm/ShopForm';
@@ -120,9 +120,9 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      <MdAccountCircle
+      <RiAccountCircleFill
         className="buttonStyle"
-        style={{ right: showForm ? "calc(40%)" : "20px" }}
+        style={{ right: showForm ? "calc(40%)" : "25px" }}
         onClick={showForm ? toggleAccount : toggleShopForm}
       />
       {showForm && (

@@ -36,7 +36,15 @@
   .farmDescription {
     color: black;
     margin-bottom: 0;
-  }
+    max-height: 160px; /* Adjust the height as per your requirement */
+    overflow-y: auto;
+}
+
+/* Hide scrollbar for WebKit browsers */
+.farmDescription::-webkit-scrollbar {
+    width: 0; /* This will hide the scrollbar */
+    background: transparent; /* Optional: You can set a background color here */
+}
   
   .farmRatingContainer {
     position: absolute;

@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { ChakraProvider } from '@chakra-ui/react';
 import AccountForm from './components/AccountFrom/AccountForm';
 import SofiaVectorMap from './components/SofiaVectorMap';
-import EditShop, { Shop } from './components/ShopForm/EditShop/EditShop';
-import MapComponent from './components/ShopForm/EditShop/MapComponent';
+import { Shop } from './components/ShopForm/EditShop/EditShop';
+import FarmContainer from './components/FarmContainer';
 
 const App = () => {
   const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(undefined);
@@ -34,6 +33,7 @@ const App = () => {
         forwardShopUpdate={(shop)=>setUpdatedShop(shop)}
         forwardShopDelete={(shopId)=>setDeletedShopId(shopId)}
       />
+      <FarmContainer />
       <SofiaVectorMap
         handleShopClick={handleShopClick}
         clickedMapShopId={clickedMapShopId}

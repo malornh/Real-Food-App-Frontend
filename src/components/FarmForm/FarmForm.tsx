@@ -10,22 +10,7 @@ import { PiPackageDuotone } from "react-icons/pi";
 import { BsArrowRepeat } from "react-icons/bs";
 import axios from 'axios';
 
-interface Product {
-  Id: number;
-  Name: string;
-  Description: string;
-  FarmId: number;
-  UnitOfMeasurement: string;
-  Quantity: number;
-  PricePerUnit: number;
-  DeliveryRadius: number;
-  MinUnitOrder: number;
-  DateUpdated: Date;
-  Image: string;
-  Type: string;
-}
-
-interface Farm {
+interface FarmData {
   id: number;
   userId: string;
   name: string;
@@ -34,83 +19,79 @@ interface Farm {
   latitude: number;
   longitude: number;
   defaultDeliveryRadius: number;
+  rating: number;
+  products: Product[];
+}
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  farmId: number;
+  unitOfMeasurement: string;
+  quantity: number;
+  pricePerUnit: number;
+  deliveryRadius: number;
+  minUnitOrder: number;
+  dateUpdated: Date;
+  image: string;
+  type: string;
 }
 
 interface Props {
-  data: Card,
-  products: Product[]
+  farmId: number
 }
 
-const FarmForm = ({ data, products }: Props) => {
-
-  const unique = (arr: any) => [...new Set(arr)];
-
-  const typeList = unique(products.map(p => p.Type));
-
-  const [selectedType, setSelectedType] = useState('');
-
-  const [selectedFarmId, setSelectedFarmId] = useState<number | undefined>(undefined);
-
-  const [farms, setFarms] = useState<Farm[]>([]);
-
-  const [hoveredProductId, setHoveredProductId] = useState<number>();
+const FarmForm = ({ farmId }: Props) => {
+  const [farmData, setFarmData] = useState<FarmData>();
+  const [productTypes, setProductTypes] = useState<string[]>([]);
+  const [selectedType, setSelectedType] = useState<string>();
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const queryString = `?farmIds=${products.map(p => p.FarmId).join(',')}`;
-        const response = await axios.get(`https://localhost:7218/api/Farms/ByIds${queryString}`);
-        setFarms(response.data);
+        // Fetching data from the API endpoint
+        const response = await axios.get(
+          `https://localhost:7218/api/Farms/${farmId}/FarmWithProducts`
+        );
+        // Updating state with fetched farm data
+        setFarmData(response.data);
+        const types = farmData?.products.map((product) => product.type);
+        const uniqueTypes = [...new Set(types)]; // Using Set to collect unique values
+        setProductTypes(uniqueTypes);
+        console.log(farmData);
       } catch (error) {
-        console.error('Error fetching farms:', error);
+        console.error('Error fetching farm data:', error);
       }
     };
-    fetchData();
-    return () => {
-      // Cleanup function if necessary
-    };
-  }, [products]); // Add products to dependency array if needed
-
-
-  function flipImage(farmId: number | undefined, productId: number) {
-    var cardInner = document.querySelector(".flip-card-inner") as HTMLElement;
-    if (cardInner) {
-      cardInner.style.transform = "rotateY(180deg)";
-    }
-    setSelectedFarmId(farmId);
-    setHoveredProductId(productId);
-  }
   
-  function unflipImage() {
-    var cardInner = document.querySelector(".flip-card-inner") as HTMLElement;  
-    if (cardInner) {
-      cardInner.style.transform = "rotateY(0deg)";
-    }
-    setSelectedFarmId(undefined);
-    setHoveredProductId(undefined);
-  }
+    // Calling fetchData function when the component mounts or 'farmId' changes
+    fetchData();
+  
+    // Cleanup function if necessary
+    return () => {
+      // Cleanup logic
+    };
+  }, [farmId]);
   
   return (
     <div>
-      {data && (
+      {farmData && (
         <div className="farmCardContainer">
-          <img src={data.imgUrl} className="farmImage" />
+          <img src={farmData.image} className="farmImage" />
           <div className="farmInfoContainer">
-            <h1 className="farmTitle">{data.name}</h1>
+            <h1 className="farmTitle">{farmData.name}</h1>
             <p className="farmDescription">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit
-              nisi atque velit minus ipsum ratione, enim magnam, sed voluptas
-              similique voluptates laboriosam est cupiditate, commodi accusamus
-              ducimus distinctio dolorum consequuntur!
+              {farmData.description}
             </p>
-            <div className="farmRatingContainer">{data.rating} / 5.0</div>
+            <div className="farmRatingContainer">{farmData.rating} / 5.0</div>
           </div>
         </div>
       )}
       <Tabs>
         <TabList className="foodTabMenu">
-          {typeList.map((type) => (
+          {productTypes.map((type) => (
             <Tab
               className="tab"
               key={type as string}
@@ -121,13 +102,13 @@ const FarmForm = ({ data, products }: Props) => {
         </TabList>
 
         <TabPanels>
-          {typeList.map((type) => (
+          {productTypes.map((type) => (
             <TabPanel className="tabPanel" key={type as string}>
-              {products
-                .filter((p) => p.Type === type)
+              {farmData?.products
+                .filter((p) => p.type === type)
                 .map((p) => (
                   <div
-                    key={p.Id}
+                    key={p.id}
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
@@ -137,22 +118,19 @@ const FarmForm = ({ data, products }: Props) => {
                     }}>
                     <div
                       style={{ display: "flex", justifyContent: "flex-start" }}>
-                      <div
-                        onMouseOver={() => flipImage(farms.find(f=> f.id == p.FarmId)?.id, p.Id)}
-                        onMouseOut={unflipImage}>
+                      <div>
                         <div className="flip-card">
                           <div className="flip-card-inner">
                             <div className="flip-card-front">
                               <img
                                 className="original-image"
-                                src={p.Image}
+                                src={p.image}
                                 alt="Original Image"
                               />
                             </div>
                             <div className="flip-card-back">
                               <img
                               className='hover-image'
-                                src={`data:image/webp;base64,${farms.find(f=> f.id == p.FarmId)?.image}`}
                                 alt="Hover Image"
                               />
                             </div>
@@ -174,9 +152,9 @@ const FarmForm = ({ data, products }: Props) => {
                           marginLeft: "20px",
                           color: "black",
                         }}>
-                        <h2>{selectedFarmId == p.FarmId && hoveredProductId == p.Id ? farms.find(f=> f.id == selectedFarmId)?.name : p.Name}</h2>
+                        <h2>{p.name}</h2>
                         <div className="descriptionContainer">
-                          <p>{p.Description}</p>
+                          <p>{p.description}</p>
                         </div>
                       </div>
 
@@ -203,7 +181,7 @@ const FarmForm = ({ data, products }: Props) => {
                           />
                           <input
                             className="labelContent"
-                            defaultValue={p.DeliveryRadius}
+                            defaultValue={p.deliveryRadius}
                             readOnly></input>
                           <p
                             style={{
@@ -238,7 +216,7 @@ const FarmForm = ({ data, products }: Props) => {
                           />
                           <input
                             className="labelContent"
-                            defaultValue={p.MinUnitOrder}
+                            defaultValue={p.minUnitOrder}
                             readOnly></input>
                           <p
                             style={{
@@ -266,7 +244,7 @@ const FarmForm = ({ data, products }: Props) => {
                           />
                           <input
                             className="labelContent"
-                            defaultValue={p.PricePerUnit}
+                            defaultValue={p.pricePerUnit}
                             readOnly></input>
                           <p
                             style={{

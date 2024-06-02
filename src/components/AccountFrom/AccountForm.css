@@ -60,7 +60,7 @@
   display: flex;               /* Use flexbox layout */
   overflow-x: auto;            /* Enable horizontal scrolling */
   white-space: nowrap;         /* Prevent wrapping of cards */
-  margin-left: 95px;          /* Starts 50px from the beginning of the form */
+  margin-left: 90px;          /* Starts 50px from the beginning of the form */
   margin-right: 90px;         /* Ends 50px before the end of the form */
   border-radius: 30px;
 }
@@ -99,6 +99,7 @@
   margin-bottom: 10px;
   cursor: pointer;
   display: inline-block;
+  transition: transform 0.3s ease;
 }
 
 /* Selected card border */
