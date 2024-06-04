@@ -49,20 +49,23 @@ interface Props {
   isShopOwned: boolean | undefined;
   forwardShopUpdate: (shop: Shop)=>void;
   forwardShopDelete: (shopId: number)=>void;
+  handleClickedFarmId: (farmId: number)=>void;
 }
 
-const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, forwardShopDelete }) => {
+const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, forwardShopDelete, handleClickedFarmId }) => {
   const [shopData, setShopData] = useState<ShopData | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const typeList = Array.from(new Set(shopData?.orders.map(o => o.product.type)));
+  const typeList = Array.from(new Set(shopData?.orders.map(o => o.product.type))).sort();
 
   useEffect(() => {
     const fetchShopData = async () => {
       try {
         if (shopId !== undefined) {
-          const response = await axios.get<ShopData>(`https://localhost:7218/api/Shop/${shopId}/OrdersWithFarms`);
+          const response = await axios.get<ShopData>(
+            `https://localhost:7218/api/Shop/${shopId}/OrdersWithFarms`
+          );
           setShopData(response.data);
         }
       } catch (error) {
@@ -120,38 +123,38 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
   return (
     <div>
       {shopData && (
-        <div className="farmCardContainer">
-          <img src={shopData.image} className="farmImage" />
-          <div className="farmInfoContainer">
+        <div className="shopCardContainer">
+          <img src={shopData.image} className="shopImage" />
+          <div className="shopInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
-              <h1 className="farmTitle">{shopData.name}</h1>
+              <h1 className="shopTitle">{shopData.name}</h1>
               {isShopOwned && (
                 <FcSettings
-                  className="FormSettingsBtn"
+                  className="shopFormSettingsBtn"
                   onClick={() => setIsEditModalOpen(true)}
                 />
               )}
             </div>
-            <p className="farmDescription">
+            <p className="shopDescription">
               {
                 shopData.description
               }
             </p>
-            <div className="farmRatingContainer">{shopData.rating} / 5.0</div>
+            <div className="shopRatingContainer">{shopData.rating} / 5.0</div>
           </div>
         </div>
       )}
 
       <Tabs>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <TabList className="foodTabMenu">
+          <TabList className="shopProductTabMenu">
             {typeList.map((type) => (
-              <Tab className="tab" key={type as string}>
+              <Tab className="shopTab" key={type as string}>
                 {type as string}
               </Tab>
             ))}
           </TabList>
-          {isShopOwned && <HiMiniPlusCircle className="productPlusButton" />}
+          {isShopOwned && <HiMiniPlusCircle className="shopProductTabMenu" />}
         </div>
 
         {/* Content to display when there are no orders */}
@@ -172,7 +175,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
 
         <TabPanels>
           {typeList.map((type) => (
-            <TabPanel className="tabPanel" key={type as string}>
+            <TabPanel className="shopTabPanel" key={type as string}>
               {shopData?.orders
                 .filter((o) => o.product.type === type)
                 .map((order) => (
@@ -202,6 +205,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                             <div className="flip-card-back">
                               <img
                                 className="hover-image"
+                                onClick={()=>handleClickedFarmId(order.shortFarm.id)}
                                 src={order.shortFarm.image}
                                 alt="Hover Image"
                               />
@@ -228,7 +232,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                             ? order.shortFarm.name
                             : order.product.name}
                         </h2>
-                        <div className="descriptionContainer">
+                        <div className="shopProductDescriptionContainer">
                           <p>{order.product.description}</p>
                         </div>
                       </div>
@@ -245,12 +249,12 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                           <PiShoppingCartSimpleDuotone className="cartButton" />
                         ) : (
                           <FcSettings
-                            className="ProductsettingsButton"
+                            className="shopProductsettingsButton"
                             onClick={() => console.log()}
                           />
                         )}
                       </div>
-                      <div className="productRatingContainer">{4.5} / 5.0</div>
+                      <div className="shopProductRatingContainer">{4.5} / 5.0</div>
                     </div>
                   </div>
                 ))}

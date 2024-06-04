@@ -1,5 +1,5 @@
 /* FarmForm.css */
-.farmCardContainer {
+.shopCardContainer {
     display: flex;
     flex-direction: row;
     margin-top: 10px;
@@ -7,7 +7,7 @@
     border-radius: 5px;
   }
   
-  .farmImage {
+  .shopImage {
     border-radius: 5px;
     width: 300px;
     height: 300px;
@@ -15,7 +15,7 @@
     padding: 0px;
   }
   
-  .farmInfoContainer {
+  .shopInfoContainer {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -24,7 +24,7 @@
     padding: 10px;
   }
   
-  .farmTitle {
+  .shopTitle {
     color: black;
     margin-bottom: 10px;
     margin-right: 10px;
@@ -33,7 +33,7 @@
     font-size: 40px;
   }
   
-  .farmDescription {
+  .shopDescription {
     color: black;
     margin-bottom: 0;
     max-height: 160px; /* Adjust the height as per your requirement */
@@ -41,12 +41,12 @@
 }
 
 /* Hide scrollbar for WebKit browsers */
-.farmDescription::-webkit-scrollbar {
+.shopDescription::-webkit-scrollbar {
     width: 0; /* This will hide the scrollbar */
     background: transparent; /* Optional: You can set a background color here */
 }
   
-  .farmRatingContainer {
+  .shopRatingContainer {
     position: absolute;
     bottom: 10px;
     right: 10px;
@@ -57,7 +57,7 @@
     font-size: 14px;
   }
   
-  .productRatingContainer {
+  .shopProductRatingContainer {
     background: rgba(7, 175, 0);
     color: white;
     padding: 5px;
@@ -70,11 +70,11 @@
   
   /* styles.css */
   
-  .foodTabMenu {
+  .shopProductTabMenu {
     margin-top: 30px;
   }
 
-  .productPlusButton {
+  .shopProductPlusButton {
     font-size: 50px;  
     color: rgba(0, 254, 0, 0.7);
     z-index: 999;
@@ -84,53 +84,53 @@
     margin-top: 20px;
   }
   
-  .productPlusButton:hover {
+  .shopProductPlusButton:hover {
     transform: scale(1.1);
   }
 
   
-  .tab {
+  .shopTab {
     margin-right: 10px;
     color: black;
     background-color: rgba(254, 216, 65, 0.8);
     transition: transform 0.3s ease;
   }
   
-  .tab:hover {
+  .shopTab:hover {
     transform: scale(1.1);
   }
   
-  .tabPanel {
+  .shopTabPanel {
     border-radius: 5px;
     margin-top: 10px;
   }
   
-  .descriptionContainer {
+  .shopProductDescriptionContainer {
     width: 430px; /* Adjust this value as needed */
     height: 120px; /* Adjust this value as needed */
     overflow-y: auto;
     margin-top: -30px; /* Adjust this value as needed */
   }
   
-  .descriptionContainer::-webkit-scrollbar {
+  .shopProductDescriptionContainer::-webkit-scrollbar {
     width: 5px; /* Adjust width as needed */
     background-color: transparent; /* Transparent background */
   }
   
-  .descriptionContainer::-webkit-scrollbar-thumb {
+  .shopProductDescriptionContainer::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.2); /* Light color for scrollbar thumb */
     border-radius: 10px; /* Rounded corners for the thumb */
   }
   
-  .descriptionContainer::-webkit-scrollbar-thumb:hover {
+  .shopProductDescriptionContainer::-webkit-scrollbar-thumb:hover {
     background-color: rgba(0, 0, 0, 0.3); /* Darker color on hover */
   }
   
-  .descriptionContainer::-webkit-scrollbar-track {
+  .shopProductDescriptionContainer::-webkit-scrollbar-track {
     background: transparent; /* Transparent track */
   }
   
-  .labelContent {
+  .shopLabelContent {
     background-color: rgb(6, 6, 6);
     color: white;
     border-radius: 5px;
@@ -177,10 +177,11 @@
     height: 100%;
     border-radius: 15px;
     padding: 10px;
+    cursor: pointer;
   }
 
   
-  .cartButton {
+  .shopCartButton {
     color: black;
     margin-top: 7px;
     margin-right: 7px;
@@ -192,11 +193,11 @@
     transition: transform 0.3s ease;
   }
   
-  .cartButton:hover {
+  .shopCartButton:hover {
     transform: scale(1.1);
   }
 
-  .ProductsettingsButton {
+  .shopProductsettingsButton {
     color: black;
     margin-top: 7px;
     margin-right: 7px;
@@ -208,11 +209,11 @@
     transition: transform 0.3s ease;
   }
   
-  .ProductsettingsButton:hover {
+  .shopProductsettingsButton:hover {
     transform: scale(1.1);
   }
 
-  .FormSettingsBtn{
+  .shopFormSettingsBtn{
     margin-top: -25px;
     margin-right: -5px;
     color: black;
@@ -224,6 +225,6 @@
     transition: transform 0.3s ease;
   }
   
-  .FormSettingsBtn:hover {
+  .shopFormSettingsBtn:hover {
     transform: scale(1.1);
   }

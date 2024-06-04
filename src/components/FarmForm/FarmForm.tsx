@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Card } from '../AccountFrom/AccountForm';
-import './FarmForm.css'
-import { Tabs, TabList, TabPanels, Tab, TabPanel} from '@chakra-ui/react'
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Box} from '@chakra-ui/react'
 import { TbTruckDelivery } from "react-icons/tb";
 import { IoCashOutline } from "react-icons/io5";
 import { IoSettingsSharp } from "react-icons/io5";
 import { TiShoppingCart } from "react-icons/ti";
 import { PiPackageDuotone } from "react-icons/pi";
 import { BsArrowRepeat } from "react-icons/bs";
+import './FarmForm.css';
 import axios from 'axios';
 
 interface FarmData {
@@ -44,56 +43,42 @@ interface Props {
 
 const FarmForm = ({ farmId }: Props) => {
   const [farmData, setFarmData] = useState<FarmData>();
-  const [productTypes, setProductTypes] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<string>();
 
+  const productTypes = Array.from(new Set(farmData?.products.map(p => p.type))).sort();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetching data from the API endpoint
-        const response = await axios.get(
+        const response = await axios.get<FarmData>(
           `https://localhost:7218/api/Farms/${farmId}/FarmWithProducts`
         );
-        // Updating state with fetched farm data
         setFarmData(response.data);
-        const types = farmData?.products.map((product) => product.type);
-        const uniqueTypes = [...new Set(types)]; // Using Set to collect unique values
-        setProductTypes(uniqueTypes);
-        console.log(farmData);
       } catch (error) {
         console.error('Error fetching farm data:', error);
       }
     };
   
-    // Calling fetchData function when the component mounts or 'farmId' changes
     fetchData();
-  
-    // Cleanup function if necessary
-    return () => {
-      // Cleanup logic
-    };
   }, [farmId]);
   
   return (
     <div>
       {farmData && (
-        <div className="farmCardContainer">
+        <div className="farmCategoriesContainer">
           <img src={farmData.image} className="farmImage" />
           <div className="farmInfoContainer">
             <h1 className="farmTitle">{farmData.name}</h1>
-            <p className="farmDescription">
-              {farmData.description}
-            </p>
+            <p className="farmDescription">{farmData.description}</p>
             <div className="farmRatingContainer">{farmData.rating} / 5.0</div>
           </div>
         </div>
       )}
       <Tabs>
-        <TabList className="foodTabMenu">
+        <TabList className="farmProductTabMenu">
           {productTypes.map((type) => (
             <Tab
-              className="tab"
+              className="farmTab"
               key={type as string}
               onClick={() => setSelectedType(type as string)}>
               {type as string}
@@ -103,7 +88,7 @@ const FarmForm = ({ farmId }: Props) => {
 
         <TabPanels>
           {productTypes.map((type) => (
-            <TabPanel className="tabPanel" key={type as string}>
+            <TabPanel className="farmTabPanel" key={type as string}>
               {farmData?.products
                 .filter((p) => p.type === type)
                 .map((p) => (
@@ -118,34 +103,13 @@ const FarmForm = ({ farmId }: Props) => {
                     }}>
                     <div
                       style={{ display: "flex", justifyContent: "flex-start" }}>
-                      <div>
-                        <div className="flip-card">
-                          <div className="flip-card-inner">
-                            <div className="flip-card-front">
-                              <img
-                                className="original-image"
-                                src={p.image}
-                                alt="Original Image"
-                              />
-                            </div>
-                            <div className="flip-card-back">
-                              <img
-                              className='hover-image'
-                                alt="Hover Image"
-                              />
-                            </div>
-                          </div>
-                          <BsArrowRepeat
-                          style={{
-                            fontSize: "25px",
-                            position: "absolute",
-                            top: "15px",
-                            right: "90px",
-                          }}
+                      <Box boxSize={130}>
+                        <img
+                          className="original-image"
+                          src={p.image}
+                          alt="Original Image"
                         />
-                        </div>
-                     
-                      </div>
+                      </Box>
                       <div
                         style={{
                           marginTop: "-20px",
@@ -153,7 +117,7 @@ const FarmForm = ({ farmId }: Props) => {
                           color: "black",
                         }}>
                         <h2>{p.name}</h2>
-                        <div className="descriptionContainer">
+                        <div className="farmProductDescriptionContainer">
                           <p>{p.description}</p>
                         </div>
                       </div>

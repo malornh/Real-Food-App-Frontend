@@ -145,7 +145,7 @@
 
 
 .scrollableContent {
-  height: calc(100% - 100px); /* Adjust height as needed, the 150px accounts for other UI elements */
+  height: calc(100% - 120px); /* Adjust height as needed, the 150px accounts for other UI elements */
   overflow-y: auto; /* Enable vertical scrolling */
 }
 

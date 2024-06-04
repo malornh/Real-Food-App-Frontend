@@ -10,6 +10,7 @@ const App = () => {
   const userId = '0f17881d-b0cd-45b1-afdc-b15f93eeabcc';
   const [updatedShop, setUpdatedShop] = useState<Shop>();
   const [deletedShopId, setDeletedShopId] = useState<number | undefined>();
+  const [clickedFarmId, setClickedFarmId] = useState<number | undefined>();
 
   const handleShopClick = (id: number) => {
     setClickedMapShopId(id);
@@ -32,8 +33,9 @@ const App = () => {
         handleShopClick={(shopId) => setClickedMapShopId(shopId)}
         forwardShopUpdate={(shop)=>setUpdatedShop(shop)}
         forwardShopDelete={(shopId)=>setDeletedShopId(shopId)}
+        forwardClickedFarmId={(farmId)=>setClickedFarmId(farmId)}
       />
-      <FarmContainer />
+      <FarmContainer farmId={clickedFarmId} />
       <SofiaVectorMap
         handleShopClick={handleShopClick}
         clickedMapShopId={clickedMapShopId}

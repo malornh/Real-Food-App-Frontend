@@ -33,9 +33,19 @@ interface Props {
   handleShopClick: (shopId: number) => void;
   forwardShopUpdate: (shop: Shop) => void;
   forwardShopDelete: (shopId: number) => void;
+  forwardClickedFarmId: (farmId: number) => void;
 }
 
-const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, handleShopClick, forwardShopUpdate, forwardShopDelete }: Props) => {
+const AccountForm = ({
+  userId,
+  clickedMapShopId,
+  markerClicked,
+  resetShopId,
+  handleShopClick,
+  forwardShopUpdate,
+  forwardShopDelete,
+  forwardClickedFarmId,
+}: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
@@ -45,10 +55,12 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const response = await axios.get(`https://localhost:7218/api/Shop/ByUser/${userId}`);
+        const response = await axios.get(
+          `https://localhost:7218/api/Shop/ByUser/${userId}`
+        );
         setUserShops(response.data);
       } catch (error: any) {
-        console.error('Error fetching shops:', error.message);
+        console.error("Error fetching shops:", error.message);
       }
     };
 
@@ -86,7 +98,10 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
     handleShopClick(shopId);
   };
 
-  const isOwnedByUser = (shopIds: (number | undefined)[] | undefined, id: number) => {
+  const isOwnedByUser = (
+    shopIds: (number | undefined)[] | undefined,
+    id: number
+  ) => {
     return shopIds?.includes(id);
   };
 
@@ -96,9 +111,9 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
 
   function handleShopUpdate(shop: Shop): void {
     forwardShopUpdate(shop);
-    setUserShops(currentShops => {
+    setUserShops((currentShops) => {
       // Map through existing shops and replace the one with the same ID
-      return currentShops?.map(currentShop => {
+      return currentShops?.map((currentShop) => {
         if (currentShop.id === shop.id) {
           // If the IDs match, replace the existing shop with the new one
           return shop;
@@ -110,13 +125,15 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
     });
   }
 
-  const userShopIds = userShops?.map(s => s.id).filter((id): id is number => id !== undefined);
+  const userShopIds = userShops
+    ?.map((s) => s.id)
+    .filter((id): id is number => id !== undefined);
 
   function handleCreateShop(shop: Shop): void {
     forwardShopUpdate(shop);
 
-    setUserShops(prevUserShops => [...(prevUserShops ?? []), shop]);
-}
+    setUserShops((prevUserShops) => [...(prevUserShops ?? []), shop]);
+  }
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
@@ -169,9 +186,12 @@ const AccountForm = ({ userId, clickedMapShopId, markerClicked, resetShopId, han
                 shopId={selectedShopId}
                 isShopOwned={isOwnedByUser(userShopIds, selectedShopId)}
                 forwardShopDelete={(shopId) => {
-                  setUserShops(prevUserShops => (prevUserShops ?? []).filter(shop => shop.id !== shopId));
+                  setUserShops((prevUserShops) =>
+                    (prevUserShops ?? []).filter((shop) => shop.id !== shopId)
+                  );
                   forwardShopDelete(shopId);
-              }}
+                }}
+                handleClickedFarmId={(farmId) => forwardClickedFarmId(farmId)}
               />
             ) : (
               <UserForm />
