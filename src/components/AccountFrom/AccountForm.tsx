@@ -9,6 +9,7 @@ import axios from 'axios';
 import { Shop } from '../ShopForm/EditShop/EditShop';
 import { Box, useDisclosure } from '@chakra-ui/react'; // Ensure you import Box from Chakra UI
 import Create from '../Create'
+import { Farm } from '../FarmForm/EditFarm';
 
 export interface Card {
   imgUrl: string;
@@ -34,6 +35,7 @@ interface Props {
   forwardShopUpdate: (shop: Shop) => void;
   forwardShopDelete: (shopId: number) => void;
   forwardClickedFarmId: (farmId: number) => void;
+  forwardFarmUpdate: (farm: Farm) => void;
 }
 
 const AccountForm = ({
@@ -45,6 +47,7 @@ const AccountForm = ({
   forwardShopUpdate,
   forwardShopDelete,
   forwardClickedFarmId,
+  forwardFarmUpdate,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
@@ -205,6 +208,7 @@ const AccountForm = ({
           onClose={onClose}
           userId={userId}
           handleNewShop={(shop) => handleCreateShop(shop)}
+          handleNewFarm={(farm)=>forwardFarmUpdate(farm)}
         />
       )}
     </div>

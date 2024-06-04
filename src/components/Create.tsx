@@ -20,9 +20,10 @@ interface Props {
   onClose: () => void;
   userId: string;
   handleNewShop: (shop: Shop)=>void;
+  handleNewFarm: (farm: Farm)=>void;
 }
 
-const Create = ({ isOpen, onClose, userId, handleNewShop }: Props) => {
+const Create = ({ isOpen, onClose, userId, handleNewShop, handleNewFarm }: Props) => {
   const [showEditShop, setShowEditShop] = useState(false);
   const [showEditFarm, setShowEditFarm] = useState(false);
 
@@ -62,10 +63,15 @@ const Create = ({ isOpen, onClose, userId, handleNewShop }: Props) => {
     }
     
 
-    function handleSave(shop: Shop): void {
+    function handleSaveShop(shop: Shop): void {
         handleNewShop(shop);
         onClose();
     }
+
+    function handleSaveFarm(farm: Farm): void {
+      handleNewFarm(farm);
+      onClose();
+  }
 
   return (
     <ChakraProvider theme={theme}>
@@ -100,7 +106,7 @@ const Create = ({ isOpen, onClose, userId, handleNewShop }: Props) => {
       </Modal>
       {showEditShop && (
         <EditShop
-          onUpdate={(shop) => handleSave(shop)}
+          onShopUpdate={(shop) => handleSaveShop(shop)}
           isOpen={showEditShop}
           onClose={() => setShowEditShop(false)}
           shop={mapToShop()}
@@ -109,7 +115,7 @@ const Create = ({ isOpen, onClose, userId, handleNewShop }: Props) => {
       )}
       {showEditFarm && (
         <EditFarm
-          onUpdate={(farm) => handleSave(farm)}
+          onFarmUpdate={(farm) => handleSaveFarm(farm)}
           isOpen={showEditFarm}
           onClose={() => setShowEditFarm(false)}
           farm={mapToFarm()}

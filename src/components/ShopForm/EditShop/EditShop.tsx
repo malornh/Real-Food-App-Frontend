@@ -21,11 +21,11 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   shop: Shop;
-  onUpdate: (shop: Shop) => void;
+  onShopUpdate: (shop: Shop) => void;
   onDelete: (shopId: number) => void;
 }
 
-const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }) => {
+const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDelete }) => {
   const [newShop, setNewShop] = useState<Shop>({ ...shop });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -65,7 +65,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
         }
 
         const responseShop = await response.json();
-        onUpdate(responseShop);
+        onShopUpdate(responseShop);
         onClose();
     } catch (error) {
         console.error('Error updating shop:', error);
@@ -80,7 +80,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
       }else
       {
         await updateShop(newShop);
-        onUpdate(newShop);
+        onShopUpdate(newShop);
         onClose();
       }
     

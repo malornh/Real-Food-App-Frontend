@@ -11,17 +11,16 @@ const App = () => {
   const [updatedShop, setUpdatedShop] = useState<Shop>();
   const [deletedShopId, setDeletedShopId] = useState<number | undefined>();
   const [clickedFarmId, setClickedFarmId] = useState<number | undefined>();
+  const [updatedFarm, setUpdatedFarm] = useState<Shop>();
+
+  useEffect(()=>{
+    setClickedFarmId(updatedFarm?.id);
+  }, [updatedFarm])
 
   const handleShopClick = (id: number) => {
     setClickedMapShopId(id);
     setMarkerClicked(prevState => !prevState);
   };
-
-  const [imgSrc, setImageSrc] = useState<string | null>(null);
-
-  useEffect(() => {
-    console.log(imgSrc);
-  }, [imgSrc]);
 
   return (
     <div>
@@ -34,6 +33,7 @@ const App = () => {
         forwardShopUpdate={(shop)=>setUpdatedShop(shop)}
         forwardShopDelete={(shopId)=>setDeletedShopId(shopId)}
         forwardClickedFarmId={(farmId)=>setClickedFarmId(farmId)}
+        forwardFarmUpdate={(farm)=>setUpdatedFarm(farm)}
       />
       <FarmContainer farmId={clickedFarmId} resetFarmId={()=>setClickedFarmId(undefined)} />
       <SofiaVectorMap

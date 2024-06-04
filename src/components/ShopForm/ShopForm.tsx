@@ -264,7 +264,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
       </Tabs>
       {isEditModalOpen && shopData && (
         <EditShop
-          onUpdate={(shop) => handleShopUpdate(shop)}
+          onShopUpdate={(shop) => handleShopUpdate(shop)}
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           shop={mapToShop(shopData)}

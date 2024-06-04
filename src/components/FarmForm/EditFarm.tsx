@@ -22,11 +22,11 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   farm: Farm;
-  onUpdate: (farm: Farm) => void;
+  onFarmUpdate: (farm: Farm) => void;
   onDelete: (farmId: number) => void;
 }
 
-const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onUpdate, onDelete }) => {
+const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDelete }) => {
   const [newFarm, setNewFarm] = useState<Farm>({ ...farm });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -66,7 +66,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onUpdate, onDelete }
       }
 
       const responseFarm = await response.json();
-      onUpdate(responseFarm);
+      onFarmUpdate(responseFarm);
       onClose();
     } catch (error) {
       console.error('Error creating farm:', error);
@@ -78,7 +78,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onUpdate, onDelete }
       await createFarm(newFarm);
     } else {
       await updateFarm(newFarm);
-      onUpdate(newFarm);
+      onFarmUpdate(newFarm);
       onClose();
     }
   };
