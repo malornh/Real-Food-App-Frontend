@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Text, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay, FormControl, Input, Textarea, Box, Flex, ChakraProvider, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
-import './EditShop.css';
-import ImageCropper from '../ImageCropper/ImageCropper';
-import theme from './theme'; // Import the custom theme
-import MapComponent from './MapComponent';
+import './EditFarm.css';
+import ImageCropper from '../ShopForm/ImageCropper/ImageCropper'
+import theme from '../ShopForm/EditShop/theme'
+import MapComponent from '../ShopForm/EditShop/MapComponent'
 
-export interface Shop {
+export interface Farm {
   id: number | undefined;
   userId: string;
   image: string;
@@ -14,30 +14,31 @@ export interface Shop {
   description: string;
   latitude: number;
   longitude: number;
+  defaultDeliveryRadius: number | undefined;
   rating: number | undefined;
 }
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  shop: Shop;
-  onUpdate: (shop: Shop) => void;
-  onDelete: (shopId: number) => void;
+  farm: Farm;
+  onUpdate: (farm: Farm) => void;
+  onDelete: (farmId: number) => void;
 }
 
-const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }) => {
-  const [newShop, setNewShop] = useState<Shop>({ ...shop });
+const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onUpdate, onDelete }) => {
+  const [newFarm, setNewFarm] = useState<Farm>({ ...farm });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
 
-  const updateShop = async (shop: Shop) => {
+  const updateFarm = async (farm: Farm) => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Shops/${shop.id}`, {
+      const response = await fetch(`https://localhost:7218/api/Farm/${farm.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(shop)
+        body: JSON.stringify(farm)
       });
 
       if (!response.ok) {
@@ -45,50 +46,45 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
         throw new Error(`Error: ${response.status} - ${error}`);
       }
     } catch (error) {
-      console.error('Error updating shop:', error);
+      console.error('Error updating farm:', error);
     }
   };
 
-  const createShop = async (shop: Shop) => {
+  const createFarm = async (farm: Farm) => {
     try {
-        const response = await fetch(`https://localhost:7218/api/Shops`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(shop)
-        });
+      const response = await fetch(`https://localhost:7218/api/Farms`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(farm)
+      });
+      console.log(farm);
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Error: ${response.status} - ${error}`);
+      }
 
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(`Error: ${response.status} - ${error}`);
-        }
-
-        const responseShop = await response.json();
-        onUpdate(responseShop);
-        onClose();
+      const responseFarm = await response.json();
+      onUpdate(responseFarm);
+      onClose();
     } catch (error) {
-        console.error('Error updating shop:', error);
+      console.error('Error creating farm:', error);
     }
-};
-
+  };
 
   const handleSave = async () => {
-    if(newShop.id === undefined)
-      {
-        await createShop(newShop);
-      }else
-      {
-        await updateShop(newShop);
-        onUpdate(newShop);
-        onClose();
-      }
-    
-    
+    if(newFarm.id === undefined) {
+      await createFarm(newFarm);
+    } else {
+      await updateFarm(newFarm);
+      onUpdate(newFarm);
+      onClose();
+    }
   };
 
   const handleImageChange = (newImage: string) => {
-    setNewShop(prevState => ({
+    setNewFarm(prevState => ({
       ...prevState,
       image: newImage
     }));
@@ -96,7 +92,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Shops/${shop.id}`, {
+      const response = await fetch(`https://localhost:7218/api/Farm/${farm.id}`, {
         method: 'DELETE'
       });
 
@@ -104,10 +100,10 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
         const error = await response.text();
         throw new Error(`Error: ${response.status} - ${error}`);
       }
-      {shop.id !== undefined && onDelete(shop.id);}
+      if(farm.id !== undefined) onDelete(farm.id);
       onClose();
     } catch (error) {
-      console.error('Error deleting shop:', error);
+      console.error('Error deleting farm:', error);
     }
   };
 
@@ -127,20 +123,20 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={shop.image}
+                  initialImage={farm.image}
                   onImageChange={handleImageChange}
                 />
                 <MapComponent
-                  lat={shop.latitude}
-                  long={shop.longitude}
+                  lat={farm.latitude}
+                  long={farm.longitude}
                   outLat={(lat) =>
-                    setNewShop((prevState) => ({
+                    setNewFarm((prevState) => ({
                       ...prevState,
                       latitude: lat,
                     }))
                   }
                   outLong={(long) => {
-                    setNewShop((prevState) => ({
+                    setNewFarm((prevState) => ({
                       ...prevState,
                       longitude: long,
                     }));
@@ -150,9 +146,9 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
               <Box ml={5} mt={-1}>
                 <FormControl mb={4}>
                   <Input
-                    value={newShop.name}
+                    value={newFarm.name}
                     onChange={(e) =>
-                      setNewShop((prevState) => ({
+                      setNewFarm((prevState) => ({
                         ...prevState,
                         name: e.target.value,
                       }))
@@ -168,9 +164,9 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
                 </FormControl>
                 <FormControl>
                   <Textarea
-                    value={newShop.description}
+                    value={newFarm.description}
                     onChange={(e) =>
-                      setNewShop((prevState) => ({
+                      setNewFarm((prevState) => ({
                         ...prevState,
                         description: e.target.value,
                       }))
@@ -178,6 +174,25 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
                     placeholder="Enter description"
                     fontSize="20px"
                     height="520px"
+                    width="575px"
+                    borderRadius="10px"
+                    color="black"
+                    background="rgba(254, 190, 65, 0.9)"
+                  />
+                </FormControl>
+                <FormControl mb={4}>
+                  <Input
+                    type="number"
+                    value={newFarm.defaultDeliveryRadius}
+                    onChange={(e) =>
+                      setNewFarm((prevState) => ({
+                        ...prevState,
+                        defaultDeliveryRadius: parseFloat(e.target.value),
+                      }))
+                    }
+                    placeholder="Enter default delivery radius"
+                    fontSize="20px"
+                    height="70px"
                     width="575px"
                     borderRadius="10px"
                     color="black"
@@ -197,7 +212,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
               ml={383}
               width={100}
               onClick={openDeleteConfirm}>
-              Delete Shop
+              Delete Farm
             </Button>
             <Box>
               <Button
@@ -231,13 +246,13 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
             color="black"
             background="rgba(255, 255, 255, 0.95)">
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Shop
+              Delete Farm
             </AlertDialogHeader>
 
             <AlertDialogBody color="black">
               Are you sure you want to delete{" "}
               <Text as="span" fontWeight="bold">
-                {shop.name}
+                {farm.name}
               </Text>
               ?
             </AlertDialogBody>
@@ -266,4 +281,4 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onUpdate, onDelete }
   );
 };
 
-export default EditShop;
+export default EditFarm;

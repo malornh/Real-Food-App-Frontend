@@ -58,7 +58,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const response = await axios.get('https://localhost:7218/api/Shop');
+        const response = await axios.get('https://localhost:7218/api/Shops');
 
         setShops(response.data);
       } catch (error: any) {

@@ -8,7 +8,7 @@ import ShopForm from '../ShopForm/ShopForm';
 import axios from 'axios';
 import { Shop } from '../ShopForm/EditShop/EditShop';
 import { Box, useDisclosure } from '@chakra-ui/react'; // Ensure you import Box from Chakra UI
-import Create from '../Create';
+import Create from '../Create'
 
 export interface Card {
   imgUrl: string;
@@ -56,7 +56,7 @@ const AccountForm = ({
     const fetchShops = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Shop/ByUser/${userId}`
+          `https://localhost:7218/api/Shops/ByUser/${userId}`
         );
         setUserShops(response.data);
       } catch (error: any) {

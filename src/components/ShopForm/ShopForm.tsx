@@ -64,7 +64,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
       try {
         if (shopId !== undefined) {
           const response = await axios.get<ShopData>(
-            `https://localhost:7218/api/Shop/${shopId}/OrdersWithFarms`
+            `https://localhost:7218/api/Shops/${shopId}/OrdersWithFarms`
           );
           setShopData(response.data);
         }
