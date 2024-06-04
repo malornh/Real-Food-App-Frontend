@@ -35,7 +35,7 @@ const App = () => {
         forwardShopDelete={(shopId)=>setDeletedShopId(shopId)}
         forwardClickedFarmId={(farmId)=>setClickedFarmId(farmId)}
       />
-      <FarmContainer farmId={clickedFarmId} />
+      <FarmContainer farmId={clickedFarmId} resetFarmId={()=>setClickedFarmId(undefined)} />
       <SofiaVectorMap
         handleShopClick={handleShopClick}
         clickedMapShopId={clickedMapShopId}

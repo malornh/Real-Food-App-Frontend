@@ -8,9 +8,10 @@ import SearchForm from './SearchForm';
 
 interface Props {
   farmId: number | undefined;
+  resetFarmId: ()=>void;
 }
 
-const FarmContainer = ({farmId}: Props) => {
+const FarmContainer = ({farmId, resetFarmId}: Props) => {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -23,10 +24,15 @@ const FarmContainer = ({farmId}: Props) => {
   }, [farmId]);
 
   const toggleForm = () => {
+    if(showForm)
+      {
+        resetFarmId();
+      }
     setShowForm((prevState) => !prevState);
   };
 
   const closeForm = () => {
+    resetFarmId();
     setShowForm(false);
   };
 
