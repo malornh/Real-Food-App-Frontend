@@ -157,7 +157,6 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
           {isShopOwned && <HiMiniPlusCircle className="shopProductTabMenu" />}
         </div>
 
-        {/* Content to display when there are no orders */}
         {shopData?.orders.length === 0 && (
           <div
             style={{
@@ -169,7 +168,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
               color: 'grey',
               height: 150
             }}>
-            <Text fontSize={25} alignContent={'center'} ml={230}>No products available!</Text>
+            <Text fontSize={25} alignContent={'center'} ml={230}>Not available products!</Text>
           </div>
         )}
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Box} from '@chakra-ui/react'
+import { Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box} from '@chakra-ui/react'
 import { TbTruckDelivery } from "react-icons/tb";
 import { IoCashOutline } from "react-icons/io5";
 import { IoSettingsSharp } from "react-icons/io5";
@@ -85,6 +85,21 @@ const FarmForm = ({ farmId }: Props) => {
             </Tab>
           ))}
         </TabList>
+
+        {farmData?.products.length === 0 && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "10px",
+              background: "rgba(254, 216, 65, 0.8)",
+              borderRadius: "5px",
+              color: 'grey',
+              height: 150
+            }}>
+            <Text fontSize={25} alignContent={'center'} ml={230}>Not available products!</Text>
+          </div>
+        )}
 
         <TabPanels>
           {productTypes.map((type) => (
