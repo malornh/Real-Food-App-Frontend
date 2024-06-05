@@ -6,7 +6,7 @@ import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 import customIconUrl from '../assets/storeIcon.png';
 import axios from 'axios';
 import { Shop } from './ShopForm/EditShop/EditShop';
-
+import { Farm } from './FarmForm/EditFarm';
 
 interface Props {
   handleShopClick: (shopId: number) => void;
@@ -19,6 +19,8 @@ const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId, updatedSh
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const [shops, setShops] = useState<Shop[]>([]);
+  const [farms, setFarms] = useState<Farm[]>([]);
+  const [farmsAndShops, setFarmsAndShops] = useState<Farm | Shop[]>([]);
 
   useEffect(() => {
     if (!updatedShop) return; // If updatedShop is undefined, exit the function
@@ -69,6 +71,20 @@ useEffect(() => {
     fetchShops();
   }, []);
 
+  useEffect(() => {
+    const fetchFarms = async () => {
+      try {
+        const response = await axios.get('https://localhost:7218/api/Farms');
+
+        setFarms(response.data);
+      } catch (error: any) {
+        console.error('Error fetching cards:', error.message);
+      }
+    };
+
+    fetchFarms();
+  }, []);
+
 
   useEffect(() => {
     if (mapRef.current && shops && shops.length > 0) {
@@ -99,7 +115,7 @@ useEffect(() => {
       
 
         marker.on('mouseover', () => {
-          //implement shop info bubble
+          //TO-DO: implement shop info bubble
         });
         
         if (id === clickedMapShopId) {

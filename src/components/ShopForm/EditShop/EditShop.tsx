@@ -191,15 +191,15 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
             mb={-6}
             flexDirection="row"
             justifyContent="space-between">
-            <Button
+           {newShop.id !== undefined && <Button
               as="label"
               colorScheme="red"
               ml={383}
               width={100}
               onClick={openDeleteConfirm}>
               Delete Shop
-            </Button>
-            <Box>
+            </Button>}
+            <Box ml={newShop.id !== undefined ? 0 : 763}>
               <Button
                 as="label"
                 colorScheme="teal"

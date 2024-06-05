@@ -3,13 +3,18 @@ import './AccountForm.css';
 import UserForm from '../UserForm/UserForm';
 import { RiAccountCircleFill } from "react-icons/ri";
 import { IoMdCloseCircle } from "react-icons/io";
-import { CiCirclePlus } from 'react-icons/ci';
+import { HiMiniPlusCircle } from "react-icons/hi2";
 import ShopForm from '../ShopForm/ShopForm';
 import axios from 'axios';
 import { Shop } from '../ShopForm/EditShop/EditShop';
-import { Box, useDisclosure } from '@chakra-ui/react'; // Ensure you import Box from Chakra UI
+import { Box, Flex, useDisclosure } from '@chakra-ui/react'; // Ensure you import Box from Chakra UI
 import Create from '../Create'
 import { Farm } from '../FarmForm/EditFarm';
+import { IoMdArrowDropdownCircle  } from "react-icons/io";
+import { TbCircleLetterS } from "react-icons/tb";
+import { TbCircleLetterF } from "react-icons/tb";
+
+
 
 export interface Card {
   imgUrl: string;
@@ -32,6 +37,7 @@ interface Props {
   markerClicked: boolean;
   resetShopId: (n: number | undefined) => void;
   handleShopClick: (shopId: number) => void;
+  handleFarmClick: (farmId: number) => void;
   forwardShopUpdate: (shop: Shop) => void;
   forwardShopDelete: (shopId: number) => void;
   forwardClickedFarmId: (farmId: number) => void;
@@ -44,6 +50,7 @@ const AccountForm = ({
   markerClicked,
   resetShopId,
   handleShopClick,
+  handleFarmClick,
   forwardShopUpdate,
   forwardShopDelete,
   forwardClickedFarmId,
@@ -51,9 +58,12 @@ const AccountForm = ({
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
+  const [selectedFarmId, setSelectedFarmId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
   const [userShops, setUserShops] = useState<Shop[]>();
+  const [userFarms, setUserFarms] = useState<Farm[]>();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [showShops, sesetShowStops] = useState(true);
 
   useEffect(() => {
     const fetchShops = async () => {
@@ -68,6 +78,21 @@ const AccountForm = ({
     };
 
     fetchShops();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchFarms = async () => {
+      try {
+        const response = await axios.get(
+          `https://localhost:7218/api/Farms/ByUser/${userId}`
+        );
+        setUserFarms(response.data);
+      } catch (error: any) {
+        console.error("Error fetching shops:", error.message);
+      }
+    };
+
+    fetchFarms();
   }, [userId]);
 
   useEffect(() => {
@@ -96,9 +121,8 @@ const AccountForm = ({
     resetShopId(undefined);
   };
 
-  const handleCardClick = (shopId: number) => {
-    setSelectedShopId(shopId);
-    handleShopClick(shopId);
+  const handleCardClick = (id: number) => {
+    showShops ? (setSelectedShopId(id), handleShopClick(id)) : (setSelectedFarmId(id), handleFarmClick(id));
   };
 
   const isOwnedByUser = (
@@ -147,40 +171,87 @@ const AccountForm = ({
       />
       {showForm && (
         <div className="formContainerStyle">
-          <div className="cardsContainerStyle">
-            {userShops &&
-              userShops.map((shop: Shop) => (
-                <div
-                  key={shop.id}
-                  className="cardStyle"
-                  onClick={() =>
-                    shop.id !== undefined && handleCardClick(shop.id)
-                  }>
-                  <img
-                    src={shop.image}
-                    alt={shop.name}
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      borderRadius: "50px",
-                    }}
-                    className={
-                      shop.id === selectedShopId
-                        ? "selectedCardBorder"
-                        : "nonSelectedCardBorder"
-                    }
-                  />
-                  <div>
-                    {shop.name.length > 14
-                      ? shop.name.substring(0, 10) + "..."
-                      : shop.name}
+          <Flex>
+            {userShops && (
+              <Flex flexDirection="column" mt={10} ml={80}>
+                <TbCircleLetterS
+                  className={`miniCircleIcon ${showShops ? 'tealBorder' : ''}`}
+                  onClick={() => sesetShowStops(true)}
+                />
+                <TbCircleLetterF
+                  className={`miniCircleIcon ${!showShops ? 'tealBorder' : ''}`}
+                  onClick={() => sesetShowStops(false)}
+                />
+              </Flex>
+            )}
+            <div className="cardsContainerStyle">
+              {userShops &&
+                showShops &&
+                userShops.map((shop: Shop) => (
+                  <div
+                    key={shop.id}
+                    className="cardStyle"
+                    onClick={() =>
+                      shop.id !== undefined && handleCardClick(shop.id)
+                    }>
+                    <img
+                      src={shop.image}
+                      alt={shop.name}
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        borderRadius: "50px",
+                      }}
+                      className={
+                        shop.id === selectedShopId
+                          ? "selectedCardBorder"
+                          : "nonSelectedCardBorder"
+                      }
+                    />
+                    <div>
+                      {shop.name.length > 14
+                        ? shop.name.substring(0, 10) + "..."
+                        : shop.name}
+                    </div>
                   </div>
-                </div>
-              ))}
-            <Box className="cardStyle" onClick={handleAddNewCard}>
-              <CiCirclePlus className="plusIcon" />
-            </Box>
-          </div>
+                ))}
+
+              {userFarms &&
+                !showShops &&
+                userFarms.map((farm: Farm) => (
+                  <div
+                    key={farm.id}
+                    className="cardStyle"
+                    onClick={() =>
+                      farm.id !== undefined && handleCardClick(farm.id)
+                    }>
+                    <img
+                      src={farm.image}
+                      alt={farm.name}
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        borderRadius: "50px",
+                      }}
+                      className={
+                        farm.id === selectedFarmId
+                          ? "selectedCardBorder"
+                          : "nonSelectedCardBorder"
+                      }
+                    />
+                    <div>
+                      {farm.name.length > 14
+                        ? farm.name.substring(0, 10) + "..."
+                        : farm.name}
+                    </div>
+                  </div>
+                ))}
+            </div>
+            <Flex flexDirection='column' ml={-45} mt={10}>
+              <HiMiniPlusCircle onClick={handleAddNewCard} className="plusIcon" />
+              <IoMdArrowDropdownCircle className='miniCircleIcon'/>
+            </Flex>
+          </Flex>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
             {selectedShopId !== undefined ? (
@@ -208,7 +279,7 @@ const AccountForm = ({
           onClose={onClose}
           userId={userId}
           handleNewShop={(shop) => handleCreateShop(shop)}
-          handleNewFarm={(farm)=>forwardFarmUpdate(farm)}
+          handleNewFarm={(farm) => forwardFarmUpdate(farm)}
         />
       )}
     </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Text, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Text, Tab, TabList, TabPanel, TabPanels, Tabs, Box } from '@chakra-ui/react';
 import { BsArrowRepeat } from 'react-icons/bs';
 import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
 import { FcSettings } from "react-icons/fc";
@@ -154,11 +154,12 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
               </Tab>
             ))}
           </TabList>
-          {isShopOwned && <HiMiniPlusCircle className="shopProductTabMenu" />}
+          {isShopOwned && <HiMiniPlusCircle className="shopProductPlusButton" />}
         </div>
 
         {shopData?.orders.length === 0 && (
-          <div
+          <Box
+            mt={12}
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -166,10 +167,10 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
               background: "rgba(254, 216, 65, 0.8)",
               borderRadius: "5px",
               color: 'grey',
-              height: 150
+              height: 145,
             }}>
             <Text fontSize={25} alignContent={'center'} ml={230}>Not available products!</Text>
-          </div>
+          </Box>
         )}
 
         <TabPanels>
@@ -245,7 +246,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                       }}>
                       <div>
                         {!isShopOwned ? (
-                          <PiShoppingCartSimpleDuotone className="cartButton" />
+                          <PiShoppingCartSimpleDuotone className="shopCartButton" />
                         ) : (
                           <FcSettings
                             className="shopProductsettingsButton"

@@ -30,12 +30,13 @@ const App = () => {
         clickedMapShopId={clickedMapShopId}
         markerClicked={markerClicked}
         handleShopClick={(shopId) => setClickedMapShopId(shopId)}
+        handleFarmClick={(farmId)=>setClickedFarmId(farmId)}
         forwardShopUpdate={(shop)=>setUpdatedShop(shop)}
         forwardShopDelete={(shopId)=>setDeletedShopId(shopId)}
         forwardClickedFarmId={(farmId)=>setClickedFarmId(farmId)}
         forwardFarmUpdate={(farm)=>setUpdatedFarm(farm)}
       />
-      <FarmContainer farmId={clickedFarmId} resetFarmId={()=>setClickedFarmId(undefined)} />
+      <FarmContainer farmId={clickedFarmId} resetFarmId={()=>setClickedFarmId(undefined)} userId={userId} />
       <SofiaVectorMap
         handleShopClick={handleShopClick}
         clickedMapShopId={clickedMapShopId}

@@ -27,21 +27,37 @@
 .farmTitle {
   color: black;
   margin-bottom: 10px;
+  margin-right: 10px;
   margin-top: 0;
-  max-width: 310px;
+  width: 270px;
+  font-size: 40px;
+}
+
+.farmFormSettingsBtn{
+  color: black;
+  font-size: 45px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.farmFormSettingsBtn:hover {
+  transform: scale(1.1);
 }
 
 .farmDescription {
-  width: 310px; /* Adjust this value as needed */
-  height: 100px; /* Adjust this value as needed */
-  overflow-y: auto;
-  color: black;
+    color: black;
+    margin-bottom: 0;
+    max-height: 160px; /* Adjust the height as per your requirement */
+    overflow-y: auto;
 }
 
 .farmRatingContainer {
   position: absolute;
   bottom: 10px;
-  right: -20px;
+  right: 10px;
   background: rgba(7, 175, 0);
   color: white;
   padding: 5px;
@@ -63,13 +79,14 @@
 /* styles.css */
 
 .farmProductTabMenu {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .farmTab {
   margin-right: 10px;
   color: black;
   background-color: rgba(254, 216, 65, 0.8);
+  transition: transform 0.3s ease;
 }
 
 .farmTabPanel {
@@ -78,10 +95,10 @@
 }
 
 .farmProductDescriptionContainer {
-  width: 250px; /* Adjust this value as needed */
-  height: 100px; /* Adjust this value as needed */
-  overflow-y: auto;
-  margin-top: -20px; /* Adjust this value as needed */
+    width: 250px; /* Adjust this value as needed */
+    height: 120px; /* Adjust this value as needed */
+    overflow-y: auto;
+    margin-top: -30px; /* Adjust this value as needed */
 }
 
 .farmProductDescriptionContainer::-webkit-scrollbar {
@@ -118,3 +135,13 @@
   padding: 10px;
 }
 
+.farmProductPlusButton {
+  font-size: 50px;  
+  color: rgba(0, 254, 0, 0.7);
+  z-index: 999;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform 0.3s ease;
+  margin-top: 20px;
+  overflow-y: hidden;
+}

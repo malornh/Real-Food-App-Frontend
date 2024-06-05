@@ -9,9 +9,10 @@ import SearchForm from './SearchForm';
 interface Props {
   farmId: number | undefined;
   resetFarmId: ()=>void;
+  userId: string;
 }
 
-const FarmContainer = ({farmId, resetFarmId}: Props) => {
+const FarmContainer = ({farmId, resetFarmId, userId}: Props) => {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -34,10 +35,6 @@ const FarmContainer = ({farmId, resetFarmId}: Props) => {
   const closeForm = () => {
     resetFarmId();
     setShowForm(false);
-  };
-
-  const isOwnedByUser = (shopIds: (number | undefined)[] | undefined, id: number) => {
-    return shopIds?.includes(id);
   };
 
   return (
@@ -77,6 +74,7 @@ const FarmContainer = ({farmId, resetFarmId}: Props) => {
           <div className="scrollable">
             {farmId !== undefined ? (
               <FarmForm
+                userId={userId}
                 farmId={farmId}
               />
             ) : (

@@ -58,16 +58,19 @@
 .cardsContainerStyle {
   /* Styling for the cards container */
   display: flex;               /* Use flexbox layout */
-  overflow-x: auto;            /* Enable horizontal scrolling */
+  overflow-x: scroll;            /* Enable horizontal scrolling */
   white-space: nowrap;         /* Prevent wrapping of cards */
-  margin-left: 90px;          /* Starts 50px from the beginning of the form */
-  margin-right: 90px;         /* Ends 50px before the end of the form */
+  margin-left: 5px;          /* Starts 50px from the beginning of the form */
+  margin-right: 50px;         /* Ends 50px before the end of the form */
+  width: 420px;
   border-radius: 30px;
 }
 
 /* Custom scrollbar styles */
 .cardsContainerStyle::-webkit-scrollbar {
-    width: 10px; /* Width of the scrollbar */
+    width: 5px; /* Width of the scrollbar */
+    height: 10px;
+    top: 100px;
     background-color: rgba(255, 255, 255, 0); /* Background color of the scrollbar track */
     
 }
@@ -115,9 +118,12 @@
 }
 
 .plusIcon{
-  color: rgba(0, 0, 0, 0.4);
-  width: 90px;
-  height: 90px;
+  color: rgba(0, 0, 0, 0.35);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-block;
 }
 
 /* Custom scrollbar styles for .scrollableContent within formContainerStyle */
@@ -147,5 +153,17 @@
 .scrollableContent {
   height: calc(100% - 120px); /* Adjust height as needed, the 150px accounts for other UI elements */
   overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.miniCircleIcon {
+  font-size: 40px;
+  color: rgba(254, 216, 65, 0.8);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.miniCircleIcon.tealBorder {
+  box-shadow: inset 0 0 0 5px teal; /* Inner border */
+  border-radius: 50%; /* Assuming you want a rounded border */
 }
 

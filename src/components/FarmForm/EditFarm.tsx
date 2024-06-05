@@ -33,7 +33,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
 
   const updateFarm = async (farm: Farm) => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Farm/${farm.id}`, {
+      const response = await fetch(`https://localhost:7218/api/Farms/${farm.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Farm/${farm.id}`, {
+      const response = await fetch(`https://localhost:7218/api/Farms/${farm.id}`, {
         method: 'DELETE'
       });
 
@@ -173,7 +173,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
                     }
                     placeholder="Enter description"
                     fontSize="20px"
-                    height="520px"
+                    height="455px"
                     width="575px"
                     borderRadius="10px"
                     color="black"

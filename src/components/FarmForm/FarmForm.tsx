@@ -5,9 +5,11 @@ import { IoCashOutline } from "react-icons/io5";
 import { IoSettingsSharp } from "react-icons/io5";
 import { TiShoppingCart } from "react-icons/ti";
 import { PiPackageDuotone } from "react-icons/pi";
-import { BsArrowRepeat } from "react-icons/bs";
 import './FarmForm.css';
 import axios from 'axios';
+import EditFarm, { Farm } from './EditFarm';
+import { FcSettings } from 'react-icons/fc';
+import { HiMiniPlusCircle } from 'react-icons/hi2';
 
 interface FarmData {
   id: number;
@@ -39,11 +41,13 @@ interface Product {
 
 interface Props {
   farmId: number
+  userId: string;
 }
 
-const FarmForm = ({ farmId }: Props) => {
+const FarmForm = ({ farmId, userId }: Props) => {
   const [farmData, setFarmData] = useState<FarmData>();
   const [selectedType, setSelectedType] = useState<string>();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const productTypes = Array.from(new Set(farmData?.products.map(p => p.type))).sort();
 
@@ -61,6 +65,21 @@ const FarmForm = ({ farmId }: Props) => {
   
     fetchData();
   }, [farmId]);
+
+  function mapToFarm(farmData: FarmData): Farm {
+    const { id, userId, image, name, description, latitude, longitude, defaultDeliveryRadius, rating } = farmData;
+    return {
+      id: id,
+      userId: userId,
+      image: image,
+      name: name,
+      description: description || '', // Using empty string as default for optional field
+      latitude: latitude,
+      longitude: longitude,
+      defaultDeliveryRadius: defaultDeliveryRadius !== undefined ? defaultDeliveryRadius : undefined, // Handling undefined value
+      rating: rating !== undefined ? rating : undefined // Handling undefined value
+    };
+  }
   
   return (
     <div>
@@ -68,37 +87,54 @@ const FarmForm = ({ farmId }: Props) => {
         <div className="farmCategoriesContainer">
           <img src={farmData.image} className="farmImage" />
           <div className="farmInfoContainer">
-            <h1 className="farmTitle">{farmData.name}</h1>
+            <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
+              <h1 className="farmTitle">{farmData.name}</h1>
+              {farmData.userId === userId && (
+                <FcSettings
+                  className="farmFormSettingsBtn"
+                  onClick={() => setIsEditModalOpen(true)}
+                />
+              )}
+            </div>
             <p className="farmDescription">{farmData.description}</p>
-            <div className="farmRatingContainer">{farmData.rating} / 5.0</div>
+            <div className="farmRatingContainer">{farmData.rating === 0 ? 'new' : farmData.rating} / 5.0</div>
           </div>
         </div>
       )}
+
       <Tabs>
-        <TabList className="farmProductTabMenu">
-          {productTypes.map((type) => (
-            <Tab
-              className="farmTab"
-              key={type as string}
-              onClick={() => setSelectedType(type as string)}>
-              {type as string}
-            </Tab>
-          ))}
-        </TabList>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <TabList className="farmProductTabMenu">
+            {productTypes.map((type) => (
+              <Tab
+                className="farmTab"
+                key={type as string}
+                onClick={() => setSelectedType(type as string)}>
+                {type as string}
+              </Tab>
+            ))}
+          </TabList>
+          {farmData?.userId === userId && (
+            <HiMiniPlusCircle className="farmProductPlusButton" />
+          )}
+        </div>
 
         {farmData?.products.length === 0 && (
-          <div
+          <Box
+            mt={12}
             style={{
               display: "flex",
               justifyContent: "space-between",
               marginBottom: "10px",
               background: "rgba(254, 216, 65, 0.8)",
               borderRadius: "5px",
-              color: 'grey',
-              height: 150
+              color: "grey",
+              height: 145,
             }}>
-            <Text fontSize={25} alignContent={'center'} ml={230}>Not available products!</Text>
-          </div>
+            <Text fontSize={25} alignContent={"center"} ml={230}>
+              Not available products!
+            </Text>
+          </Box>
         )}
 
         <TabPanels>
@@ -286,6 +322,15 @@ const FarmForm = ({ farmId }: Props) => {
           ))}
         </TabPanels>
       </Tabs>
+      {isEditModalOpen && farmData && (
+        <EditFarm
+          onFarmUpdate={() => null}
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          farm={mapToFarm(farmData)}
+          onDelete={() => null}
+        />
+      )}
     </div>
   );
 }
