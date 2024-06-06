@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Tooltip} from '@chakra-ui/react'
 import { TbTruckDelivery } from "react-icons/tb";
 import { IoCashOutline } from "react-icons/io5";
@@ -8,6 +8,8 @@ import axios from 'axios';
 import EditFarm, { Farm } from './EditFarm';
 import { FcSettings } from 'react-icons/fc';
 import { HiMiniPlusCircle } from 'react-icons/hi2';
+import EditProduct from './EditProduct';
+import  defaultProduct from '../../assets/defaultProduct.png'
 
 interface FarmData {
   id: number;
@@ -22,17 +24,23 @@ interface FarmData {
   products: Product[];
 }
 
-interface Product {
-  id: number;
+interface DateOnly {
+  year: number;
+  month: number;
+  day: number;
+}
+
+export interface Product {
+  id: number | undefined;
   name: string;
   description: string;
   farmId: number;
-  unitOfMeasurement: string;
+  unitOfMeasurement: number;
   quantity: number;
   pricePerUnit: number;
   deliveryRadius: number;
   minUnitOrder: number;
-  dateUpdated: Date;
+  dateUpdated: string;
   image: string;
   type: string;
 }
@@ -47,6 +55,8 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
   const [farmData, setFarmData] = useState<FarmData>();
   const [selectedType, setSelectedType] = useState<string>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditProductOpen, setIsEditProductOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product>();
 
   const productTypes = Array.from(new Set(farmData?.products.map(p => p.type))).sort();
 
@@ -57,6 +67,8 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
           `https://localhost:7218/api/Farms/${farmId}/FarmWithProducts`
         );
         setFarmData(response.data);
+        console.log('Fresh:');
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching farm data:', error);
       }
@@ -79,7 +91,46 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
       rating: rating !== undefined ? rating : undefined // Handling undefined value
     };
   }
+
+  function newProduct(farmId: number): Product {
+    const defaultProductImage = "defaultProductImage.jpg"; // Example default image
+    const currentDate = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
   
+    return {
+      id: undefined,
+      name: "",
+      description: "",
+      farmId: farmId,
+      unitOfMeasurement: 1,
+      quantity: 0,
+      pricePerUnit: 0,
+      deliveryRadius: 0,
+      minUnitOrder: 0,
+      dateUpdated: currentDate, // Assigning today's date
+      image: defaultProduct,
+      type: "Type"
+    };
+  }
+  
+  const handleOpenEditProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setIsEditProductOpen(true);
+  };
+
+  const handleCloseEditProduct = () => {
+    setIsEditProductOpen(false);
+    setSelectedProduct(undefined);
+  };
+
+  const handleProductUpdate = (updatedProduct: Product) => {
+    console.log('Product updated:', updatedProduct);
+  };
+
+  const handleProductDelete = (productId: number) => {
+    console.log('Product deleted with ID:', productId);
+    // Delete the product from your state or database as needed
+  };
+
   return (
     <div>
       {farmData && (
@@ -116,7 +167,7 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
             ))}
           </TabList>
           {farmData?.userId === userId && (
-            <HiMiniPlusCircle className="farmProductPlusButton" />
+            <HiMiniPlusCircle onClick={()=>handleOpenEditProduct(newProduct(farmData.id))} className="farmProductPlusButton" />
           )}
         </div>
 
@@ -271,7 +322,7 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
                         ) : (
                           <FcSettings
                             className="shopProductsettingsButton"
-                            onClick={() => console.log()}
+                            onClick={() => handleOpenEditProduct(p)}
                           />
                         )}
                       </div>
@@ -305,6 +356,16 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
           onClose={() => setIsEditModalOpen(false)}
           farm={mapToFarm(farmData)}
           onDelete={() => null}
+        />
+      )}
+      
+      {selectedProduct && (
+        <EditProduct
+          isOpen={isEditProductOpen}
+          onClose={handleCloseEditProduct}
+          product={selectedProduct}
+          onProductUpdate={(p)=>handleProductUpdate(p)}
+          onDelete={handleProductDelete}
         />
       )}
     </div>

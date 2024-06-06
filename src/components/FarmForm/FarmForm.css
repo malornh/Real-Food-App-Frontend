@@ -147,6 +147,10 @@
   overflow-y: hidden;
 }
 
+.farmProductPlusButton:hover {
+  transform: scale(1.1);
+}
+
 .tooltip {
   position: relative;
   display: inline-block;

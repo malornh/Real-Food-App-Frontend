@@ -1,0 +1,25 @@
+.modalContent {
+    position: absolute;
+    margin-right: 25%;
+    margin-left: 25%;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.save-button {
+    background-color: teal;
+}
+
+.close-button {
+    color: black;
+}
