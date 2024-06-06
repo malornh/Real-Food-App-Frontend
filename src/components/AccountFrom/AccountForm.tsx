@@ -14,8 +14,6 @@ import { IoMdArrowDropdownCircle  } from "react-icons/io";
 import { TbCircleLetterS } from "react-icons/tb";
 import { TbCircleLetterF } from "react-icons/tb";
 
-
-
 export interface Card {
   imgUrl: string;
   name: string;
@@ -35,6 +33,7 @@ interface Props {
   userId: string;
   clickedMapShopId?: number | undefined;
   markerClicked: boolean;
+  updatedFarm: Farm | undefined;
   resetShopId: (n: number | undefined) => void;
   handleShopClick: (shopId: number) => void;
   handleFarmClick: (farmId: number) => void;
@@ -48,6 +47,7 @@ const AccountForm = ({
   userId,
   clickedMapShopId,
   markerClicked,
+  updatedFarm,
   resetShopId,
   handleShopClick,
   handleFarmClick,
@@ -64,6 +64,26 @@ const AccountForm = ({
   const [userFarms, setUserFarms] = useState<Farm[]>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showShops, sesetShowStops] = useState(true);
+  
+  useEffect(() => {
+    console.log(updatedFarm);
+    if (updatedFarm) {
+      setUserFarms(prevFarms => {
+        // Ensure prevFarms is always an array
+        const farms = prevFarms || [];
+        const existingFarmIndex = farms.findIndex(farm => farm.id === updatedFarm.id);
+
+        if (existingFarmIndex !== -1) {
+          // Update existing farm
+          const updatedFarms = [...farms];
+          updatedFarms[existingFarmIndex] = updatedFarm;
+          return updatedFarms;
+        } else {
+          return [...farms, updatedFarm];
+        }
+      });
+    }
+  }, [updatedFarm]);
 
   useEffect(() => {
     const fetchShops = async () => {

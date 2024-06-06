@@ -254,7 +254,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                           />
                         )}
                       </div>
-                      <div className="shopProductRatingContainer">{4.5} / 5.0</div>
+                      <div className="farmRatingContainer">{shopData.rating === 0 ? 'new' : shopData.rating} / 5.0</div>
                     </div>
                   </div>
                 ))}

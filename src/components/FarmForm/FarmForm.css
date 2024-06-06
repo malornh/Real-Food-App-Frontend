@@ -70,7 +70,6 @@
   color: white;
   padding: 5px;
   border-radius: 5px;
-  border: 2px solid black;
   font-size: 14px;
   width: 50px;
   margin-top: auto;
@@ -120,11 +119,13 @@
 }
 
 .labelContent {
-  background-color: rgb(6, 6, 6);
-  color: white;
+  background-color: rgba(255, 255, 255, 0.6);
+  color: black;
+  font-weight: bold;
   border-radius: 5px;
-  max-width: 40px;
-  max-height: 20px;
+  padding: 5px;
+  width: 40px;
+  height: 20px;
   text-align: center;
 }
 
@@ -144,4 +145,30 @@
   transition: transform 0.3s ease;
   margin-top: 20px;
   overflow-y: hidden;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%; /* Adjust according to your needs */
+  left: 50%;
+  margin-left: -90px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }

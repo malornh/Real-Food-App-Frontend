@@ -3,6 +3,7 @@ import AccountForm from './components/AccountFrom/AccountForm';
 import SofiaVectorMap from './components/SofiaVectorMap';
 import { Shop } from './components/ShopForm/EditShop/EditShop';
 import FarmContainer from './components/FarmContainer';
+import { Farm } from './components/FarmForm/EditFarm';
 
 const App = () => {
   const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(undefined);
@@ -11,7 +12,7 @@ const App = () => {
   const [updatedShop, setUpdatedShop] = useState<Shop>();
   const [deletedShopId, setDeletedShopId] = useState<number | undefined>();
   const [clickedFarmId, setClickedFarmId] = useState<number | undefined>();
-  const [updatedFarm, setUpdatedFarm] = useState<Shop>();
+  const [updatedFarm, setUpdatedFarm] = useState<Farm>();
 
   useEffect(()=>{
     setClickedFarmId(updatedFarm?.id);
@@ -30,13 +31,19 @@ const App = () => {
         clickedMapShopId={clickedMapShopId}
         markerClicked={markerClicked}
         handleShopClick={(shopId) => setClickedMapShopId(shopId)}
-        handleFarmClick={(farmId)=>setClickedFarmId(farmId)}
-        forwardShopUpdate={(shop)=>setUpdatedShop(shop)}
-        forwardShopDelete={(shopId)=>setDeletedShopId(shopId)}
-        forwardClickedFarmId={(farmId)=>setClickedFarmId(farmId)}
-        forwardFarmUpdate={(farm)=>setUpdatedFarm(farm)}
+        handleFarmClick={(farmId) => setClickedFarmId(farmId)}
+        forwardShopUpdate={(shop) => setUpdatedShop(shop)}
+        forwardShopDelete={(shopId) => setDeletedShopId(shopId)}
+        forwardClickedFarmId={(farmId) => setClickedFarmId(farmId)}
+        forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
+        updatedFarm={updatedFarm}
       />
-      <FarmContainer farmId={clickedFarmId} resetFarmId={()=>setClickedFarmId(undefined)} userId={userId} />
+      <FarmContainer
+        farmId={clickedFarmId}
+        resetFarmId={() => setClickedFarmId(undefined)}
+        userId={userId}
+        forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
+      />
       <SofiaVectorMap
         handleShopClick={handleShopClick}
         clickedMapShopId={clickedMapShopId}

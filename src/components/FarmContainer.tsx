@@ -5,14 +5,16 @@ import { HiSearchCircle } from "react-icons/hi";
 import { Box } from '@chakra-ui/react';
 import FarmForm from './FarmForm/FarmForm';
 import SearchForm from './SearchForm';
+import { Farm } from './FarmForm/EditFarm';
 
 interface Props {
   farmId: number | undefined;
   resetFarmId: ()=>void;
   userId: string;
+  forwardFarmUpdate: (farm: Farm)=>void;
 }
 
-const FarmContainer = ({farmId, resetFarmId, userId}: Props) => {
+const FarmContainer = ({farmId, resetFarmId, userId, forwardFarmUpdate}: Props) => {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -76,6 +78,7 @@ const FarmContainer = ({farmId, resetFarmId, userId}: Props) => {
               <FarmForm
                 userId={userId}
                 farmId={farmId}
+                forwardFarmUpdate={(farm)=>{forwardFarmUpdate(farm)}}
               />
             ) : (
               <SearchForm />

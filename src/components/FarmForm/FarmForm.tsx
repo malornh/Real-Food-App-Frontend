@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box} from '@chakra-ui/react'
+import { Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Tooltip} from '@chakra-ui/react'
 import { TbTruckDelivery } from "react-icons/tb";
 import { IoCashOutline } from "react-icons/io5";
-import { IoSettingsSharp } from "react-icons/io5";
-import { TiShoppingCart } from "react-icons/ti";
-import { PiPackageDuotone } from "react-icons/pi";
+import { PiPackageDuotone, PiShoppingCartSimpleDuotone } from "react-icons/pi";
 import './FarmForm.css';
 import axios from 'axios';
 import EditFarm, { Farm } from './EditFarm';
@@ -40,11 +38,12 @@ interface Product {
 }
 
 interface Props {
-  farmId: number
+  farmId: number;
   userId: string;
+  forwardFarmUpdate: (farm: Farm)=>void;
 }
 
-const FarmForm = ({ farmId, userId }: Props) => {
+const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
   const [farmData, setFarmData] = useState<FarmData>();
   const [selectedType, setSelectedType] = useState<string>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -97,7 +96,9 @@ const FarmForm = ({ farmId, userId }: Props) => {
               )}
             </div>
             <p className="farmDescription">{farmData.description}</p>
-            <div className="farmRatingContainer">{farmData.rating === 0 ? 'new' : farmData.rating} / 5.0</div>
+            <div className="farmRatingContainer">
+              {farmData.rating === 0 ? "new" : farmData.rating} / 5.0
+            </div>
           </div>
         </div>
       )}
@@ -177,36 +178,32 @@ const FarmForm = ({ farmId, userId }: Props) => {
                         style={{
                           display: "flex",
                           flexDirection: "column",
-                          marginTop: "30px",
-                          marginLeft: "10px",
+                          marginTop: "15px",
+                          marginLeft: "80px",
+                          gap: "15px",
                         }}>
                         <div
                           style={{
                             display: "flex",
                             marginLeft: "10px",
-                            marginBottom: "-25px",
+                            marginBottom: "-40px",
                           }}>
-                          <TbTruckDelivery
-                            style={{
-                              fontSize: "27px",
-                              color: "black",
-                              marginRight: "10px",
-                              marginLeft: "3px",
-                            }}
-                          />
-                          <input
-                            className="labelContent"
-                            defaultValue={p.deliveryRadius}
-                            readOnly></input>
-                          <p
-                            style={{
-                              marginTop: "-0px",
-                              marginLeft: "5px",
-                              color: "black",
-                              fontWeight: "bold",
-                            }}>
-                            км.
-                          </p>
+                          <div className="tooltip">
+                            <TbTruckDelivery
+                              style={{
+                                fontSize: "27px",
+                                color: "black",
+                                marginRight: "10px",
+                                marginLeft: "3px",
+                              }}
+                            />
+                            <span className="tooltiptext">
+                              Максимален радиус за доставка
+                            </span>
+                          </div>
+                          <label className="labelContent">
+                            {p.deliveryRadius}
+                          </label>
                         </div>
                         <div
                           style={{
@@ -222,26 +219,21 @@ const FarmForm = ({ farmId, userId }: Props) => {
                             marginTop: "30px",
                             marginBottom: "-20px",
                           }}>
-                          <PiPackageDuotone
-                            style={{
-                              fontSize: "30px",
-                              color: "black",
-                              marginRight: "10px",
-                            }}
-                          />
-                          <input
-                            className="labelContent"
-                            defaultValue={p.minUnitOrder}
-                            readOnly></input>
-                          <p
-                            style={{
-                              marginTop: "-0px",
-                              marginLeft: "5px",
-                              color: "black",
-                              fontWeight: "bold",
-                            }}>
-                            бр.
-                          </p>
+                          <div className="tooltip">
+                            <PiPackageDuotone
+                              style={{
+                                fontSize: "30px",
+                                color: "black",
+                                marginRight: "10px",
+                              }}
+                            />
+                            <span className="tooltiptext">
+                              Минимално количество за поръчка
+                            </span>
+                          </div>
+                          <label className="labelContent">
+                            {p.minUnitOrder}
+                          </label>
                         </div>
                         <div
                           style={{
@@ -250,26 +242,19 @@ const FarmForm = ({ farmId, userId }: Props) => {
                             marginTop: "15px",
                             marginBottom: "-25px",
                           }}>
-                          <IoCashOutline
-                            style={{
-                              fontSize: "30px",
-                              color: "black",
-                              marginRight: "10px",
-                            }}
-                          />
-                          <input
-                            className="labelContent"
-                            defaultValue={p.pricePerUnit}
-                            readOnly></input>
-                          <p
-                            style={{
-                              marginTop: "-0px",
-                              marginLeft: "5px",
-                              color: "black",
-                              fontWeight: "bold",
-                            }}>
-                            лв/бр.
-                          </p>
+                          <div className="tooltip">
+                            <IoCashOutline
+                              style={{
+                                fontSize: "30px",
+                                color: "black",
+                                marginRight: "10px",
+                              }}
+                            />
+                            <span className="tooltiptext">Цена за брой</span>
+                          </div>
+                          <label className="labelContent">
+                            {p.pricePerUnit}
+                          </label>
                         </div>
                       </div>
                     </div>
@@ -280,39 +265,15 @@ const FarmForm = ({ farmId, userId }: Props) => {
                         flexDirection: "column",
                         padding: "10px",
                       }}>
-                      <div
-                        style={{
-                          borderRadius: "5px",
-                          border: "2px solid black",
-                          height: "40px",
-                          width: "60px",
-                          marginBottom: "5px",
-                        }}>
-                        <IoSettingsSharp
-                          style={{
-                            fontSize: "35px",
-                            color: "gray",
-                            marginTop: "1px",
-                            marginRight: "11px",
-                          }}
-                        />
-                      </div>
-                      <div
-                        style={{
-                          background: "rgba(126, 222, 252)",
-                          borderRadius: "5px",
-                          border: "2px solid black",
-                          marginBottom: "5px",
-                        }}>
-                        <TiShoppingCart
-                          style={{
-                            fontSize: "35px",
-                            color: "black",
-                            borderRadius: "5px",
-                            marginRight: "12px",
-                            marginBottom: "-5px",
-                          }}
-                        />
+                      <div>
+                        {farmData.userId !== userId ? (
+                          <PiShoppingCartSimpleDuotone className="shopCartButton" />
+                        ) : (
+                          <FcSettings
+                            className="shopProductsettingsButton"
+                            onClick={() => console.log()}
+                          />
+                        )}
                       </div>
                       <div className="productRatingContainer">{4.5} / 5.0</div>
                     </div>
@@ -324,7 +285,22 @@ const FarmForm = ({ farmId, userId }: Props) => {
       </Tabs>
       {isEditModalOpen && farmData && (
         <EditFarm
-          onFarmUpdate={() => null}
+          onFarmUpdate={(farm) => {
+            setFarmData((prevData) => {
+              if (!prevData) {
+                // Handle the case where prevData might be undefined
+                // You might want to initialize it with default values or return null/undefined based on your app logic
+                return undefined; // Or return a full new FarmData object with required and default fields
+              }
+              return {
+                ...prevData, // Carry over all existing data
+                name: farm.name, // Update the name
+                image: farm.image, // Update the image
+                // Make sure all required fields exist here or are carried over from prevData
+              };
+            });
+            forwardFarmUpdate(farm);
+          }}
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           farm={mapToFarm(farmData)}

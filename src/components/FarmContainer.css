@@ -56,9 +56,9 @@
     display: flex;              
     overflow-x: auto;    
     white-space: nowrap;    
-    margin-top: 10px;
     margin-left: 90px;
     margin-right: 90px;
+    margin-bottom: 10px;
     border-radius: 30px;
   }
   
