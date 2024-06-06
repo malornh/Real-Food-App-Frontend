@@ -57,8 +57,8 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductOpen, setIsEditProductOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product>();
-
-  const productTypes = Array.from(new Set(farmData?.products.map(p => p.type))).sort();
+  const [productTypes, setProductTypes] = useState(Array.from(new Set(farmData?.products.map(p => p.type))).sort());
+  console.log(productTypes);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,6 +67,7 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
           `https://localhost:7218/api/Farms/${farmId}/FarmWithProducts`
         );
         setFarmData(response.data);
+        setProductTypes(Array.from(new Set(farmData?.products.map(p => p.type))).sort())
         console.log('Fresh:');
         console.log(response.data);
       } catch (error) {
@@ -93,7 +94,6 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
   }
 
   function newProduct(farmId: number): Product {
-    const defaultProductImage = "defaultProductImage.jpg"; // Example default image
     const currentDate = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
   
     return {
@@ -123,13 +123,50 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
   };
 
   const handleProductUpdate = (updatedProduct: Product) => {
-    console.log('Product updated:', updatedProduct);
+    if (!productTypes.includes(updatedProduct.type)) {
+      const updatedProductTypes = [...productTypes, updatedProduct.type];
+      updatedProductTypes.sort();
+      setProductTypes(updatedProductTypes);
+    }
+    
+   if(farmData !== undefined)
+    {
+      const updatedFarmData = {
+        ...farmData,
+        products: [...farmData.products, updatedProduct]
+      };
+      
+      setFarmData(updatedFarmData);
+    }
   };
+  
 
   const handleProductDelete = (productId: number) => {
-    console.log('Product deleted with ID:', productId);
-    // Delete the product from your state or database as needed
+    const productIndex = farmData?.products.findIndex(product => product.id === productId);
+  
+    if (productIndex !== undefined && productIndex !== -1 && farmData) {
+      const updatedProducts = [
+        ...farmData.products.slice(0, productIndex),
+        ...farmData.products.slice(productIndex + 1)
+      ];
+  
+      const updatedFarmData = {
+        ...farmData,
+        products: updatedProducts
+      };
+  
+      setFarmData(updatedFarmData);
+  
+      const deletedProductType = farmData.products[productIndex].type;
+      if (productTypes.includes(deletedProductType)) {
+        const updatedProductTypes = productTypes.filter(type => type !== deletedProductType);
+        setProductTypes(updatedProductTypes);
+      }
+    }
   };
+  
+  
+  
 
   return (
     <div>
@@ -157,7 +194,7 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
       <Tabs>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <TabList className="farmProductTabMenu">
-            {productTypes.map((type) => (
+            {Array.from(new Set(farmData?.products.map(p => p.type))).sort().map((type) => (
               <Tab
                 className="farmTab"
                 key={type as string}
@@ -190,7 +227,7 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
         )}
 
         <TabPanels>
-          {productTypes.map((type) => (
+          {Array.from(new Set(farmData?.products.map(p => p.type))).sort().map((type) => (
             <TabPanel className="farmTabPanel" key={type as string}>
               {farmData?.products
                 .filter((p) => p.type === type)
@@ -339,15 +376,12 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
           onFarmUpdate={(farm) => {
             setFarmData((prevData) => {
               if (!prevData) {
-                // Handle the case where prevData might be undefined
-                // You might want to initialize it with default values or return null/undefined based on your app logic
-                return undefined; // Or return a full new FarmData object with required and default fields
+                return undefined;
               }
               return {
-                ...prevData, // Carry over all existing data
-                name: farm.name, // Update the name
-                image: farm.image, // Update the image
-                // Make sure all required fields exist here or are carried over from prevData
+                ...prevData,
+                name: farm.name,
+                image: farm.image,
               };
             });
             forwardFarmUpdate(farm);
