@@ -9,7 +9,8 @@ import EditFarm, { Farm } from './EditFarm';
 import { FcSettings } from 'react-icons/fc';
 import { HiMiniPlusCircle } from 'react-icons/hi2';
 import EditProduct from './EditProduct';
-import  defaultProduct from '../../assets/defaultProduct.png'
+import  defaultProduct from '../../assets/defaultProduct.png';
+import delivaryButton from '../../assets/deliveryButton.png';
 
 interface FarmData {
   id: number;
@@ -43,6 +44,7 @@ export interface Product {
   dateUpdated: string;
   image: string;
   type: string;
+  rating: number | null;
 }
 
 interface Props {
@@ -108,7 +110,8 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
       minUnitOrder: 0,
       dateUpdated: currentDate, // Assigning today's date
       image: defaultProduct,
-      type: "Type"
+      type: "Type",
+      rating: null
     };
   }
   
@@ -185,7 +188,7 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
             </div>
             <p className="farmDescription">{farmData.description}</p>
             <div className="farmRatingContainer">
-              {farmData.rating === 0 ? "new" : farmData.rating} / 5.0
+              {farmData.rating === 0 || farmData.rating === null ? "new" : farmData.rating} / 5.0
             </div>
           </div>
         </div>
@@ -194,17 +197,22 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
       <Tabs>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <TabList className="farmProductTabMenu">
-            {Array.from(new Set(farmData?.products.map(p => p.type))).sort().map((type) => (
-              <Tab
-                className="farmTab"
-                key={type as string}
-                onClick={() => setSelectedType(type as string)}>
-                {type as string}
-              </Tab>
-            ))}
+            {Array.from(new Set(farmData?.products.map((p) => p.type)))
+              .sort()
+              .map((type) => (
+                <Tab
+                  className="farmTab"
+                  key={type as string}
+                  onClick={() => setSelectedType(type as string)}>
+                  {type as string}
+                </Tab>
+              ))}
           </TabList>
           {farmData?.userId === userId && (
-            <HiMiniPlusCircle onClick={()=>handleOpenEditProduct(newProduct(farmData.id))} className="farmProductPlusButton" />
+            <HiMiniPlusCircle
+              onClick={() => handleOpenEditProduct(newProduct(farmData.id))}
+              className="farmProductPlusButton"
+            />
           )}
         </div>
 
@@ -227,148 +235,154 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
         )}
 
         <TabPanels>
-          {Array.from(new Set(farmData?.products.map(p => p.type))).sort().map((type) => (
-            <TabPanel className="farmTabPanel" key={type as string}>
-              {farmData?.products
-                .filter((p) => p.type === type)
-                .map((p) => (
-                  <div
-                    key={p.id}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "10px",
-                      background: "rgba(254, 216, 65, 0.8)",
-                      borderRadius: "5px",
-                    }}>
+          {Array.from(new Set(farmData?.products.map((p) => p.type)))
+            .sort()
+            .map((type) => (
+              <TabPanel className="farmTabPanel" key={type as string}>
+                {farmData?.products
+                  .filter((p) => p.type === type)
+                  .map((p) => (
                     <div
-                      style={{ display: "flex", justifyContent: "flex-start" }}>
-                      <Box boxSize={130}>
-                        <img
-                          className="original-image"
-                          src={p.image}
-                          alt="Original Image"
-                        />
-                      </Box>
-                      <div
-                        style={{
-                          marginTop: "-20px",
-                          marginLeft: "20px",
-                          color: "black",
-                        }}>
-                        <h2>{p.name}</h2>
-                        <div className="farmProductDescriptionContainer">
-                          <p>{p.description}</p>
-                        </div>
-                      </div>
-
+                      key={p.id}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        marginBottom: "10px",
+                        background: "rgba(254, 216, 65, 0.8)",
+                        borderRadius: "5px",
+                      }}>
                       <div
                         style={{
                           display: "flex",
-                          flexDirection: "column",
-                          marginTop: "15px",
-                          marginLeft: "80px",
-                          gap: "15px",
+                          justifyContent: "flex-start",
                         }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            marginLeft: "10px",
-                            marginBottom: "-40px",
-                          }}>
-                          <div className="tooltip">
-                            <TbTruckDelivery
-                              style={{
-                                fontSize: "27px",
-                                color: "black",
-                                marginRight: "10px",
-                                marginLeft: "3px",
-                              }}
-                            />
-                            <span className="tooltiptext">
-                              Максимален радиус за доставка
-                            </span>
-                          </div>
-                          <label className="labelContent">
-                            {p.deliveryRadius}
-                          </label>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            marginLeft: "10px",
-                            marginTop: "15px",
-                            marginBottom: "-25px",
-                          }}></div>
-                        <div
-                          style={{
-                            display: "flex",
-                            marginLeft: "10px",
-                            marginTop: "30px",
-                            marginBottom: "-20px",
-                          }}>
-                          <div className="tooltip">
-                            <PiPackageDuotone
-                              style={{
-                                fontSize: "30px",
-                                color: "black",
-                                marginRight: "10px",
-                              }}
-                            />
-                            <span className="tooltiptext">
-                              Минимално количество за поръчка
-                            </span>
-                          </div>
-                          <label className="labelContent">
-                            {p.minUnitOrder}
-                          </label>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            marginLeft: "10px",
-                            marginTop: "15px",
-                            marginBottom: "-25px",
-                          }}>
-                          <div className="tooltip">
-                            <IoCashOutline
-                              style={{
-                                fontSize: "30px",
-                                color: "black",
-                                marginRight: "10px",
-                              }}
-                            />
-                            <span className="tooltiptext">Цена за брой</span>
-                          </div>
-                          <label className="labelContent">
-                            {p.pricePerUnit}
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        textAlign: "right",
-                        display: "flex",
-                        flexDirection: "column",
-                        padding: "10px",
-                      }}>
-                      <div>
-                        {farmData.userId !== userId ? (
-                          <PiShoppingCartSimpleDuotone className="shopCartButton" />
-                        ) : (
-                          <FcSettings
-                            className="shopProductsettingsButton"
-                            onClick={() => handleOpenEditProduct(p)}
+                        <Box boxSize={130}>
+                          <img
+                            className="original-image"
+                            src={p.image}
+                            alt="Original Image"
                           />
-                        )}
+                        </Box>
+                        <div
+                          style={{
+                            marginTop: "-20px",
+                            marginLeft: "20px",
+                            color: "black",
+                          }}>
+                          <h2>{p.name}</h2>
+                          <div className="farmProductDescriptionContainer">
+                            <p>{p.description}</p>
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginTop: "15px",
+                            marginLeft: "80px",
+                            gap: "15px",
+                          }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              marginLeft: "10px",
+                              marginBottom: "-40px",
+                            }}>
+                            <div className="tooltip">
+                              <TbTruckDelivery
+                                style={{
+                                  fontSize: "27px",
+                                  color: "black",
+                                  marginRight: "10px",
+                                  marginLeft: "3px",
+                                }}
+                              />
+                              <span className="tooltiptext">
+                                Максимален радиус за доставка
+                              </span>
+                            </div>
+                            <label className="labelContent">
+                              {p.deliveryRadius}
+                            </label>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              marginLeft: "10px",
+                              marginTop: "15px",
+                              marginBottom: "-25px",
+                            }}></div>
+                          <div
+                            style={{
+                              display: "flex",
+                              marginLeft: "10px",
+                              marginTop: "30px",
+                              marginBottom: "-20px",
+                            }}>
+                            <div className="tooltip">
+                              <PiPackageDuotone
+                                style={{
+                                  fontSize: "30px",
+                                  color: "black",
+                                  marginRight: "10px",
+                                }}
+                              />
+                              <span className="tooltiptext">
+                                Минимално количество за поръчка
+                              </span>
+                            </div>
+                            <label className="labelContent">
+                              {p.minUnitOrder}
+                            </label>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              marginLeft: "10px",
+                              marginTop: "15px",
+                              marginBottom: "-25px",
+                            }}>
+                            <div className="tooltip">
+                              <IoCashOutline
+                                style={{
+                                  fontSize: "30px",
+                                  color: "black",
+                                  marginRight: "10px",
+                                }}
+                              />
+                              <span className="tooltiptext">Цена за брой</span>
+                            </div>
+                            <label className="labelContent">
+                              {p.pricePerUnit}
+                            </label>
+                          </div>
+                        </div>
                       </div>
-                      <div className="productRatingContainer">{4.5} / 5.0</div>
+                      <div
+                        style={{
+                          textAlign: "right",
+                          display: "flex",
+                          flexDirection: "column",
+                          padding: "10px",
+                        }}>
+                        <div>
+                          {farmData.userId !== userId ? (
+                           <img width="65" height="65" className="shopProductsettingsButton" src="https://img.icons8.com/plasticine/70/truck--v1.png" alt="truck--v1"/>
+                          ) : (
+                            <FcSettings
+                              className="shopProductsettingsButton"
+                              onClick={() => handleOpenEditProduct(p)}
+                            />
+                          )}
+                        </div>
+                      <div className="productRatingContainer">{p.rating === null ? 'new' : p.rating} / 5.0</div>
+
+                      </div>
                     </div>
-                  </div>
-                ))}
-            </TabPanel>
-          ))}
+                  ))}
+              </TabPanel>
+            ))}
         </TabPanels>
       </Tabs>
       {isEditModalOpen && farmData && (
@@ -392,13 +406,13 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
           onDelete={() => null}
         />
       )}
-      
+
       {selectedProduct && (
         <EditProduct
           isOpen={isEditProductOpen}
           onClose={handleCloseEditProduct}
           product={selectedProduct}
-          onProductUpdate={(p)=>handleProductUpdate(p)}
+          onProductUpdate={(p) => handleProductUpdate(p)}
           onDelete={handleProductDelete}
         />
       )}

@@ -36,6 +36,7 @@ interface ProductDetails {
   pricePerUnit: number;
   unitOfMeasurement: number;
   image: string;
+  rating: number | null;
 }
 
 interface Farm {
@@ -67,6 +68,8 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
             `https://localhost:7218/api/Shops/${shopId}/OrdersWithFarms`
           );
           setShopData(response.data);
+          console.log('Shop Data: ');
+          console.log(shopData);
         }
       } catch (error) {
         console.error(error);
@@ -236,6 +239,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                           <p>{order.product.description}</p>
                         </div>
                       </div>
+                      <div className="farmRatingContainer">{order.product.rating === null ? 'new' : order.product.rating} / 5.0</div>
                     </div>
                     <div
                       style={{
@@ -254,7 +258,6 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                           />
                         )}
                       </div>
-                      <div className="farmRatingContainer">{shopData.rating === 0 ? 'new' : shopData.rating} / 5.0</div>
                     </div>
                   </div>
                 ))}
