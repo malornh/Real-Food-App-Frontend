@@ -138,11 +138,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                 />
               )}
             </div>
-            <p className="shopDescription">
-              {
-                shopData.description
-              }
-            </p>
+            <p className="shopDescription">{shopData.description}</p>
             <div className="shopRatingContainer">{shopData.rating} / 5.0</div>
           </div>
         </div>
@@ -157,7 +153,9 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
               </Tab>
             ))}
           </TabList>
-          {isShopOwned && <HiMiniPlusCircle className="shopProductPlusButton" />}
+          {isShopOwned && (
+            <HiMiniPlusCircle className="shopProductPlusButton" />
+          )}
         </div>
 
         {shopData?.orders.length === 0 && (
@@ -169,10 +167,12 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
               marginBottom: "10px",
               background: "rgba(254, 216, 65, 0.8)",
               borderRadius: "5px",
-              color: 'grey',
+              color: "grey",
               height: 145,
             }}>
-            <Text fontSize={25} alignContent={'center'} ml={230}>Not available products!</Text>
+            <Text fontSize={25} alignContent={"center"} ml={230}>
+              Not available products!
+            </Text>
           </Box>
         )}
 
@@ -208,7 +208,9 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                             <div className="flip-card-back">
                               <img
                                 className="hover-image"
-                                onClick={()=>handleClickedFarmId(order.shortFarm.id)}
+                                onClick={() =>
+                                  handleClickedFarmId(order.shortFarm.id)
+                                }
                                 src={order.shortFarm.image}
                                 alt="Hover Image"
                               />
@@ -258,8 +260,14 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                           />
                         )}
                       </div>
-                    <div className="shopProductRatingContainer">{order.product.rating === null ? 'new' : order.product.rating} / 5.0</div>
-
+                      <div className="shopProductRatingContainer">
+                        {order.product.rating === null
+                          ? "new"
+                          : (Number.isInteger(order.product.rating)
+                          ? order.product.rating + ".0"
+                          : order.product.rating)}{" "}
+                        / 5.0
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -273,7 +281,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           shop={mapToShop(shopData)}
-          onDelete={(shopId)=>forwardShopDelete(shopId)}
+          onDelete={(shopId) => forwardShopDelete(shopId)}
         />
       )}
     </div>
