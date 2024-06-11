@@ -239,8 +239,8 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                           <p>{order.product.description}</p>
                         </div>
                       </div>
-                      <div className="farmRatingContainer">{order.product.rating === null ? 'new' : order.product.rating} / 5.0</div>
                     </div>
+
                     <div
                       style={{
                         textAlign: "right",
@@ -258,6 +258,8 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                           />
                         )}
                       </div>
+                    <div className="shopProductRatingContainer">{order.product.rating === null ? 'new' : order.product.rating} / 5.0</div>
+
                     </div>
                   </div>
                 ))}
