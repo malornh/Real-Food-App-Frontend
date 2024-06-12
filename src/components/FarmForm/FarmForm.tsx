@@ -51,16 +51,16 @@ interface Props {
   farmId: number;
   userId: string;
   forwardFarmUpdate: (farm: Farm)=>void;
+  handleFarmDelete: (farmId: number)=>void;
 }
 
-const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
+const FarmForm = ({ farmId, userId, forwardFarmUpdate, handleFarmDelete }: Props) => {
   const [farmData, setFarmData] = useState<FarmData>();
   const [selectedType, setSelectedType] = useState<string>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductOpen, setIsEditProductOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product>();
   const [productTypes, setProductTypes] = useState(Array.from(new Set(farmData?.products.map(p => p.type))).sort());
-  console.log(productTypes);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,7 +110,7 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
       minUnitOrder: 0,
       dateUpdated: currentDate, // Assigning today's date
       image: defaultProduct,
-      type: "Type",
+      type: "",
       rating: null
     };
   }
@@ -167,9 +167,6 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
       }
     }
   };
-  
-  
-  
 
   return (
     <div>
@@ -394,8 +391,11 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
               }
               return {
                 ...prevData,
+                id: farm.id ?? prevData.id,
                 name: farm.name,
                 image: farm.image,
+                latitude: farm.latitude,
+                longitude: farm.longitude
               };
             });
             forwardFarmUpdate(farm);
@@ -403,7 +403,7 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate }: Props) => {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           farm={mapToFarm(farmData)}
-          onDelete={() => null}
+          onDelete={(farmId) => handleFarmDelete(farmId)}
         />
       )}
 

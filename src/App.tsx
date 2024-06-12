@@ -13,6 +13,7 @@ const App = () => {
   const [deletedShopId, setDeletedShopId] = useState<number | undefined>();
   const [clickedFarmId, setClickedFarmId] = useState<number | undefined>();
   const [updatedFarm, setUpdatedFarm] = useState<Farm>();
+  const [deletedFarmId, setDeletedFarmId] = useState<number | undefined>();
 
   useEffect(()=>{
     setClickedFarmId(updatedFarm?.id);
@@ -37,18 +38,21 @@ const App = () => {
         forwardClickedFarmId={(farmId) => setClickedFarmId(farmId)}
         forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
         updatedFarm={updatedFarm}
+        deletedFarmId={deletedFarmId}
       />
       <FarmContainer
         farmId={clickedFarmId}
         resetFarmId={() => setClickedFarmId(undefined)}
         userId={userId}
         forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
+        forwardFarmDelete={(farmId)=>setDeletedFarmId(farmId)}
       />
       <SofiaVectorMap
         handleShopClick={handleShopClick}
         clickedMapShopId={clickedMapShopId}
         updatedShop={updatedShop}
         deletedShopId={deletedShopId}
+        deletedFarmId={deletedFarmId}
       />
     </div>
   );

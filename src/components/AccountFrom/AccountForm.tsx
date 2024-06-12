@@ -34,6 +34,7 @@ interface Props {
   clickedMapShopId?: number | undefined;
   markerClicked: boolean;
   updatedFarm: Farm | undefined;
+  deletedFarmId: number | undefined;
   resetShopId: (n: number | undefined) => void;
   handleShopClick: (shopId: number) => void;
   handleFarmClick: (farmId: number) => void;
@@ -48,6 +49,7 @@ const AccountForm = ({
   clickedMapShopId,
   markerClicked,
   updatedFarm,
+  deletedFarmId,
   resetShopId,
   handleShopClick,
   handleFarmClick,
@@ -113,7 +115,7 @@ const AccountForm = ({
     };
 
     fetchFarms();
-  }, [userId]);
+  }, [userId, deletedFarmId]);
 
   useEffect(() => {
     if (clickedMapShopId !== undefined) {

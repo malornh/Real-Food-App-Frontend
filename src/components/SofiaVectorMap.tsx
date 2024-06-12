@@ -13,9 +13,10 @@ interface Props {
   clickedMapShopId: number | undefined;
   updatedShop: Shop | undefined;
   deletedShopId: number | undefined;
+  deletedFarmId: number | undefined;
 }
 
-const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId, updatedShop, deletedShopId }) => {
+const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId, updatedShop, deletedShopId, deletedFarmId }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const [shops, setShops] = useState<Shop[]>([]);
@@ -44,6 +45,12 @@ useEffect(() => {
   
   setShops(prevShops => prevShops.filter(shop => shop.id !== deletedShopId));
 }, [deletedShopId]);
+
+useEffect(() => {
+  if (!deletedFarmId) return; // If deletedShopId is undefined, exit the function
+  
+  setFarms(prevFarms => prevFarms.filter(farm => farm.id !== deletedFarmId));
+}, [deletedFarmId]);
 
   useEffect(() => {
     console.log(mapContainer.current);
