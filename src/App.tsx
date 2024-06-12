@@ -11,18 +11,24 @@ const App = () => {
   const userId = '0f17881d-b0cd-45b1-afdc-b15f93eeabcc';
   const [updatedShop, setUpdatedShop] = useState<Shop>();
   const [deletedShopId, setDeletedShopId] = useState<number | undefined>();
-  const [clickedFarmId, setClickedFarmId] = useState<number | undefined>();
+  const [clickedMapFarmId, setClickedMapFarmId] = useState<number | undefined>();
   const [updatedFarm, setUpdatedFarm] = useState<Farm>();
   const [deletedFarmId, setDeletedFarmId] = useState<number | undefined>();
 
   useEffect(()=>{
-    setClickedFarmId(updatedFarm?.id);
+    setClickedMapFarmId(updatedFarm?.id);
   }, [updatedFarm])
 
   const handleShopClick = (id: number) => {
+    //setClickedMapFarmId(undefined);
     setClickedMapShopId(id);
     setMarkerClicked(prevState => !prevState);
   };
+
+  function handleFarmClick(farmId: number): void {
+    //setClickedMapShopId(undefined);
+    setClickedMapFarmId(farmId);
+  }
 
   return (
     <div>
@@ -32,17 +38,17 @@ const App = () => {
         clickedMapShopId={clickedMapShopId}
         markerClicked={markerClicked}
         handleShopClick={(shopId) => setClickedMapShopId(shopId)}
-        handleFarmClick={(farmId) => setClickedFarmId(farmId)}
+        handleFarmClick={(farmId) => setClickedMapFarmId(farmId)}
         forwardShopUpdate={(shop) => setUpdatedShop(shop)}
         forwardShopDelete={(shopId) => setDeletedShopId(shopId)}
-        forwardClickedFarmId={(farmId) => setClickedFarmId(farmId)}
+        forwardClickedFarmId={(farmId) => setClickedMapFarmId(farmId)}
         forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
         updatedFarm={updatedFarm}
         deletedFarmId={deletedFarmId}
       />
       <FarmContainer
-        farmId={clickedFarmId}
-        resetFarmId={() => setClickedFarmId(undefined)}
+        farmId={clickedMapFarmId}
+        resetFarmId={() => setClickedMapFarmId(undefined)}
         userId={userId}
         forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
         forwardFarmDelete={(farmId)=>setDeletedFarmId(farmId)}
@@ -53,6 +59,8 @@ const App = () => {
         updatedShop={updatedShop}
         deletedShopId={deletedShopId}
         deletedFarmId={deletedFarmId}
+        handleFarmClick={(farmId)=>handleFarmClick(farmId)}
+        clickedMapFarmId={clickedMapFarmId}
       />
     </div>
   );

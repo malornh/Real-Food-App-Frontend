@@ -7,6 +7,7 @@ import customIconUrl from '../assets/storeIcon.png';
 import axios from 'axios';
 import { Shop } from './ShopForm/EditShop/EditShop';
 import { Farm } from './FarmForm/EditFarm';
+import farmIcona from '../assets/farmIcon.png';
 
 interface Props {
   handleShopClick: (shopId: number) => void;
@@ -14,14 +15,15 @@ interface Props {
   updatedShop: Shop | undefined;
   deletedShopId: number | undefined;
   deletedFarmId: number | undefined;
+  handleFarmClick: (farmId: number)=>void;
+  clickedMapFarmId: number | undefined;
 }
 
-const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId, updatedShop, deletedShopId, deletedFarmId }) => {
+const SofiaMap: React.FC<Props> = ({handleShopClick, clickedMapShopId, updatedShop, deletedShopId, deletedFarmId, handleFarmClick, clickedMapFarmId }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const [shops, setShops] = useState<Shop[]>([]);
   const [farms, setFarms] = useState<Farm[]>([]);
-  const [farmsAndShops, setFarmsAndShops] = useState<Farm | Shop[]>([]);
 
   useEffect(() => {
     if (!updatedShop) return; // If updatedShop is undefined, exit the function
@@ -119,6 +121,37 @@ useEffect(() => {
               handleShopClick(id);
           }
       });
+
+      farms.forEach(({ id, name, latitude, longitude, rating }) => {
+        const farmIcon = L.divIcon({
+          className: 'farm-div-icon',
+          html: `<div style="color: black; ${id === clickedMapFarmId ? 'border-radius: 50px; background: green; font-size: 30px;' : ''}">
+                    <img src="${farmIcona}" alt="Icon" style="width: 50px; height: 50px;">
+                    <div id="farm-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -2px; background-color: yellow; border-radius: 20px; border: 1px solid black;">${rating}/5</div>
+                 </div>`,
+          iconSize: [50, 50],
+          iconAnchor: [25, 50],
+        });
+      
+        const marker = L.marker([latitude, longitude], { icon: farmIcon }).addTo(mapRef.current!);
+      
+        marker.on('click', () => {
+          if (id !== undefined) {
+            handleFarmClick(id);
+          }
+        });
+      
+        marker.on('mouseover', () => {
+          // TO-DO: implement farm info bubble
+        });
+      
+        if (id === clickedMapFarmId) {
+          if (mapRef.current) {
+            mapRef.current.setView([latitude, longitude + 0.06], 13);
+          }
+        }
+      });
+      
       
 
         marker.on('mouseover', () => {
