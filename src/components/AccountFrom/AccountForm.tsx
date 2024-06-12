@@ -65,7 +65,7 @@ const AccountForm = ({
   const [userShops, setUserShops] = useState<Shop[]>();
   const [userFarms, setUserFarms] = useState<Farm[]>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [showShops, sesetShowStops] = useState(true);
+  const [showShops, setShowShops] = useState(true);
   
   useEffect(() => {
     console.log(updatedFarm);
@@ -130,11 +130,21 @@ const AccountForm = ({
     }
   }, [clickedMapShopId, markerClicked]);
 
+  useEffect(() => {
+    if(clickedMapShopId === undefined)
+      {
+        setShowForm(false);
+      }
+  }, [clickedMapShopId]);
+
+
+
   const toggleShopForm = () => {
     setShowForm((prevState) => !prevState);
   };
 
   const closeForm = () => {
+    resetShopId(undefined);
     setShowForm((prevState) => !prevState);
   };
 
@@ -198,11 +208,11 @@ const AccountForm = ({
               <Flex flexDirection="column" mt={10} ml={80}>
                 <TbCircleLetterS
                   className={`miniCircleIcon ${showShops ? 'tealBorder' : ''}`}
-                  onClick={() => sesetShowStops(true)}
+                  onClick={() => setShowShops(true)}
                 />
                 <TbCircleLetterF
                   className={`miniCircleIcon ${!showShops ? 'tealBorder' : ''}`}
-                  onClick={() => sesetShowStops(false)}
+                  onClick={() => setShowShops(false)}
                 />
               </Flex>
             )}

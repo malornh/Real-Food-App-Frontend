@@ -20,13 +20,13 @@ const App = () => {
   }, [updatedFarm])
 
   const handleShopClick = (id: number) => {
-    //setClickedMapFarmId(undefined);
+    setClickedMapFarmId(undefined);
     setClickedMapShopId(id);
     setMarkerClicked(prevState => !prevState);
   };
 
   function handleFarmClick(farmId: number): void {
-    //setClickedMapShopId(undefined);
+    setClickedMapShopId(undefined);
     setClickedMapFarmId(farmId);
   }
 

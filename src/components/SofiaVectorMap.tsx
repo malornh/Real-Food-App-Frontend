@@ -3,11 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
-import customIconUrl from '../assets/storeIcon.png';
+import customShopIcon from '../assets/storeIcon.png';
 import axios from 'axios';
 import { Shop } from './ShopForm/EditShop/EditShop';
 import { Farm } from './FarmForm/EditFarm';
-import farmIcona from '../assets/farmIcon.png';
+import customFarmIcon from '../assets/farmIcon.png';
 
 interface Props {
   handleShopClick: (shopId: number) => void;
@@ -107,7 +107,7 @@ useEffect(() => {
         const customIcon = L.divIcon({
           className: 'custom-div-icon',
           html: `<div style="color: black; ${id === clickedMapShopId ? 'border-radius: 50px; background: blue; font-size: 30px;' : ''}">
-                    <img src="${customIconUrl}" alt="Icon" style="width: 50px; height: 50px;">
+                    <img src="${customShopIcon}" alt="Icon" style="width: 50px; height: 50px;">
                     <div id="custom-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -2px; background-color: lime; border-radius: 20px; border: 1px solid black;">5/5</div>
                  </div>`,
           iconSize: [50, 50],
@@ -126,8 +126,8 @@ useEffect(() => {
         const farmIcon = L.divIcon({
           className: 'farm-div-icon',
           html: `<div style="color: black; ${id === clickedMapFarmId ? 'border-radius: 50px; background: green; font-size: 30px;' : ''}">
-                    <img src="${farmIcona}" alt="Icon" style="width: 50px; height: 50px;">
-                    <div id="farm-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -2px; background-color: yellow; border-radius: 20px; border: 1px solid black;">${rating}/5</div>
+                    <img src="${customFarmIcon}" alt="Icon" style="width: 50px; height: 50px;">
+                    <div id="farm-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -2px; background-color: yellow; border-radius: 20px; border: 1px solid black;">5/5</div>
                  </div>`,
           iconSize: [50, 50],
           iconAnchor: [25, 50],
@@ -147,7 +147,7 @@ useEffect(() => {
       
         if (id === clickedMapFarmId) {
           if (mapRef.current) {
-            mapRef.current.setView([latitude, longitude + 0.06], 13);
+            mapRef.current.setView([latitude, longitude - 0.06], 13);
           }
         }
       });
