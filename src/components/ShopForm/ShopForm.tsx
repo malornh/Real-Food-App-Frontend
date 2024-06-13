@@ -51,9 +51,10 @@ interface Props {
   forwardShopUpdate: (shop: Shop)=>void;
   forwardShopDelete: (shopId: number)=>void;
   handleClickedFarmId: (farmId: number)=>void;
+  handleIsShopClicked: (b: boolean)=>void;
 }
 
-const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, forwardShopDelete, handleClickedFarmId }) => {
+const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, forwardShopDelete, handleClickedFarmId, handleIsShopClicked }) => {
   const [shopData, setShopData] = useState<ShopData | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -209,7 +210,7 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                               <img
                                 className="hover-image"
                                 onClick={() =>
-                                  handleClickedFarmId(order.shortFarm.id)
+                                 ( handleClickedFarmId(order.shortFarm.id), handleIsShopClicked(false))
                                 }
                                 src={order.shortFarm.image}
                                 alt="Hover Image"

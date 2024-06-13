@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import './AccountForm.css';
-import UserForm from '../UserForm/UserForm';
+import React, { useEffect, useState } from "react";
+import "./AccountForm.css";
+import UserForm from "../UserForm/UserForm";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { IoMdCloseCircle } from "react-icons/io";
 import { HiMiniPlusCircle } from "react-icons/hi2";
-import ShopForm from '../ShopForm/ShopForm';
-import axios from 'axios';
-import { Shop } from '../ShopForm/EditShop/EditShop';
-import { Box, Flex, useDisclosure } from '@chakra-ui/react'; // Ensure you import Box from Chakra UI
-import Create from '../Create'
-import { Farm } from '../FarmForm/EditFarm';
-import { IoMdArrowDropdownCircle  } from "react-icons/io";
+import ShopForm from "../ShopForm/ShopForm";
+import axios from "axios";
+import { Shop } from "../ShopForm/EditShop/EditShop";
+import { Box, Flex, useDisclosure } from "@chakra-ui/react"; // Ensure you import Box from Chakra UI
+import Create from "../Create";
+import { Farm } from "../FarmForm/EditFarm";
+import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { TbCircleLetterS } from "react-icons/tb";
 import { TbCircleLetterF } from "react-icons/tb";
 
@@ -42,6 +42,7 @@ interface Props {
   forwardShopDelete: (shopId: number) => void;
   forwardClickedFarmId: (farmId: number) => void;
   forwardFarmUpdate: (farm: Farm) => void;
+  handleIsShopClicked: (b: boolean) => void; //False means a farm is clicked.
 }
 
 const AccountForm = ({
@@ -57,6 +58,7 @@ const AccountForm = ({
   forwardShopDelete,
   forwardClickedFarmId,
   forwardFarmUpdate,
+  handleIsShopClicked,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
@@ -66,14 +68,16 @@ const AccountForm = ({
   const [userFarms, setUserFarms] = useState<Farm[]>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showShops, setShowShops] = useState(true);
-  
+
   useEffect(() => {
     console.log(updatedFarm);
     if (updatedFarm) {
-      setUserFarms(prevFarms => {
+      setUserFarms((prevFarms) => {
         // Ensure prevFarms is always an array
         const farms = prevFarms || [];
-        const existingFarmIndex = farms.findIndex(farm => farm.id === updatedFarm.id);
+        const existingFarmIndex = farms.findIndex(
+          (farm) => farm.id === updatedFarm.id
+        );
 
         if (existingFarmIndex !== -1) {
           // Update existing farm
@@ -131,13 +135,10 @@ const AccountForm = ({
   }, [clickedMapShopId, markerClicked]);
 
   useEffect(() => {
-    if(clickedMapShopId === undefined)
-      {
-        setShowForm(false);
-      }
+    if (clickedMapShopId === undefined) {
+      setShowForm(false);
+    }
   }, [clickedMapShopId]);
-
-
 
   const toggleShopForm = () => {
     setShowForm((prevState) => !prevState);
@@ -146,6 +147,7 @@ const AccountForm = ({
   const closeForm = () => {
     resetShopId(undefined);
     setShowForm((prevState) => !prevState);
+    handleIsShopClicked(false);
   };
 
   const toggleAccount = () => {
@@ -154,7 +156,11 @@ const AccountForm = ({
   };
 
   const handleCardClick = (id: number) => {
-    showShops ? (setSelectedShopId(id), handleShopClick(id)) : (setSelectedFarmId(id), handleFarmClick(id));
+    showShops
+      ? (setSelectedShopId(id), handleShopClick(id), handleIsShopClicked(true))
+      : (setSelectedFarmId(id),
+        handleFarmClick(id),
+        handleIsShopClicked(false));
   };
 
   const isOwnedByUser = (
@@ -207,11 +213,11 @@ const AccountForm = ({
             {userShops && (
               <Flex flexDirection="column" mt={10} ml={80}>
                 <TbCircleLetterS
-                  className={`miniCircleIcon ${showShops ? 'tealBorder' : ''}`}
+                  className={`miniCircleIcon ${showShops ? "tealBorder" : ""}`}
                   onClick={() => setShowShops(true)}
                 />
                 <TbCircleLetterF
-                  className={`miniCircleIcon ${!showShops ? 'tealBorder' : ''}`}
+                  className={`miniCircleIcon ${!showShops ? "tealBorder" : ""}`}
                   onClick={() => setShowShops(false)}
                 />
               </Flex>
@@ -279,9 +285,12 @@ const AccountForm = ({
                   </div>
                 ))}
             </div>
-            <Flex flexDirection='column' ml={-45} mt={10}>
-              <HiMiniPlusCircle onClick={handleAddNewCard} className="plusIcon" />
-              <IoMdArrowDropdownCircle className='miniCircleIcon'/>
+            <Flex flexDirection="column" ml={-45} mt={10}>
+              <HiMiniPlusCircle
+                onClick={handleAddNewCard}
+                className="plusIcon"
+              />
+              <IoMdArrowDropdownCircle className="miniCircleIcon" />
             </Flex>
           </Flex>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
@@ -298,6 +307,7 @@ const AccountForm = ({
                   forwardShopDelete(shopId);
                 }}
                 handleClickedFarmId={(farmId) => forwardClickedFarmId(farmId)}
+                handleIsShopClicked={(b)=>handleIsShopClicked(b)}
               />
             ) : (
               <UserForm />
