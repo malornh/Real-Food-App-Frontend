@@ -22,15 +22,17 @@ const App = () => {
     setClickedMapFarmId(updatedFarm?.id);
   }, [updatedFarm])
 
-  const handleShopClick = (id: number) => {
+  function handleShopClick(shopId: number): void {
     setClickedMapFarmId(undefined);
-    setClickedMapShopId(id);
+    setClickedMapShopId(shopId);
     setMarkerClicked(prevState => !prevState);
-  };
+    setIsShopClicked(true);
+  }
 
   function handleFarmClick(farmId: number): void {
     setClickedMapShopId(undefined);
     setClickedMapFarmId(farmId);
+    setIsShopClicked(false);
   }
 
   return (
@@ -59,7 +61,7 @@ const App = () => {
         handleIsShopClicked={(b)=>setIsShopClicked(b)}
       />
       <SofiaVectorMap
-        handleShopClick={handleShopClick}
+        handleShopClick={(shopId)=>handleShopClick(shopId)}
         clickedMapShopId={clickedMapShopId}
         updatedShop={updatedShop}
         deletedShopId={deletedShopId}

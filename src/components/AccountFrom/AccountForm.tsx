@@ -7,7 +7,7 @@ import { HiMiniPlusCircle } from "react-icons/hi2";
 import ShopForm from "../ShopForm/ShopForm";
 import axios from "axios";
 import { Shop } from "../ShopForm/EditShop/EditShop";
-import { Box, Flex, useDisclosure } from "@chakra-ui/react"; // Ensure you import Box from Chakra UI
+import { Box, Button, Flex, useDisclosure } from "@chakra-ui/react"; // Ensure you import Box from Chakra UI
 import Create from "../Create";
 import { Farm } from "../FarmForm/EditFarm";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
@@ -67,7 +67,10 @@ const AccountForm = ({
   const [userShops, setUserShops] = useState<Shop[]>();
   const [userFarms, setUserFarms] = useState<Farm[]>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [showShops, setShowShops] = useState(true);
+  const [showShops, setShowShops] = useState(2); //1 - account, 2 - shops, 3 - farms
+  const [inLoginSelection, setInLoginSelection] = useState(false);
+  const [loginId, setLoginId] = useState<number>();
+  const [loginImage, setLoginImage] = useState("");
 
   useEffect(() => {
     console.log(updatedFarm);
@@ -151,16 +154,50 @@ const AccountForm = ({
   };
 
   const toggleAccount = () => {
-    setSelectedShopId(undefined);
-    resetShopId(undefined);
+    if (inLoginSelection) {
+      setSelectedShopId(undefined);
+      handleIsShopClicked(false);
+      setShowShops(1);
+      setInLoginSelection(false);
+      setLoginImage("");
+    } else {
+      if (showShops === 1) {
+        setSelectedShopId(undefined);
+      }
+      if (showShops === 2 && loginId !== undefined) {
+        setSelectedShopId(loginId);
+        handleShopClick(loginId);
+      }
+      if (showShops === 3 && loginId !== undefined) {
+        setSelectedFarmId(loginId);
+        handleFarmClick(loginId);
+      }
+
+    }
+    //resetShopId(undefined);
   };
 
-  const handleCardClick = (id: number) => {
-    showShops
+  const handleCardClick = (id: number, image: string) => {
+    setLoginId(id);
+    setLoginImage(image);
+    showShops === 2
       ? (setSelectedShopId(id), handleShopClick(id), handleIsShopClicked(true))
       : (setSelectedFarmId(id),
         handleFarmClick(id),
         handleIsShopClicked(false));
+
+    if (showShops === 2) {
+      setSelectedShopId(id);
+      handleShopClick(id);
+      handleIsShopClicked(true);
+      setInLoginSelection(false);
+    }
+    if (showShops === 3) {
+      setSelectedFarmId(id);
+      handleFarmClick(id);
+      handleIsShopClicked(false);
+      setInLoginSelection(false);
+    }
   };
 
   const isOwnedByUser = (
@@ -202,35 +239,67 @@ const AccountForm = ({
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-      <RiAccountCircleFill
-        className="buttonStyle"
-        style={{ right: showForm ? "calc(40%)" : "25px" }}
-        onClick={showForm ? toggleAccount : toggleShopForm}
-      />
+      {loginImage === "" || inLoginSelection ? (
+        <RiAccountCircleFill
+          className="buttonStyle"
+          style={{ right: showForm ? "calc(40%)" : "25px" }}
+          onClick={showForm ? toggleAccount : toggleShopForm}
+        />
+      ) : (
+        <img
+          src={loginImage}
+          className="buttonStyle"
+          style={{
+            right: showForm ? "calc(40%)" : "25px",
+            borderRadius: "50%",
+          }}
+          onClick={showForm ? toggleAccount : toggleShopForm}
+        />
+      )}
+
       {showForm && (
         <div className="formContainerStyle">
           <Flex>
             {userShops && (
               <Flex flexDirection="column" mt={10} ml={80}>
                 <TbCircleLetterS
-                  className={`miniCircleIcon ${showShops ? "tealBorder" : ""}`}
-                  onClick={() => setShowShops(true)}
+                  className={`miniCircleIcon ${
+                    showShops === 2 && inLoginSelection ? "tealBorder" : ""
+                  }`}
+                  onClick={() => setShowShops(2)}
                 />
                 <TbCircleLetterF
-                  className={`miniCircleIcon ${!showShops ? "tealBorder" : ""}`}
-                  onClick={() => setShowShops(false)}
+                  className={`miniCircleIcon ${
+                    showShops === 3 && inLoginSelection ? "tealBorder" : ""
+                  }`}
+                  onClick={() => setShowShops(3)}
                 />
               </Flex>
             )}
             <div className="cardsContainerStyle">
+              {!inLoginSelection && (
+                <Button
+                  background={"rgba(254, 216, 65, 0.8)"}
+                  color={"black"}
+                  width={260}
+                  height={60}
+                  mt={20}
+                  ml={80}
+                  mb={49}
+                  onClick={() => (setInLoginSelection(true), setShowShops(2))}>
+                  Loggin as:
+                </Button>
+              )}
               {userShops &&
-                showShops &&
+                showShops === 2 &&
+                inLoginSelection &&
                 userShops.map((shop: Shop) => (
                   <div
                     key={shop.id}
                     className="cardStyle"
                     onClick={() =>
-                      shop.id !== undefined && handleCardClick(shop.id)
+                      shop.id !== undefined &&
+                      handleCardClick(shop.id, shop.image)
                     }>
                     <img
                       src={shop.image}
@@ -255,13 +324,15 @@ const AccountForm = ({
                 ))}
 
               {userFarms &&
-                !showShops &&
+                showShops === 3 &&
+                inLoginSelection &&
                 userFarms.map((farm: Farm) => (
                   <div
                     key={farm.id}
                     className="cardStyle"
                     onClick={() =>
-                      farm.id !== undefined && handleCardClick(farm.id)
+                      farm.id !== undefined &&
+                      handleCardClick(farm.id, farm.image)
                     }>
                     <img
                       src={farm.image}
@@ -307,7 +378,7 @@ const AccountForm = ({
                   forwardShopDelete(shopId);
                 }}
                 handleClickedFarmId={(farmId) => forwardClickedFarmId(farmId)}
-                handleIsShopClicked={(b)=>handleIsShopClicked(b)}
+                handleIsShopClicked={(b) => handleIsShopClicked(b)}
               />
             ) : (
               <UserForm />

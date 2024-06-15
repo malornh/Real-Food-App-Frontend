@@ -59,7 +59,7 @@ const FarmContainer = ({
       <HiSearchCircle
         className="button"
         style={{ left: showForm ? "calc(40%)" : "25px" }}
-        onClick={()=>null} //TO-DO: Implement search menu
+        onClick={()=>setShowForm(true)} //TO-DO: Implement search menu
       />
       {showForm && (
         <div className="container">
