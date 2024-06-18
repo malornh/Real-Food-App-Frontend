@@ -1,16 +1,25 @@
-import { MouseEvent, useEffect, useState } from 'react';
-import { Text, Tabs, TabList, TabPanels, Tab, TabPanel, Box, Tooltip} from '@chakra-ui/react'
+import { MouseEvent, useEffect, useState } from "react";
+import {
+  Text,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Box,
+  Tooltip,
+} from "@chakra-ui/react";
 import { TbTruckDelivery } from "react-icons/tb";
 import { IoCashOutline } from "react-icons/io5";
 import { PiPackageDuotone, PiShoppingCartSimpleDuotone } from "react-icons/pi";
-import './FarmForm.css';
-import axios from 'axios';
-import EditFarm, { Farm } from './EditFarm';
-import { FcSettings } from 'react-icons/fc';
-import { HiMiniPlusCircle } from 'react-icons/hi2';
-import EditProduct from './EditProduct';
-import  defaultProduct from '../../assets/defaultProduct.png';
-import delivaryButton from '../../assets/deliveryButton.png';
+import "./FarmForm.css";
+import axios from "axios";
+import EditFarm, { Farm } from "./EditFarm";
+import { FcSettings } from "react-icons/fc";
+import { HiMiniPlusCircle } from "react-icons/hi2";
+import EditProduct from "./EditProduct";
+import defaultProduct from "../../assets/defaultProduct.png";
+import delivaryButton from "../../assets/deliveryButton.png";
 
 interface FarmData {
   id: number;
@@ -50,17 +59,30 @@ export interface Product {
 interface Props {
   farmId: number;
   userId: string;
-  forwardFarmUpdate: (farm: Farm)=>void;
-  handleFarmDelete: (farmId: number)=>void;
+  forwardFarmUpdate: (farm: Farm) => void;
+  handleFarmDelete: (farmId: number) => void;
+  accountType: number | undefined; //1 - user, 2 - shop, 3 - farm
+  loginId: number | undefined;
+  inLoginSelection: boolean;
 }
 
-const FarmForm = ({ farmId, userId, forwardFarmUpdate, handleFarmDelete }: Props) => {
+const FarmForm = ({
+  farmId,
+  userId,
+  forwardFarmUpdate,
+  handleFarmDelete,
+  accountType,
+  loginId,
+  inLoginSelection,
+}: Props) => {
   const [farmData, setFarmData] = useState<FarmData>();
   const [selectedType, setSelectedType] = useState<string>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductOpen, setIsEditProductOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product>();
-  const [productTypes, setProductTypes] = useState(Array.from(new Set(farmData?.products.map(p => p.type))).sort());
+  const [productTypes, setProductTypes] = useState(
+    Array.from(new Set(farmData?.products.map((p) => p.type))).sort()
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,35 +91,48 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate, handleFarmDelete }: Props
           `https://localhost:7218/api/Farms/${farmId}/FarmWithProducts`
         );
         setFarmData(response.data);
-        setProductTypes(Array.from(new Set(farmData?.products.map(p => p.type))).sort())
-        console.log('Fresh:');
+        setProductTypes(
+          Array.from(new Set(farmData?.products.map((p) => p.type))).sort()
+        );
+        console.log("Fresh:");
         console.log(response.data);
       } catch (error) {
-        console.error('Error fetching farm data:', error);
+        console.error("Error fetching farm data:", error);
       }
     };
-  
+
     fetchData();
   }, [farmId]);
 
   function mapToFarm(farmData: FarmData): Farm {
-    const { id, userId, image, name, description, latitude, longitude, defaultDeliveryRadius, rating } = farmData;
+    const {
+      id,
+      userId,
+      image,
+      name,
+      description,
+      latitude,
+      longitude,
+      defaultDeliveryRadius,
+      rating,
+    } = farmData;
     return {
       id: id,
       userId: userId,
       image: image,
       name: name,
-      description: description || '', // Using empty string as default for optional field
+      description: description || "", // Using empty string as default for optional field
       latitude: latitude,
       longitude: longitude,
-      defaultDeliveryRadius: defaultDeliveryRadius !== undefined ? defaultDeliveryRadius : undefined, // Handling undefined value
-      rating: rating !== undefined ? rating : undefined // Handling undefined value
+      defaultDeliveryRadius:
+        defaultDeliveryRadius !== undefined ? defaultDeliveryRadius : undefined, // Handling undefined value
+      rating: rating !== undefined ? rating : undefined, // Handling undefined value
     };
   }
 
   function newProduct(farmId: number): Product {
-    const currentDate = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
-  
+    const currentDate = new Date().toISOString().split("T")[0]; // Today's date in YYYY-MM-DD format
+
     return {
       id: undefined,
       name: "",
@@ -111,10 +146,10 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate, handleFarmDelete }: Props
       dateUpdated: currentDate, // Assigning today's date
       image: defaultProduct,
       type: "",
-      rating: null
+      rating: null,
     };
   }
-  
+
   const handleOpenEditProduct = (product: Product) => {
     setSelectedProduct(product);
     setIsEditProductOpen(true);
@@ -131,38 +166,40 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate, handleFarmDelete }: Props
       updatedProductTypes.sort();
       setProductTypes(updatedProductTypes);
     }
-    
-   if(farmData !== undefined)
-    {
+
+    if (farmData !== undefined) {
       const updatedFarmData = {
         ...farmData,
-        products: [...farmData.products, updatedProduct]
+        products: [...farmData.products, updatedProduct],
       };
-      
+
       setFarmData(updatedFarmData);
     }
   };
-  
 
   const handleProductDelete = (productId: number) => {
-    const productIndex = farmData?.products.findIndex(product => product.id === productId);
-  
+    const productIndex = farmData?.products.findIndex(
+      (product) => product.id === productId
+    );
+
     if (productIndex !== undefined && productIndex !== -1 && farmData) {
       const updatedProducts = [
         ...farmData.products.slice(0, productIndex),
-        ...farmData.products.slice(productIndex + 1)
+        ...farmData.products.slice(productIndex + 1),
       ];
-  
+
       const updatedFarmData = {
         ...farmData,
-        products: updatedProducts
+        products: updatedProducts,
       };
-  
+
       setFarmData(updatedFarmData);
-  
+
       const deletedProductType = farmData.products[productIndex].type;
       if (productTypes.includes(deletedProductType)) {
-        const updatedProductTypes = productTypes.filter(type => type !== deletedProductType);
+        const updatedProductTypes = productTypes.filter(
+          (type) => type !== deletedProductType
+        );
         setProductTypes(updatedProductTypes);
       }
     }
@@ -176,16 +213,22 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate, handleFarmDelete }: Props
           <div className="farmInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{farmData.name}</h1>
-              {farmData.userId === userId && (
-                <FcSettings
-                  className="farmFormSettingsBtn"
-                  onClick={() => setIsEditModalOpen(true)}
-                />
-              )}
+              {farmData.userId === userId &&
+               farmData.id === loginId &&
+               accountType === 3 &&
+               !inLoginSelection && (
+                  <FcSettings
+                    className="farmFormSettingsBtn"
+                    onClick={() => setIsEditModalOpen(true)}
+                  />
+                )}
             </div>
             <p className="farmDescription">{farmData.description}</p>
             <div className="farmRatingContainer">
-              {farmData.rating === 0 || farmData.rating === null ? "new" : farmData.rating} / 5.0
+              {farmData.rating === 0 || farmData.rating === null
+                ? "new"
+                : farmData.rating}{" "}
+              / 5.0
             </div>
           </div>
         </div>
@@ -364,17 +407,31 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate, handleFarmDelete }: Props
                           padding: "10px",
                         }}>
                         <div>
-                          {farmData.userId !== userId ? (
-                           <img width="65" height="65" className="shopProductsettingsButton" src="https://img.icons8.com/plasticine/70/truck--v1.png" alt="truck--v1"/>
-                          ) : (
-                            <FcSettings
+                          {accountType === 2 &&
+                           !inLoginSelection &&
+                           (
+                            <img
+                              width="65"
+                              height="65"
                               className="shopProductsettingsButton"
-                              onClick={() => handleOpenEditProduct(p)}
+                              src="https://img.icons8.com/plasticine/70/truck--v1.png"
+                              alt="truck button"
+                              onClick={()=>null}
                             />
                           )}
+                          {farmData.userId === userId &&
+                           farmData.id === loginId &&
+                           accountType === 3 &&
+                           !inLoginSelection && (
+                              <FcSettings
+                                className="shopProductsettingsButton"
+                                onClick={() => handleOpenEditProduct(p)}
+                              />
+                            )}
                         </div>
-                      <div className="productRatingContainer">{p.rating === null ? 'new' : p.rating} / 5.0</div>
-
+                        <div className="productRatingContainer">
+                          {p.rating === null ? "new" : p.rating} / 5.0
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -395,7 +452,7 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate, handleFarmDelete }: Props
                 name: farm.name,
                 image: farm.image,
                 latitude: farm.latitude,
-                longitude: farm.longitude
+                longitude: farm.longitude,
               };
             });
             forwardFarmUpdate(farm);
@@ -418,6 +475,6 @@ const FarmForm = ({ farmId, userId, forwardFarmUpdate, handleFarmDelete }: Props
       )}
     </div>
   );
-}
+};
 
 export default FarmForm;

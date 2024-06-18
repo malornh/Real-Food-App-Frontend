@@ -72,7 +72,6 @@ const SofiaMap: React.FC<Props> = ({
   }, [deletedFarmId]);
 
   useEffect(() => {
-    console.log(mapContainer.current);
     if (mapContainer.current && !mapRef.current) {
       mapRef.current = L.map(mapContainer.current).setView([42.69, 23.35], 13);
 

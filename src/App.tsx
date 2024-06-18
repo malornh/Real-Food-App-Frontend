@@ -16,7 +16,9 @@ const App = () => {
   const [deletedFarmId, setDeletedFarmId] = useState<number | undefined>();
   const [isShopClicked, setIsShopClicked] = useState<boolean>(true);
 
-  console.log('isShopClicked: ' + isShopClicked);
+  const [inLoginSelection, setInLoginSelection] = useState(false);
+  const [accountType, setAccountType] = useState<number | undefined>(); //1 - user, 2 - shop, 3 - farm 
+  const [loginId, setLoginId] = useState<number | undefined>();
 
   useEffect(()=>{
     setClickedMapFarmId(updatedFarm?.id);
@@ -35,6 +37,7 @@ const App = () => {
     setIsShopClicked(false);
   }
 
+
   return (
     <div>
       <AccountForm
@@ -50,23 +53,31 @@ const App = () => {
         forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
         updatedFarm={updatedFarm}
         deletedFarmId={deletedFarmId}
-        handleIsShopClicked={(b)=>setIsShopClicked(b)}
+        handleIsShopClicked={(b) => setIsShopClicked(b)}
+        handleLoggedAs={(id, accountType, inLoginSelection) => (
+          setLoginId(id),
+          setAccountType(accountType),
+          setInLoginSelection(inLoginSelection)
+        )}
       />
       <FarmContainer
         farmId={clickedMapFarmId}
         resetFarmId={() => setClickedMapFarmId(undefined)}
         userId={userId}
         forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
-        forwardFarmDelete={(farmId)=>setDeletedFarmId(farmId)}
-        handleIsShopClicked={(b)=>setIsShopClicked(b)}
+        forwardFarmDelete={(farmId) => setDeletedFarmId(farmId)}
+        handleIsShopClicked={(b) => setIsShopClicked(b)}
+        accountType={accountType}
+        loginId={loginId}
+        inLoginSelection={inLoginSelection}
       />
       <SofiaVectorMap
-        handleShopClick={(shopId)=>handleShopClick(shopId)}
+        handleShopClick={(shopId) => handleShopClick(shopId)}
         clickedMapShopId={clickedMapShopId}
         updatedShop={updatedShop}
         deletedShopId={deletedShopId}
         deletedFarmId={deletedFarmId}
-        handleFarmClick={(farmId)=>handleFarmClick(farmId)}
+        handleFarmClick={(farmId) => handleFarmClick(farmId)}
         clickedMapFarmId={clickedMapFarmId}
         isShopClicked={isShopClicked}
       />

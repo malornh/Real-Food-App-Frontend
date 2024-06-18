@@ -43,6 +43,7 @@ interface Props {
   forwardClickedFarmId: (farmId: number) => void;
   forwardFarmUpdate: (farm: Farm) => void;
   handleIsShopClicked: (b: boolean) => void; //False means a farm is clicked.
+  handleLoggedAs: (id: number | undefined, accountType: number, inLoginSelection: boolean)=>void;
 }
 
 const AccountForm = ({
@@ -59,6 +60,7 @@ const AccountForm = ({
   forwardClickedFarmId,
   forwardFarmUpdate,
   handleIsShopClicked,
+  handleLoggedAs,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
@@ -67,13 +69,16 @@ const AccountForm = ({
   const [userShops, setUserShops] = useState<Shop[]>();
   const [userFarms, setUserFarms] = useState<Farm[]>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [showShops, setShowShops] = useState(2); //1 - account, 2 - shops, 3 - farms
+  const [accountType, setAccountType] = useState(1); //1 - account, 2 - shops, 3 - farms
   const [inLoginSelection, setInLoginSelection] = useState(false);
   const [loginId, setLoginId] = useState<number>();
   const [loginImage, setLoginImage] = useState("");
 
+  useEffect(()=>{
+    handleLoggedAs(loginId, accountType, inLoginSelection);
+  }, [loginId, accountType, inLoginSelection])
+
   useEffect(() => {
-    console.log(updatedFarm);
     if (updatedFarm) {
       setUserFarms((prevFarms) => {
         // Ensure prevFarms is always an array
@@ -151,48 +156,43 @@ const AccountForm = ({
     resetShopId(undefined);
     setShowForm((prevState) => !prevState);
     handleIsShopClicked(false);
+    setInLoginSelection(false);
   };
 
   const toggleAccount = () => {
     if (inLoginSelection) {
       setSelectedShopId(undefined);
       handleIsShopClicked(false);
-      setShowShops(1);
+      setAccountType(1);
       setInLoginSelection(false);
       setLoginImage("");
     } else {
-      if (showShops === 1) {
+      if (accountType === 1) {
         setSelectedShopId(undefined);
       }
-      if (showShops === 2 && loginId !== undefined) {
+      if (accountType === 2 && loginId !== undefined) {
         setSelectedShopId(loginId);
         handleShopClick(loginId);
       }
-      if (showShops === 3 && loginId !== undefined) {
+      if (accountType === 3 && loginId !== undefined) {
         setSelectedFarmId(loginId);
         handleFarmClick(loginId);
       }
 
     }
-    //resetShopId(undefined);
   };
 
   const handleCardClick = (id: number, image: string) => {
     setLoginId(id);
     setLoginImage(image);
-    showShops === 2
-      ? (setSelectedShopId(id), handleShopClick(id), handleIsShopClicked(true))
-      : (setSelectedFarmId(id),
-        handleFarmClick(id),
-        handleIsShopClicked(false));
 
-    if (showShops === 2) {
+    if (accountType === 2) {
       setSelectedShopId(id);
       handleShopClick(id);
       handleIsShopClicked(true);
       setInLoginSelection(false);
     }
-    if (showShops === 3) {
+    if (accountType === 3) {
       setSelectedFarmId(id);
       handleFarmClick(id);
       handleIsShopClicked(false);
@@ -260,19 +260,20 @@ const AccountForm = ({
       {showForm && (
         <div className="formContainerStyle">
           <Flex>
-            {userShops && (
+            {(userShops || userFarms) &&
+              (
               <Flex flexDirection="column" mt={10} ml={80}>
                 <TbCircleLetterS
                   className={`miniCircleIcon ${
-                    showShops === 2 && inLoginSelection ? "tealBorder" : ""
+                    accountType === 2 && inLoginSelection ? "tealBorder" : ""
                   }`}
-                  onClick={() => setShowShops(2)}
+                  onClick={() => inLoginSelection && setAccountType(2)}
                 />
                 <TbCircleLetterF
                   className={`miniCircleIcon ${
-                    showShops === 3 && inLoginSelection ? "tealBorder" : ""
+                    accountType === 3 && inLoginSelection ? "tealBorder" : ""
                   }`}
-                  onClick={() => setShowShops(3)}
+                  onClick={() => inLoginSelection && setAccountType(3)}
                 />
               </Flex>
             )}
@@ -286,12 +287,12 @@ const AccountForm = ({
                   mt={20}
                   ml={80}
                   mb={49}
-                  onClick={() => (setInLoginSelection(true), setShowShops(2))}>
-                  Loggin as:
+                  onClick={() => (setInLoginSelection(true), setAccountType(2))}>
+                  Login as:
                 </Button>
               )}
               {userShops &&
-                showShops === 2 &&
+                accountType === 2 &&
                 inLoginSelection &&
                 userShops.map((shop: Shop) => (
                   <div
@@ -324,7 +325,7 @@ const AccountForm = ({
                 ))}
 
               {userFarms &&
-                showShops === 3 &&
+                accountType === 3 &&
                 inLoginSelection &&
                 userFarms.map((farm: Farm) => (
                   <div
@@ -379,6 +380,9 @@ const AccountForm = ({
                 }}
                 handleClickedFarmId={(farmId) => forwardClickedFarmId(farmId)}
                 handleIsShopClicked={(b) => handleIsShopClicked(b)}
+                accountType={accountType}
+                loginId={loginId}
+                inLoginSelection={inLoginSelection}
               />
             ) : (
               <UserForm />

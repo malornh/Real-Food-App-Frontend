@@ -14,6 +14,9 @@ interface Props {
   forwardFarmUpdate: (farm: Farm)=>void;
   forwardFarmDelete: (farmId: number)=>void;
   handleIsShopClicked: (b: boolean)=>void;
+  accountType: number | undefined;
+  loginId: number | undefined;
+  inLoginSelection: boolean;
 }
 
 const FarmContainer = ({
@@ -23,6 +26,9 @@ const FarmContainer = ({
   forwardFarmUpdate,
   forwardFarmDelete,
   handleIsShopClicked,
+  accountType,
+  loginId,
+  inLoginSelection
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
 
@@ -93,6 +99,9 @@ const FarmContainer = ({
                 handleFarmDelete={(farmId) => (
                   forwardFarmDelete(farmId), setShowForm(false)
                 )}
+                accountType={accountType}
+                loginId={loginId}
+                inLoginSelection={inLoginSelection}
               />
             ) : (
               <SearchForm />

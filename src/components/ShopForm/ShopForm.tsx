@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Text, Tab, TabList, TabPanel, TabPanels, Tabs, Box } from '@chakra-ui/react';
-import { BsArrowRepeat } from 'react-icons/bs';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Text,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Box,
+} from "@chakra-ui/react";
+import { BsArrowRepeat } from "react-icons/bs";
 import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
 import { FcSettings } from "react-icons/fc";
 import { HiMiniPlusCircle } from "react-icons/hi2";
-import './ShopForm.css';
-import EditShop, { Shop } from './EditShop/EditShop';
+import "./ShopForm.css";
+import EditShop, { Shop } from "./EditShop/EditShop";
 
 interface ShopData {
   id: number;
@@ -48,18 +56,33 @@ interface Farm {
 interface Props {
   shopId: number | undefined;
   isShopOwned: boolean | undefined;
-  forwardShopUpdate: (shop: Shop)=>void;
-  forwardShopDelete: (shopId: number)=>void;
-  handleClickedFarmId: (farmId: number)=>void;
-  handleIsShopClicked: (b: boolean)=>void;
+  forwardShopUpdate: (shop: Shop) => void;
+  forwardShopDelete: (shopId: number) => void;
+  handleClickedFarmId: (farmId: number) => void;
+  handleIsShopClicked: (b: boolean) => void;
+  accountType: number; //1 - user, 2 - shop, 3 - farm
+  loginId: number | undefined;
+  inLoginSelection: boolean;
 }
 
-const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, forwardShopDelete, handleClickedFarmId, handleIsShopClicked }) => {
+const ShopForm: React.FC<Props> = ({
+  shopId,
+  isShopOwned,
+  forwardShopUpdate,
+  forwardShopDelete,
+  handleClickedFarmId,
+  handleIsShopClicked,
+  accountType,
+  loginId,
+  inLoginSelection,
+}) => {
   const [shopData, setShopData] = useState<ShopData | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const typeList = Array.from(new Set(shopData?.orders.map(o => o.product.type))).sort();
+  const typeList = Array.from(
+    new Set(shopData?.orders.map((o) => o.product.type))
+  ).sort();
 
   useEffect(() => {
     const fetchShopData = async () => {
@@ -69,8 +92,6 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
             `https://localhost:7218/api/Shops/${shopId}/OrdersWithFarms`
           );
           setShopData(response.data);
-          console.log('Shop Data: ');
-          console.log(shopData);
         }
       } catch (error) {
         console.error(error);
@@ -82,7 +103,9 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
 
   const flipImage = (orderId: number) => {
     setHoveredOrderId(orderId);
-    const cardInner = document.querySelector(`#flip-card-inner-${orderId}`) as HTMLElement;
+    const cardInner = document.querySelector(
+      `#flip-card-inner-${orderId}`
+    ) as HTMLElement;
     if (cardInner) {
       cardInner.style.transform = "rotateY(180deg)";
     }
@@ -90,7 +113,9 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
 
   const unflipImage = (orderId: number) => {
     setHoveredOrderId(null);
-    const cardInner = document.querySelector(`#flip-card-inner-${orderId}`) as HTMLElement;
+    const cardInner = document.querySelector(
+      `#flip-card-inner-${orderId}`
+    ) as HTMLElement;
     if (cardInner) {
       cardInner.style.transform = "rotateY(0deg)";
     }
@@ -104,25 +129,24 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
     description: shop.description,
     latitude: shop.latitude,
     longitude: shop.longitude,
-    rating: shop.rating
+    rating: shop.rating,
   });
 
   function handleShopUpdate(shop: Shop): void {
-    forwardShopUpdate(shop);  // Forwarding the updated shop data
-    setShopData(currentShopData => {
-      if (!currentShopData) return currentShopData;  // Check for null or undefined
+    forwardShopUpdate(shop); // Forwarding the updated shop data
+    setShopData((currentShopData) => {
+      if (!currentShopData) return currentShopData; // Check for null or undefined
       return {
-        ...currentShopData,  // Spread all existing properties
+        ...currentShopData, // Spread all existing properties
         // Only overwrite properties that are present in the updated shop data
         name: shop.name,
         description: shop.description,
         image: shop.image,
         latitude: shop.latitude,
-        longitude: shop.longitude
+        longitude: shop.longitude,
       };
     });
   }
-  
 
   return (
     <div>
@@ -132,12 +156,15 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
           <div className="shopInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="shopTitle">{shopData.name}</h1>
-              {isShopOwned && (
-                <FcSettings
-                  className="shopFormSettingsBtn"
-                  onClick={() => setIsEditModalOpen(true)}
-                />
-              )}
+              {isShopOwned &&
+                accountType === 2 &&
+                !inLoginSelection &&
+                loginId === shopData.id && (
+                  <FcSettings
+                    className="shopFormSettingsBtn"
+                    onClick={() => setIsEditModalOpen(true)}
+                  />
+                )}
             </div>
             <p className="shopDescription">{shopData.description}</p>
             <div className="shopRatingContainer">{shopData.rating} / 5.0</div>
@@ -209,9 +236,10 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                             <div className="flip-card-back">
                               <img
                                 className="hover-image"
-                                onClick={() =>
-                                 ( handleClickedFarmId(order.shortFarm.id), handleIsShopClicked(false))
-                                }
+                                onClick={() => (
+                                  handleClickedFarmId(order.shortFarm.id),
+                                  handleIsShopClicked(false)
+                                )}
                                 src={order.shortFarm.image}
                                 alt="Hover Image"
                               />
@@ -252,21 +280,26 @@ const ShopForm: React.FC<Props> = ({ shopId, isShopOwned, forwardShopUpdate, for
                         padding: "10px",
                       }}>
                       <div>
-                        {!isShopOwned ? (
-                          <PiShoppingCartSimpleDuotone className="shopCartButton" />
-                        ) : (
-                          <FcSettings
-                            className="shopProductsettingsButton"
-                            onClick={() => console.log()}
-                          />
-                        )}
+                        {accountType === 1 &&
+                          !inLoginSelection && (
+                            <PiShoppingCartSimpleDuotone className="shopCartButton" onClick={()=>null} />
+                          )}
+                        {accountType === 2 &&
+                          !inLoginSelection &&
+                          loginId === shopData.id &&
+                          isShopOwned && (
+                            <FcSettings
+                              className="shopProductsettingsButton"
+                              onClick={() => null}
+                            />
+                          )}
                       </div>
                       <div className="shopProductRatingContainer">
                         {order.product.rating === null
                           ? "new"
-                          : (Number.isInteger(order.product.rating)
+                          : Number.isInteger(order.product.rating)
                           ? order.product.rating + ".0"
-                          : order.product.rating)}{" "}
+                          : order.product.rating}{" "}
                         / 5.0
                       </div>
                     </div>
