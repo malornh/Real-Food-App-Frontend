@@ -20,6 +20,7 @@ import { HiMiniPlusCircle } from "react-icons/hi2";
 import EditProduct from "./EditProduct";
 import defaultProduct from "../../assets/defaultProduct.png";
 import delivaryButton from "../../assets/deliveryButton.png";
+import CreateOrder, { Order } from "./CreateOrder";
 
 interface FarmData {
   id: number;
@@ -83,6 +84,9 @@ const FarmForm = ({
   const [productTypes, setProductTypes] = useState(
     Array.from(new Set(farmData?.products.map((p) => p.type))).sort()
   );
+  const [isOrderModalOpen, setOrderModalOpen] = useState(false);
+  const [selectedOrderProduct, setSelectedOrderProduct] =
+    useState<Product | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,6 +107,21 @@ const FarmForm = ({
 
     fetchData();
   }, [farmId]);
+
+  const handleOpenOrderModal = (product: Product) => {
+    setSelectedOrderProduct(product);
+    setOrderModalOpen(true);
+  };
+
+  const handleCloseOrderModal = () => {
+    setOrderModalOpen(false);
+    setSelectedOrderProduct(null);
+  };
+
+  const handleOrderCreate = (order: Order) => {
+    console.log("Order created:", order);
+    // Handle order creation logic, e.g., updating state or sending data to the server
+  };
 
   function mapToFarm(farmData: FarmData): Farm {
     const {
@@ -214,9 +233,9 @@ const FarmForm = ({
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{farmData.name}</h1>
               {farmData.userId === userId &&
-               farmData.id === loginId &&
-               accountType === 3 &&
-               !inLoginSelection && (
+                farmData.id === loginId &&
+                accountType === 3 &&
+                !inLoginSelection && (
                   <FcSettings
                     className="farmFormSettingsBtn"
                     onClick={() => setIsEditModalOpen(true)}
@@ -407,22 +426,20 @@ const FarmForm = ({
                           padding: "10px",
                         }}>
                         <div>
-                          {accountType === 2 &&
-                           !inLoginSelection &&
-                           (
+                          {accountType === 2 && !inLoginSelection && (
                             <img
                               width="65"
                               height="65"
                               className="shopProductsettingsButton"
                               src="https://img.icons8.com/plasticine/70/truck--v1.png"
                               alt="truck button"
-                              onClick={()=>null}
+                              onClick={() => handleOpenOrderModal(p)}
                             />
                           )}
                           {farmData.userId === userId &&
-                           farmData.id === loginId &&
-                           accountType === 3 &&
-                           !inLoginSelection && (
+                            farmData.id === loginId &&
+                            accountType === 3 &&
+                            !inLoginSelection && (
                               <FcSettings
                                 className="shopProductsettingsButton"
                                 onClick={() => handleOpenEditProduct(p)}
@@ -471,6 +488,16 @@ const FarmForm = ({
           product={selectedProduct}
           onProductUpdate={(p) => handleProductUpdate(p)}
           onDelete={handleProductDelete}
+        />
+      )}
+
+      {loginId && selectedOrderProduct && (
+        <CreateOrder
+          isOpen={isOrderModalOpen}
+          onClose={handleCloseOrderModal}
+          product={selectedOrderProduct}
+          shopId={loginId}
+          onOrderCreate={handleOrderCreate}
         />
       )}
     </div>
