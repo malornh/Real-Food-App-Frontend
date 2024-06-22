@@ -295,13 +295,8 @@ const ShopForm: React.FC<Props> = ({
                           )}
                       </div>
                       <div className="shopProductRatingContainer">
-                        {order.product.rating === null
-                          ? "new"
-                          : Number.isInteger(order.product.rating)
-                          ? order.product.rating + ".0"
-                          : order.product.rating}{" "}
-                        / 5.0
-                      </div>
+                          {order.product.rating === null ? "new" : order.product.rating} / 5.0
+                        </div>
                     </div>
                   </div>
                 ))}

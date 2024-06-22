@@ -115,7 +115,7 @@ const CreateOrder: React.FC<Props> = ({
                 <Text mb={2} fontSize={40} color={"black"}>
                   {product.name}
                 </Text>
-                <Text color={"black"} maxWidth={435}>
+                <Text color={"black"} width={435}>
                   {product.description}
                 </Text>
                 <Text
@@ -136,7 +136,7 @@ const CreateOrder: React.FC<Props> = ({
                 bg="gray" // Color of the vertical line
                 borderRadius={5}
                 mt={8}
-                ml={35}
+                ml={8}
                 mr={35}
               />
               <Box mt={6}>

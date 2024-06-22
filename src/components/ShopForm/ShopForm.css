@@ -1,231 +1,244 @@
 /* FarmForm.css */
 .shopCardContainer {
-    display: flex;
-    flex-direction: row;
-    margin-top: 10px;
-    background: rgba(254, 216, 65, 0.8);
-    border-radius: 5px;
-  }
-  
-  .shopImage {
-    border-radius: 5px;
-    width: 300px;
-    height: 300px;
-    margin-right: 5px;
-    padding: 0px;
-  }
-  
-  .shopInfoContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    position: relative;
-    border-radius: 5px;
-    padding: 10px;
-  }
-  
-  .shopTitle {
-    color: black;
-    margin-bottom: 10px;
-    margin-right: 10px;
-    margin-top: 0;
-    width: 600px;
-    font-size: 40px;
-  }
-  
-  .shopDescription {
-    color: black;
-    margin-bottom: 0;
-    max-height: 160px; /* Adjust the height as per your requirement */
-    overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  background: rgba(254, 216, 65, 0.8);
+  border-radius: 5px;
+}
+
+.shopImage {
+  border-radius: 5px;
+  width: 300px;
+  height: 300px;
+  margin-right: 5px;
+  padding: 0px;
+}
+
+.shopInfoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.shopTitle {
+  color: black;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-top: 0;
+  width: 600px;
+  font-size: 40px;
+}
+
+.shopDescription {
+  color: black;
+  margin-bottom: 0;
+  max-height: 160px;
+  /* Adjust the height as per your requirement */
+  overflow-y: auto;
 }
 
 /* Hide scrollbar for WebKit browsers */
 .shopDescription::-webkit-scrollbar {
-    width: 0; /* This will hide the scrollbar */
-    background: transparent; /* Optional: You can set a background color here */
+  width: 0;
+  /* This will hide the scrollbar */
+  background: transparent;
+  /* Optional: You can set a background color here */
 }
-  
-  .shopRatingContainer {
-    position: absolute;
-    bottom: 10px;
-    right: 5px;
-    background: rgba(7, 175, 0);
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-  
-  .shopProductRatingContainer {
-    background: rgba(7, 175, 0);
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    font-size: 14px;
-    max-width: 60px;
-    margin-top: 30px;
-  }
-  
-  
-  /* styles.css */
-  
-  .shopProductTabMenu {
-    margin-top: 30px;
-  }
 
-  .shopProductPlusButton {
-    font-size: 50px;  
-    color: rgba(0, 254, 0, 0.7);
-    z-index: 999;
-    cursor: pointer;
-    display: inline-block;
-    transition: transform 0.3s ease;
-    margin-top: 20px;
-    overflow-y: hidden;
-  }
-  
-  .shopProductPlusButton:hover {
-    transform: scale(1.1);
-  }
+.shopRatingContainer {
+  position: absolute;
+  bottom: 10px;
+  right: 5px;
+  background: rgba(7, 175, 0);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+}
 
-  
-  .shopTab {
-    margin-right: 10px;
-    color: black;
-    background-color: rgba(254, 216, 65, 0.8);
-    transition: transform 0.3s ease;
-  }
-  
-  .shopTab:hover {
-    transform: scale(1.1);
-  }
-  
-  .shopTabPanel {
-    border-radius: 5px;
-    margin-top: 10px;
-  }
-  
-  .shopProductDescriptionContainer {
-    width: 430px; /* Adjust this value as needed */
-    height: 120px; /* Adjust this value as needed */
-    overflow-y: auto;
-    margin-top: -30px; /* Adjust this value as needed */
-  }
-  
-  .shopProductDescriptionContainer::-webkit-scrollbar {
-    width: 5px; /* Adjust width as needed */
-    background-color: transparent; /* Transparent background */
-  }
-  
-  .shopProductDescriptionContainer::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2); /* Light color for scrollbar thumb */
-    border-radius: 10px; /* Rounded corners for the thumb */
-  }
-  
-  .shopProductDescriptionContainer::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.3); /* Darker color on hover */
-  }
-  
-  .shopProductDescriptionContainer::-webkit-scrollbar-track {
-    background: transparent; /* Transparent track */
-  }
-  
-  .shopLabelContent {
-    background-color: rgb(6, 6, 6);
-    color: white;
-    border-radius: 5px;
-    max-width: 40px;
-    max-height: 20px;
-    text-align: center;
-  }
-  
-  .flip-card {
-    background-color: transparent;
-    width: 130px;
-    height: 130px;
-    perspective: 1000px;
-  }
-  
-  .flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-  }
-  
-  .flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-  }
-  
-  .flip-card-front,
-  .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-  }
-  
-  .flip-card-back {
-    transform: rotateY(180deg);
-  }
-  
-  .original-image,
-  .hover-image {
-    width: 100%;
-    height: 100%;
-    border-radius: 15px;
-    padding: 10px;
-    cursor: pointer;
-  }
+.shopProductRatingContainer {
+  background: rgba(7, 175, 0);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+  max-width: 60px;
+  margin-top: auto;
+}
 
-  
-  .shopCartButton {
-    color: black;
-    margin-top: 7px;
-    margin-right: 7px;
-    font-size: 50px;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-    display: inline-block;
-    transition: transform 0.3s ease;
-  }
-  
-  .shopCartButton:hover {
-    transform: scale(1.1);
-  }
 
-  .shopProductsettingsButton {
-    color: black;
-    margin-top: 7px;
-    margin-right: 7px;
-    font-size: 50px;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-    display: inline-block;
-    transition: transform 0.3s ease;
-  }
-  
-  .shopProductsettingsButton:hover {
-    transform: scale(1.1);
-  }
+/* styles.css */
 
-  .shopFormSettingsBtn{
-    margin-top: -25px;
-    margin-right: -5px;
-    color: black;
-    font-size: 100px;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-    display: inline-block;
-    transition: transform 0.3s ease;
-  }
-  
-  .shopFormSettingsBtn:hover {
-    transform: scale(1.1);
-  }
+.shopProductTabMenu {
+  margin-top: 30px;
+}
+
+.shopProductPlusButton {
+  font-size: 50px;
+  color: rgba(0, 254, 0, 0.7);
+  z-index: 999;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform 0.3s ease;
+  margin-top: 20px;
+  overflow-y: hidden;
+}
+
+.shopProductPlusButton:hover {
+  transform: translateY(-5px); /* Adjust the value as needed */
+  transition: transform 0.3s ease; /* Smooth transition effect */
+}
+
+.shopTab {
+  margin-right: 10px;
+  color: black;
+  background-color: rgba(254, 216, 65, 0.8);
+  transition: transform 0.3s ease;
+}
+
+.shopTab:hover {
+  transform: translateY(-5px); /* Adjust the value as needed */
+  transition: transform 0.3s ease; /* Smooth transition effect */
+}
+
+.shopTabPanel {
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.shopProductDescriptionContainer {
+  width: 430px;
+  /* Adjust this value as needed */
+  height: 120px;
+  /* Adjust this value as needed */
+  overflow-y: auto;
+  margin-top: -30px;
+  /* Adjust this value as needed */
+}
+
+.shopProductDescriptionContainer::-webkit-scrollbar {
+  width: 5px;
+  /* Adjust width as needed */
+  background-color: transparent;
+  /* Transparent background */
+}
+
+.shopProductDescriptionContainer::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  /* Light color for scrollbar thumb */
+  border-radius: 10px;
+  /* Rounded corners for the thumb */
+}
+
+.shopProductDescriptionContainer::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  /* Darker color on hover */
+}
+
+.shopProductDescriptionContainer::-webkit-scrollbar-track {
+  background: transparent;
+  /* Transparent track */
+}
+
+.shopLabelContent {
+  background-color: rgb(6, 6, 6);
+  color: white;
+  border-radius: 5px;
+  max-width: 40px;
+  max-height: 20px;
+  text-align: center;
+}
+
+.flip-card {
+  background-color: transparent;
+  width: 130px;
+  height: 130px;
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+.original-image,
+.hover-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+
+.shopCartButton {
+  color: black;
+  margin-top: 7px;
+  margin-right: 7px;
+  font-size: 50px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.shopCartButton:hover {
+  transform: scale(1.1);
+}
+
+.shopProductsettingsButton {
+  color: black;
+  margin-top: 7px;
+  margin-right: 7px;
+  font-size: 50px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.shopProductsettingsButton:hover {
+  transform: scale(1.1);
+}
+
+.shopFormSettingsBtn {
+  margin-top: -25px;
+  margin-right: -5px;
+  color: black;
+  font-size: 100px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.shopFormSettingsBtn:hover {
+  transform: scale(1.1);
+}

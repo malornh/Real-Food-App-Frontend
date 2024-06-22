@@ -18,6 +18,8 @@ interface Props {
   handleFarmClick: (farmId: number) => void;
   clickedMapFarmId: number | undefined;
   isShopClicked: boolean;
+  isFarmFormOpen: (b:boolean)=>void;
+  isDeliveryListOpen: boolean;
 }
 
 const SofiaMap: React.FC<Props> = ({
@@ -28,7 +30,9 @@ const SofiaMap: React.FC<Props> = ({
   deletedFarmId,
   handleFarmClick,
   clickedMapFarmId,
-  isShopClicked
+  isShopClicked,
+  isFarmFormOpen,
+  isDeliveryListOpen
 }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -179,6 +183,7 @@ const SofiaMap: React.FC<Props> = ({
         marker.on("click", () => {
           if (id !== undefined) {
             handleFarmClick(id);
+            isFarmFormOpen(true);
           }
         });
 
@@ -186,13 +191,19 @@ const SofiaMap: React.FC<Props> = ({
           // TO-DO: implement farm info bubble
         });
 
-        if (id === clickedMapFarmId && isShopClicked === false) {
-          if (clickedMapShopId === undefined) {
-            mapRef.current?.setView([latitude, longitude - 0.06], 13);
-          } else {
-            mapRef.current?.setView([latitude, longitude], 13);
+        if(isDeliveryListOpen){
+          mapRef.current?.setView([latitude, longitude], 13);
+        }else{
+          if (id === clickedMapFarmId && isShopClicked === false) {
+            if (clickedMapShopId === undefined) {
+              mapRef.current?.setView([latitude, longitude - 0.06], 13);
+            } else {
+              mapRef.current?.setView([latitude, longitude], 13);
+            }
           }
         }
+
+      
       });
     }
   }, [shops, handleShopClick, clickedMapShopId, clickedMapFarmId]);

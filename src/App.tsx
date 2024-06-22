@@ -1,33 +1,41 @@
-import { useEffect, useState } from 'react';
-import AccountForm from './components/AccountFrom/AccountForm';
-import SofiaVectorMap from './components/SofiaVectorMap';
-import { Shop } from './components/ShopForm/EditShop/EditShop';
-import FarmContainer from './components/FarmContainer';
-import { Farm } from './components/FarmForm/EditFarm';
+import { useEffect, useState } from "react";
+import AccountForm from "./components/AccountFrom/AccountForm";
+import SofiaVectorMap from "./components/SofiaVectorMap";
+import { Shop } from "./components/ShopForm/EditShop/EditShop";
+import FarmContainer from "./components/FarmContainer";
+import { Farm } from "./components/FarmForm/EditFarm";
+import OrderList from "./components/OrderList/OrderList";
 
 const App = () => {
-  const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(undefined);
+  const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(
+    undefined
+  );
   const [markerClicked, setMarkerClicked] = useState(false);
-  const userId = '0f17881d-b0cd-45b1-afdc-b15f93eeabcc';
+  const userId = "0f17881d-b0cd-45b1-afdc-b15f93eeabcc";
   const [updatedShop, setUpdatedShop] = useState<Shop>();
   const [deletedShopId, setDeletedShopId] = useState<number | undefined>();
-  const [clickedMapFarmId, setClickedMapFarmId] = useState<number | undefined>();
+  const [clickedMapFarmId, setClickedMapFarmId] = useState<
+    number | undefined
+  >();
   const [updatedFarm, setUpdatedFarm] = useState<Farm>();
   const [deletedFarmId, setDeletedFarmId] = useState<number | undefined>();
   const [isShopClicked, setIsShopClicked] = useState<boolean>(true);
 
   const [inLoginSelection, setInLoginSelection] = useState(false);
-  const [accountType, setAccountType] = useState<number | undefined>(); //1 - user, 2 - shop, 3 - farm 
+  const [accountType, setAccountType] = useState<number | undefined>(); //1 - user, 2 - shop, 3 - farm
   const [loginId, setLoginId] = useState<number | undefined>();
 
-  useEffect(()=>{
-    setClickedMapFarmId(updatedFarm?.id);
-  }, [updatedFarm])
+  const [isDeliveryListOpen, setIsDeliveryListOpen] = useState(false);
+  const [isFarmFormOpen, setIsFarmFormOpen] = useState(false);
 
-  function handleShopClick(shopId: number): void {
+  useEffect(() => {
+    setClickedMapFarmId(updatedFarm?.id);
+  }, [updatedFarm]);
+
+  function handleShopClick(shopId: number | undefined): void {
     setClickedMapFarmId(undefined);
     setClickedMapShopId(shopId);
-    setMarkerClicked(prevState => !prevState);
+    setMarkerClicked((prevState) => !prevState);
     setIsShopClicked(true);
   }
 
@@ -36,7 +44,6 @@ const App = () => {
     setClickedMapFarmId(farmId);
     setIsShopClicked(false);
   }
-
 
   return (
     <div>
@@ -59,6 +66,7 @@ const App = () => {
           setAccountType(accountType),
           setInLoginSelection(inLoginSelection)
         )}
+        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
       />
       <FarmContainer
         farmId={clickedMapFarmId}
@@ -70,7 +78,17 @@ const App = () => {
         accountType={accountType}
         loginId={loginId}
         inLoginSelection={inLoginSelection}
+        isDeliveryListOpen={isDeliveryListOpen}
+        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
       />
+      {accountType == 3 && !isFarmFormOpen && !inLoginSelection && (
+        <OrderList
+          farmId={loginId}
+          isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
+          isFarmFormOpen={isFarmFormOpen}
+          handleClickedShop={(shopId)=>handleShopClick(shopId)}
+        />
+      )}
       <SofiaVectorMap
         handleShopClick={(shopId) => handleShopClick(shopId)}
         clickedMapShopId={clickedMapShopId}
@@ -80,6 +98,8 @@ const App = () => {
         handleFarmClick={(farmId) => handleFarmClick(farmId)}
         clickedMapFarmId={clickedMapFarmId}
         isShopClicked={isShopClicked}
+        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
+        isDeliveryListOpen={isDeliveryListOpen}
       />
     </div>
   );

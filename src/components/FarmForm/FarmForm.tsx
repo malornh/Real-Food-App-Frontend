@@ -98,8 +98,6 @@ const FarmForm = ({
         setProductTypes(
           Array.from(new Set(farmData?.products.map((p) => p.type))).sort()
         );
-        console.log("Fresh:");
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching farm data:", error);
       }
@@ -430,7 +428,7 @@ const FarmForm = ({
                             <img
                               width="65"
                               height="65"
-                              className="shopProductsettingsButton"
+                              className=""
                               src="https://img.icons8.com/plasticine/70/truck--v1.png"
                               alt="truck button"
                               onClick={() => handleOpenOrderModal(p)}

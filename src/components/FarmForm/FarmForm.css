@@ -88,6 +88,10 @@
   background-color: rgba(254, 216, 65, 0.8);
   transition: transform 0.3s ease;
 }
+.farmTab:hover {
+  transform: translateY(-5px); /* Adjust the value as needed */
+  transition: transform 0.3s ease; /* Smooth transition effect */
+}
 
 .farmTabPanel {
   border-radius: 5px;
@@ -149,7 +153,8 @@
 }
 
 .farmProductPlusButton:hover {
-  transform: scale(1.1);
+  transform: translateY(-5px); /* Adjust the value as needed */
+  transition: transform 0.3s ease; /* Smooth transition effect */
 }
 
 .tooltip {

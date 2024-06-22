@@ -17,6 +17,8 @@ interface Props {
   accountType: number | undefined;
   loginId: number | undefined;
   inLoginSelection: boolean;
+  isDeliveryListOpen: boolean;
+  isFarmFormOpen: (b: boolean)=>void;
 }
 
 const FarmContainer = ({
@@ -28,7 +30,9 @@ const FarmContainer = ({
   handleIsShopClicked,
   accountType,
   loginId,
-  inLoginSelection
+  inLoginSelection,
+  isDeliveryListOpen,
+  isFarmFormOpen
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
 
@@ -51,6 +55,7 @@ const FarmContainer = ({
     resetFarmId();
     setShowForm(false);
     handleIsShopClicked(true);
+    isFarmFormOpen(false);
   };
 
   return (
@@ -62,16 +67,17 @@ const FarmContainer = ({
         width: "100vw",
         height: "100vh",
       }}>
-      <HiSearchCircle
+      {!isDeliveryListOpen && <HiSearchCircle
         className="button"
         style={{ left: showForm ? "calc(40%)" : "25px" }}
-        onClick={()=>setShowForm(true)} //TO-DO: Implement search menu
-      />
+        onClick={()=>(setShowForm(true), isFarmFormOpen(true))} //TO-DO: Implement search menu
+      />}
       {showForm && (
         <div className="container">
           <IoMdCloseCircle className="closeButton" onClick={closeForm} />
           <Box className="categories">
-            <div className="cardStyle">
+            <div className="cardStyle" style={{marginBottom: '130px'}}>
+              {/* Search and Filtering place
               <img
                 src="https://st3.depositphotos.com/3997585/12893/v/950/depositphotos_128935154-stock-illustration-bread-isolated-illustration.jpg"
                 style={{
@@ -85,7 +91,7 @@ const FarmContainer = ({
               />
               <div>
                 {"Meat".length > 14 ? "Meat".substring(0, 10) + "..." : "Meat"}
-              </div>
+              </div>*/}
             </div>
           </Box>
           <div className="scrollable">
