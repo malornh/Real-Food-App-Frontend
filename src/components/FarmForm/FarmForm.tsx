@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Text,
   Tabs,
@@ -7,11 +7,10 @@ import {
   Tab,
   TabPanel,
   Box,
-  Tooltip,
 } from "@chakra-ui/react";
 import { TbTruckDelivery } from "react-icons/tb";
 import { IoCashOutline } from "react-icons/io5";
-import { PiPackageDuotone, PiShoppingCartSimpleDuotone } from "react-icons/pi";
+import { PiPackageDuotone } from "react-icons/pi";
 import "./FarmForm.css";
 import axios from "axios";
 import EditFarm, { Farm } from "./EditFarm";
@@ -19,7 +18,6 @@ import { FcSettings } from "react-icons/fc";
 import { HiMiniPlusCircle } from "react-icons/hi2";
 import EditProduct from "./EditProduct";
 import defaultProduct from "../../assets/defaultProduct.png";
-import delivaryButton from "../../assets/deliveryButton.png";
 import CreateOrder, { Order } from "./CreateOrder";
 
 interface FarmData {
@@ -33,12 +31,6 @@ interface FarmData {
   defaultDeliveryRadius: number;
   rating: number;
   products: Product[];
-}
-
-interface DateOnly {
-  year: number;
-  month: number;
-  day: number;
 }
 
 export interface Product {
@@ -336,23 +328,25 @@ const FarmForm = ({
                           style={{
                             display: "flex",
                             flexDirection: "column",
-                            marginTop: "15px",
-                            marginLeft: "80px",
                             gap: "15px",
+                            background: 'teal',
+                            borderRadius: '5px',
+                            padding: '5px',
+                            width: '100px'
                           }}>
                           <div
                             style={{
                               display: "flex",
-                              marginLeft: "10px",
                               marginBottom: "-40px",
+                              marginTop: "10px",
+                              marginLeft: "3px",
                             }}>
                             <div className="tooltip">
                               <TbTruckDelivery
                                 style={{
                                   fontSize: "27px",
-                                  color: "black",
+                                  color: "white",
                                   marginRight: "10px",
-                                  marginLeft: "3px",
                                 }}
                               />
                               <span className="tooltiptext">
@@ -373,7 +367,6 @@ const FarmForm = ({
                           <div
                             style={{
                               display: "flex",
-                              marginLeft: "10px",
                               marginTop: "30px",
                               marginBottom: "-20px",
                             }}>
@@ -381,7 +374,7 @@ const FarmForm = ({
                               <PiPackageDuotone
                                 style={{
                                   fontSize: "30px",
-                                  color: "black",
+                                  color: "white",
                                   marginRight: "10px",
                                 }}
                               />
@@ -396,7 +389,6 @@ const FarmForm = ({
                           <div
                             style={{
                               display: "flex",
-                              marginLeft: "10px",
                               marginTop: "15px",
                               marginBottom: "-25px",
                             }}>
@@ -404,7 +396,7 @@ const FarmForm = ({
                               <IoCashOutline
                                 style={{
                                   fontSize: "30px",
-                                  color: "black",
+                                  color: "white",
                                   marginRight: "10px",
                                 }}
                               />

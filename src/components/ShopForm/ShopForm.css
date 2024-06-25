@@ -112,12 +112,9 @@
 
 .shopProductDescriptionContainer {
   width: 430px;
-  /* Adjust this value as needed */
   height: 120px;
-  /* Adjust this value as needed */
   overflow-y: auto;
   margin-top: -30px;
-  /* Adjust this value as needed */
 }
 
 .shopProductDescriptionContainer::-webkit-scrollbar {
@@ -249,9 +246,9 @@
   font-weight: bold;
   border-radius: 5px;
   padding: 5px;
-  width: 80px;
+  width: 75px;
   height: 21px;
   text-align: center;
-  margin-left: -25px;
+  margin-left: 7px;
   margin-top: -15px;
 }

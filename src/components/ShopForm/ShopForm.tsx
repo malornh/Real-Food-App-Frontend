@@ -36,6 +36,7 @@ interface Order {
   shopPrice: number;
   product: ProductDetails;
   shortFarm: Farm;
+  dateOrdered: string;
 }
 
 interface ProductDetails {
@@ -274,8 +275,8 @@ const ShopForm: React.FC<Props> = ({
                       </div>
                     </div>
 
-                    <Flex direction={"column"} marginLeft={-60}>
-                      <Text fontWeight={'bold'} color={'black'} marginTop={80} marginLeft={-20}>Цена:</Text>
+                    <Flex direction={"column"} marginLeft={-100} background={'teal'} width={100} borderRadius={5}>
+                      <Text fontWeight={'bold'} color={'white'} marginTop={80} marginLeft={6}>Цена:</Text>
                       <label className="productPrice">
                         {order.product.pricePerUnit}{' '}
                         {order.product.unitOfMeasurement === 3
