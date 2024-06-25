@@ -8,6 +8,7 @@ import {
   TabPanels,
   Tabs,
   Box,
+  Flex,
 } from "@chakra-ui/react";
 import { BsArrowRepeat } from "react-icons/bs";
 import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
@@ -15,6 +16,7 @@ import { FcSettings } from "react-icons/fc";
 import { HiMiniPlusCircle } from "react-icons/hi2";
 import "./ShopForm.css";
 import EditShop, { Shop } from "./EditShop/EditShop";
+import { IoCashOutline } from "react-icons/io5";
 
 interface ShopData {
   id: number;
@@ -272,6 +274,17 @@ const ShopForm: React.FC<Props> = ({
                       </div>
                     </div>
 
+                    <Flex direction={"column"} marginLeft={-60}>
+                      <Text fontWeight={'bold'} color={'black'} marginTop={80} marginLeft={-20}>Цена:</Text>
+                      <label className="productPrice">
+                        {order.product.pricePerUnit}{' '}
+                        {order.product.unitOfMeasurement === 3
+                            ? "бр."
+                            : order.product.unitOfMeasurement === 2
+                            ? "кг."
+                            : "лт."}
+                      </label>
+                    </Flex>
                     <div
                       style={{
                         textAlign: "right",
@@ -280,10 +293,12 @@ const ShopForm: React.FC<Props> = ({
                         padding: "10px",
                       }}>
                       <div>
-                        {accountType === 1 &&
-                          !inLoginSelection && (
-                            <PiShoppingCartSimpleDuotone className="shopCartButton" onClick={()=>null} />
-                          )}
+                        {accountType === 1 && !inLoginSelection && (
+                          <PiShoppingCartSimpleDuotone
+                            className="shopCartButton"
+                            onClick={() => null}
+                          />
+                        )}
                         {accountType === 2 &&
                           !inLoginSelection &&
                           loginId === shopData.id &&
@@ -295,8 +310,11 @@ const ShopForm: React.FC<Props> = ({
                           )}
                       </div>
                       <div className="shopProductRatingContainer">
-                          {order.product.rating === null ? "new" : order.product.rating} / 5.0
-                        </div>
+                        {order.product.rating === null
+                          ? "new"
+                          : order.product.rating}{" "}
+                        / 5.0
+                      </div>
                     </div>
                   </div>
                 ))}
