@@ -275,15 +275,15 @@ const ShopForm: React.FC<Props> = ({
                       </div>
                     </div>
 
-                    <Flex direction={"column"} marginLeft={-100} background={'teal'} width={100} borderRadius={5}>
-                      <Text fontWeight={'bold'} color={'white'} marginTop={80} marginLeft={6}>Цена:</Text>
-                      <label className="productPrice">
-                        {order.product.pricePerUnit}{' '}
+                    <Flex direction={"column"} marginLeft={-100} background={'teal'} width={110} borderRadius={5}>
+                      <Text fontWeight={'bold'} color={'white'} marginTop={80} marginLeft={6}>Цена за{' '}
                         {order.product.unitOfMeasurement === 3
                             ? "бр."
                             : order.product.unitOfMeasurement === 2
                             ? "кг."
-                            : "лт."}
+                            : "лт."}</Text>
+                      <label className="productPrice">
+                      {order.product.pricePerUnit} {'лв.'}
                       </label>
                     </Flex>
                     <div

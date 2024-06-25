@@ -106,7 +106,7 @@
 }
 
 .farmProductDescriptionContainer::-webkit-scrollbar {
-  width: 5px; /* Adjust width as needed */
+  width: 0px; /* Adjust width as needed */
   background-color: transparent; /* Transparent background */
 }
 
