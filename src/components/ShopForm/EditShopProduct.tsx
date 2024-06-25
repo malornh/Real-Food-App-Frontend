@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import theme from "../ShopForm/EditShop/theme";
 import { Text } from "@chakra-ui/react";
+import { OrderWithProduct } from "./ShopForm";
 
 interface ProductDetails {
   id: number;
@@ -24,7 +25,7 @@ interface Farm {
   name: string;
 }
 
-interface Order {
+export interface Order {
   id: number;
   quantity: number;
   shopPrice: number;
@@ -32,13 +33,16 @@ interface Order {
   product: ProductDetails;
   shortFarm: Farm;
   dateOrdered: string;
+  shopId: number; // Matches the 'ShopId' property in OrderDto
+  productId: number;
+  status: string;
 }
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  order: Order;
-  onOrderUpdate: (order: Order) => void;
+  order: OrderWithProduct;
+  onOrderUpdate: (order: OrderWithProduct) => void;
 }
 
 const EditOrder: React.FC<Props> = ({
@@ -47,6 +51,7 @@ const EditOrder: React.FC<Props> = ({
   order,
   onOrderUpdate,
 }) => {
+  const [initialOrder, setInitialOrder] = useState<OrderWithProduct>({ ...order });
   const [newOrder, setNewOrder] = useState<Order>({ ...order });
 
   const updateOrder = async (order: Order) => {
@@ -68,16 +73,41 @@ const EditOrder: React.FC<Props> = ({
       }
 
       const updatedOrder = await response.json();
-      onOrderUpdate(updatedOrder);
+      onOrderUpdate(mergeOrders());
       onClose();
     } catch (error) {
       console.error("Error updating order:", error);
     }
   };
 
+  const mergeOrders = (): OrderWithProduct => {
+    const mergedOrder: OrderWithProduct = {
+      id: newOrder.id ?? initialOrder.id,
+      quantity: newOrder.quantity ?? initialOrder.quantity,
+      shopPrice: newOrder.shopPrice ?? initialOrder.shopPrice,
+      soldOut: newOrder.soldOut ?? initialOrder.soldOut,
+      product: initialOrder.product,
+      shortFarm: initialOrder.shortFarm,
+      dateOrdered: newOrder.dateOrdered ?? initialOrder.dateOrdered,
+      shopId: newOrder.shopId ?? initialOrder.shopId,
+      productId: newOrder.productId ?? initialOrder.productId,
+      status: newOrder.status ?? initialOrder.status,
+    };
+
+    return mergedOrder;
+  };
+
+
   const handleSave = async () => {
+    // Ensure productId is set in newOrder before updating
+    if (!newOrder.productId) {
+      console.error('Product ID is missing.');
+      return; // Or handle this case appropriately
+    }
+  
     await updateOrder(newOrder);
   };
+  
 
   return (
     <ChakraProvider theme={theme}>
@@ -94,7 +124,7 @@ const EditOrder: React.FC<Props> = ({
               </Text>
               <Input
                 type="number"
-                placeholder="Shop Price"
+                placeholder={(order.product.pricePerUnit).toString()}
                 value={newOrder.shopPrice}
                 onChange={(e) =>
                   setNewOrder((prevState) => ({
@@ -107,6 +137,9 @@ const EditOrder: React.FC<Props> = ({
                 borderRadius="10px"
                 color="black"
                 background="rgb(240, 240, 240, 0.7)"
+                _placeholder={{
+                    color: "rgba(0, 0, 0, 0.5)", // Adjust placeholder color here
+                  }}
               />
             </FormControl>
             <FormControl mb={4}>

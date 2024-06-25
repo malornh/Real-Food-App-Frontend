@@ -19,7 +19,7 @@ import "./ShopForm.css";
 import EditShop, { Shop } from "./EditShop/EditShop";
 import { IoCashOutline } from "react-icons/io5";
 import soldOut from "../../assets/soldOut.png";
-import EditShopProduct from "./EditShopProduct";
+import EditShopProduct, { Order } from "./EditShopProduct";
 
 interface ShopData {
   id: number;
@@ -30,10 +30,10 @@ interface ShopData {
   latitude: number;
   longitude: number;
   rating: number;
-  orders: Order[];
+  orders: OrderWithProduct[];
 }
 
-interface Order {
+export interface OrderWithProduct {
   id: number;
   quantity: number;
   shopPrice: number;
@@ -41,6 +41,9 @@ interface Order {
   product: ProductDetails;
   shortFarm: Farm;
   dateOrdered: string;
+  shopId: number;
+  productId: number;
+  status: string;
 }
 
 interface ProductDetails {
@@ -72,7 +75,7 @@ interface Props {
   inLoginSelection: boolean;
 }
 
-const sortOrders = (orders: Order[]) => {
+const sortOrders = (orders: OrderWithProduct[]) => {
   return orders.sort((a, b) => {
     // First sort by soldOut status
     if (a.soldOut !== b.soldOut) {
@@ -100,7 +103,7 @@ const ShopForm: React.FC<Props> = ({
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrderWithProduct | null>(null);
 
   const typeList = Array.from(
     new Set(shopData?.orders.map((o) => o.product.type))
@@ -120,9 +123,10 @@ const ShopForm: React.FC<Props> = ({
         console.error(error);
       }
     };
-
+  
     fetchShopData();
-  }, [shopId]);
+  }, [shopId]); // Ensure shopId is correctly updated on product updates
+  
 
   const flipImage = (orderId: number) => {
     setHoveredOrderId(orderId);
@@ -171,22 +175,24 @@ const ShopForm: React.FC<Props> = ({
     });
   }
 
-  const handleProductEditClick = (order: Order) => {
+  const handleProductEditClick = (order: OrderWithProduct) => {
     setSelectedOrder(order);
     setIsEditProductModalOpen(true);
   };
 
-  const handleProductUpdate = (updatedOrder: Order) => {
-    setShopData((prevShopData) => {
-      if (!prevShopData) return prevShopData;
-      const updatedOrders = prevShopData.orders.map((order) =>
-        order.id === updatedOrder.id ? updatedOrder : order
-      );
-      return { ...prevShopData, orders: updatedOrders };
+  const handleProductUpdate = (updatedOrder: OrderWithProduct) => {
+    if (!shopData) return;
+  
+    const updatedOrders = shopData.orders.map(order =>
+      order.id === updatedOrder.id ? updatedOrder : order
+    );
+  
+    setShopData({
+      ...shopData,
+      orders: updatedOrders,
     });
-    setIsEditProductModalOpen(false);
   };
-
+  
   return (
     <div>
       {shopData && (
@@ -328,7 +334,7 @@ const ShopForm: React.FC<Props> = ({
                               : "лт."}
                           </Text>
                           <label className="productPrice">
-                            {order.product.pricePerUnit} лв.
+                            {order.shopPrice} лв.
                           </label>
                         </>
                       ) : (
@@ -380,7 +386,7 @@ const ShopForm: React.FC<Props> = ({
           order={selectedOrder}
           isOpen={isEditProductModalOpen}
           onClose={() => setIsEditProductModalOpen(false)}
-          onOrderUpdate={()=>handleProductUpdate}
+          onOrderUpdate={(order)=>handleProductUpdate(order)}
         />
       )}
 
