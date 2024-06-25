@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
+  Image,
   Text,
   Tab,
   TabList,
@@ -17,6 +18,8 @@ import { HiMiniPlusCircle } from "react-icons/hi2";
 import "./ShopForm.css";
 import EditShop, { Shop } from "./EditShop/EditShop";
 import { IoCashOutline } from "react-icons/io5";
+import soldOut from "../../assets/soldOut.png";
+import EditShopProduct from "./EditShopProduct";
 
 interface ShopData {
   id: number;
@@ -34,6 +37,7 @@ interface Order {
   id: number;
   quantity: number;
   shopPrice: number;
+  soldOut: boolean;
   product: ProductDetails;
   shortFarm: Farm;
   dateOrdered: string;
@@ -68,6 +72,19 @@ interface Props {
   inLoginSelection: boolean;
 }
 
+const sortOrders = (orders: Order[]) => {
+  return orders.sort((a, b) => {
+    // First sort by soldOut status
+    if (a.soldOut !== b.soldOut) {
+      return a.soldOut ? 1 : -1; // false (not sold out) should come before true (sold out)
+    }
+    // Then sort by dateOrdered, newest first
+    return (
+      new Date(b.dateOrdered).getTime() - new Date(a.dateOrdered).getTime()
+    );
+  });
+};
+
 const ShopForm: React.FC<Props> = ({
   shopId,
   isShopOwned,
@@ -82,6 +99,8 @@ const ShopForm: React.FC<Props> = ({
   const [shopData, setShopData] = useState<ShopData | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const typeList = Array.from(
     new Set(shopData?.orders.map((o) => o.product.type))
@@ -94,7 +113,8 @@ const ShopForm: React.FC<Props> = ({
           const response = await axios.get<ShopData>(
             `https://localhost:7218/api/Shops/${shopId}/OrdersWithFarms`
           );
-          setShopData(response.data);
+          const sortedOrders = sortOrders(response.data.orders);
+          setShopData({ ...response.data, orders: sortedOrders });
         }
       } catch (error) {
         console.error(error);
@@ -150,6 +170,22 @@ const ShopForm: React.FC<Props> = ({
       };
     });
   }
+
+  const handleProductEditClick = (order: Order) => {
+    setSelectedOrder(order);
+    setIsEditProductModalOpen(true);
+  };
+
+  const handleProductUpdate = (updatedOrder: Order) => {
+    setShopData((prevShopData) => {
+      if (!prevShopData) return prevShopData;
+      const updatedOrders = prevShopData.orders.map((order) =>
+        order.id === updatedOrder.id ? updatedOrder : order
+      );
+      return { ...prevShopData, orders: updatedOrders };
+    });
+    setIsEditProductModalOpen(false);
+  };
 
   return (
     <div>
@@ -228,7 +264,7 @@ const ShopForm: React.FC<Props> = ({
                         onMouseOver={() => flipImage(order.id)}
                         onMouseOut={() => unflipImage(order.id)}>
                         <div className="flip-card">
-                          <div className="flip-card-inner">
+                        <div className="flip-card-inner">
                             <div className="flip-card-front">
                               <img
                                 className="original-image"
@@ -275,17 +311,31 @@ const ShopForm: React.FC<Props> = ({
                       </div>
                     </div>
 
-                    <Flex direction={"column"} marginLeft={-100} background={'teal'} width={110} borderRadius={5}>
-                      <Text fontWeight={'bold'} color={'white'} marginTop={80} marginLeft={6}>Цена за{' '}
-                        {order.product.unitOfMeasurement === 3
-                            ? "бр."
-                            : order.product.unitOfMeasurement === 2
-                            ? "кг."
-                            : "лт."}</Text>
-                      <label className="productPrice">
-                      {order.product.pricePerUnit} {'лв.'}
-                      </label>
+                    <Flex
+                      direction="column"
+                      ml={-100}
+                      bg="teal"
+                      width={110}
+                      borderRadius={5}>
+                      {!order.soldOut ? (
+                        <>
+                          <Text fontWeight="bold" color="white" mt={80} ml={6}>
+                            Цена за{" "}
+                            {order.product.unitOfMeasurement === 3
+                              ? "бр."
+                              : order.product.unitOfMeasurement === 2
+                              ? "кг."
+                              : "лт."}
+                          </Text>
+                          <label className="productPrice">
+                            {order.product.pricePerUnit} лв.
+                          </label>
+                        </>
+                      ) : (
+                        <Image padding={5} mt={20} src={soldOut} />
+                      )}
                     </Flex>
+
                     <div
                       style={{
                         textAlign: "right",
@@ -306,7 +356,7 @@ const ShopForm: React.FC<Props> = ({
                           isShopOwned && (
                             <FcSettings
                               className="shopProductsettingsButton"
-                              onClick={() => null}
+                              onClick={() => handleProductEditClick(order)}
                             />
                           )}
                       </div>
@@ -323,6 +373,18 @@ const ShopForm: React.FC<Props> = ({
           ))}
         </TabPanels>
       </Tabs>
+      
+      {/* EditShopProduct Modal */}
+      {isEditProductModalOpen && selectedOrder && (
+        <EditShopProduct
+          order={selectedOrder}
+          isOpen={isEditProductModalOpen}
+          onClose={() => setIsEditProductModalOpen(false)}
+          onOrderUpdate={()=>handleProductUpdate}
+        />
+      )}
+
+      {/* EditShop Modal */}
       {isEditModalOpen && shopData && (
         <EditShop
           onShopUpdate={(shop) => handleShopUpdate(shop)}
