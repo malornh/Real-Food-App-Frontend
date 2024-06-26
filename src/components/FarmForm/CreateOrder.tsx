@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Text,
   Button,
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalOverlay,
-  FormControl,
   Input,
   Box,
   Image,

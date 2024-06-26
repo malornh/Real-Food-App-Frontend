@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IoMdCloseCircle } from "react-icons/io";
-import { Text, Box, Image, VStack, Button, Flex } from "@chakra-ui/react";
+import { Text, Box, Image, Flex } from "@chakra-ui/react";
 import "./OrderList.css";
 import truck from "../../assets/deliveryButton.png";
 import axios from "axios";

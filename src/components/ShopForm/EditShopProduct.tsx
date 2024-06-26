@@ -51,7 +51,7 @@ const EditOrder: React.FC<Props> = ({
   order,
   onOrderUpdate,
 }) => {
-  const [initialOrder, setInitialOrder] = useState<OrderWithProduct>({ ...order });
+  const [initialOrder, _] = useState<OrderWithProduct>({ ...order });
   const [newOrder, setNewOrder] = useState<Order>({ ...order });
 
   const updateOrder = async (order: Order) => {
@@ -72,7 +72,6 @@ const EditOrder: React.FC<Props> = ({
         throw new Error(`Error: ${response.status} - ${error}`);
       }
 
-      const updatedOrder = await response.json();
       onOrderUpdate(mergeOrders());
       onClose();
     } catch (error) {

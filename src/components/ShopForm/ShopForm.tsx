@@ -17,9 +17,8 @@ import { FcSettings } from "react-icons/fc";
 import { HiMiniPlusCircle } from "react-icons/hi2";
 import "./ShopForm.css";
 import EditShop, { Shop } from "./EditShop/EditShop";
-import { IoCashOutline } from "react-icons/io5";
 import soldOut from "../../assets/soldOut.png";
-import EditShopProduct, { Order } from "./EditShopProduct";
+import EditShopProduct from "./EditShopProduct";
 
 interface ShopData {
   id: number;
@@ -380,7 +379,6 @@ const ShopForm: React.FC<Props> = ({
         </TabPanels>
       </Tabs>
       
-      {/* EditShopProduct Modal */}
       {isEditProductModalOpen && selectedOrder && (
         <EditShopProduct
           order={selectedOrder}
@@ -390,7 +388,6 @@ const ShopForm: React.FC<Props> = ({
         />
       )}
 
-      {/* EditShop Modal */}
       {isEditModalOpen && shopData && (
         <EditShop
           onShopUpdate={(shop) => handleShopUpdate(shop)}

@@ -69,7 +69,7 @@ const FarmForm = ({
   inLoginSelection,
 }: Props) => {
   const [farmData, setFarmData] = useState<FarmData>();
-  const [selectedType, setSelectedType] = useState<string>();
+  const [_, setSelectedType] = useState<string>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductOpen, setIsEditProductOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product>();
