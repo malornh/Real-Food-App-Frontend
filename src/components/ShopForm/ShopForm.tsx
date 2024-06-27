@@ -76,11 +76,9 @@ interface Props {
 
 const sortOrders = (orders: OrderWithProduct[]) => {
   return orders.sort((a, b) => {
-    // First sort by soldOut status
     if (a.soldOut !== b.soldOut) {
-      return a.soldOut ? 1 : -1; // false (not sold out) should come before true (sold out)
+      return a.soldOut ? 1 : -1;
     }
-    // Then sort by dateOrdered, newest first
     return (
       new Date(b.dateOrdered).getTime() - new Date(a.dateOrdered).getTime()
     );
@@ -102,11 +100,25 @@ const ShopForm: React.FC<Props> = ({
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<OrderWithProduct | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrderWithProduct | null>(
+    null
+  );
 
   const typeList = Array.from(
     new Set(shopData?.orders.map((o) => o.product.type))
   ).sort();
+
+  useEffect(() => {
+    if (shopData) {
+      const sortedOrders = [...shopData.orders].sort((a, b) => {
+        if (a.shopPrice === null && b.shopPrice !== null) return -1;
+        if (a.shopPrice !== null && b.shopPrice === null) return 1;
+        return 0;
+      });
+
+      setShopData({ ...shopData, orders: sortedOrders });
+    }
+  }, [shopData]);
 
   useEffect(() => {
     const fetchShopData = async () => {
@@ -122,10 +134,9 @@ const ShopForm: React.FC<Props> = ({
         console.error(error);
       }
     };
-  
+
     fetchShopData();
   }, [shopId]); // Ensure shopId is correctly updated on product updates
-  
 
   const flipImage = (orderId: number) => {
     setHoveredOrderId(orderId);
@@ -181,17 +192,17 @@ const ShopForm: React.FC<Props> = ({
 
   const handleProductUpdate = (updatedOrder: OrderWithProduct) => {
     if (!shopData) return;
-  
-    const updatedOrders = shopData.orders.map(order =>
+
+    const updatedOrders = shopData.orders.map((order) =>
       order.id === updatedOrder.id ? updatedOrder : order
     );
-  
+
     setShopData({
       ...shopData,
       orders: updatedOrders,
     });
   };
-  
+
   return (
     <div>
       {shopData && (
@@ -253,6 +264,7 @@ const ShopForm: React.FC<Props> = ({
             <TabPanel className="shopTabPanel" key={type as string}>
               {shopData?.orders
                 .filter((o) => o.product.type === type)
+                .filter((order) => (accountType === 2 && loginId === shopData.id) || order.shopPrice !== null)
                 .map((order) => (
                   <div
                     key={order.id}
@@ -262,6 +274,12 @@ const ShopForm: React.FC<Props> = ({
                       marginBottom: "10px",
                       background: "rgba(254, 216, 65, 0.8)",
                       borderRadius: "5px",
+                      border:
+                        order.shopPrice === null &&
+                        !order.soldOut &&
+                        isShopOwned
+                          ? "3px solid red"
+                          : "none",
                     }}>
                     <div
                       style={{ display: "flex", justifyContent: "flex-start" }}>
@@ -269,7 +287,7 @@ const ShopForm: React.FC<Props> = ({
                         onMouseOver={() => flipImage(order.id)}
                         onMouseOut={() => unflipImage(order.id)}>
                         <div className="flip-card">
-                        <div className="flip-card-inner">
+                          <div className="flip-card-inner">
                             <div className="flip-card-front">
                               <img
                                 className="original-image"
@@ -332,7 +350,16 @@ const ShopForm: React.FC<Props> = ({
                               ? "кг."
                               : "лт."}
                           </Text>
-                          <label className="productPrice">
+                          <label
+                            className="productPrice"
+                            style={{
+                              border:
+                                order.shopPrice === null &&
+                                !order.soldOut &&
+                                isShopOwned
+                                  ? "3px solid red"
+                                  : "none",
+                            }}>
                             {order.shopPrice} лв.
                           </label>
                         </>
@@ -378,13 +405,13 @@ const ShopForm: React.FC<Props> = ({
           ))}
         </TabPanels>
       </Tabs>
-      
+
       {isEditProductModalOpen && selectedOrder && (
         <EditShopProduct
           order={selectedOrder}
           isOpen={isEditProductModalOpen}
           onClose={() => setIsEditProductModalOpen(false)}
-          onOrderUpdate={(order)=>handleProductUpdate(order)}
+          onOrderUpdate={(order) => handleProductUpdate(order)}
         />
       )}
 
