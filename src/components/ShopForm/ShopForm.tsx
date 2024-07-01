@@ -109,19 +109,8 @@ const ShopForm: React.FC<Props> = ({
   ).sort();
 
   useEffect(() => {
-    if (shopData) {
-      const sortedOrders = [...shopData.orders].sort((a, b) => {
-        if (a.shopPrice === null && b.shopPrice !== null) return -1;
-        if (a.shopPrice !== null && b.shopPrice === null) return 1;
-        return 0;
-      });
-
-      setShopData({ ...shopData, orders: sortedOrders });
-    }
-  }, [shopData]);
-
-  useEffect(() => {
     const fetchShopData = async () => {
+      console.log(shopId);
       try {
         if (shopId !== undefined) {
           const response = await axios.get<ShopData>(
