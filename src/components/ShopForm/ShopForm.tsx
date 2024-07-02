@@ -54,6 +54,7 @@ interface ProductDetails {
   unitOfMeasurement: number;
   image: string;
   rating: number | null;
+  dateUpdated: string;
 }
 
 interface Farm {
@@ -76,13 +77,32 @@ interface Props {
 
 const sortOrders = (orders: OrderWithProduct[]) => {
   return orders.sort((a, b) => {
-    if (a.soldOut !== b.soldOut) {
-      return a.soldOut ? 1 : -1;
+    if (!a.soldOut && b.soldOut) {
+      return -1;
     }
+    if (a.soldOut && !b.soldOut) {
+      return 1;
+    }
+    if (a.shopPrice === null && b.shopPrice !== null) {
+      return -1;
+    }
+    if (a.shopPrice !== null && b.shopPrice === null) {
+      return 1;
+    }
+
     return (
       new Date(b.dateOrdered).getTime() - new Date(a.dateOrdered).getTime()
     );
   });
+};
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`;
 };
 
 const ShopForm: React.FC<Props> = ({
@@ -253,7 +273,11 @@ const ShopForm: React.FC<Props> = ({
             <TabPanel className="shopTabPanel" key={type as string}>
               {shopData?.orders
                 .filter((o) => o.product.type === type)
-                .filter((order) => (accountType === 2 && loginId === shopData.id) || order.shopPrice !== null)
+                .filter(
+                  (order) =>
+                    (accountType === 2 && loginId === shopData.id) ||
+                    order.shopPrice !== null
+                )
                 .map((order) => (
                   <div
                     key={order.id}
@@ -331,6 +355,18 @@ const ShopForm: React.FC<Props> = ({
                       borderRadius={5}>
                       {!order.soldOut ? (
                         <>
+                          <Text
+                            className="tooltip"
+                            fontSize={12}
+                            fontWeight={"bold"}
+                            ml={25}
+                            mb={-25}
+                            mt={5}>
+                            {formatDate(order.product.dateUpdated)}
+                            <span className="tooltiptext">
+                              Дата на производство
+                            </span>
+                          </Text>
                           <Text fontWeight="bold" color="white" mt={80} ml={6}>
                             Цена за{" "}
                             {order.product.unitOfMeasurement === 3

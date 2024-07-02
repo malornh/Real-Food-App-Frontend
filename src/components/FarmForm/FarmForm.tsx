@@ -214,6 +214,15 @@ const FarmForm = ({
     }
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+  };
+
   return (
     <div>
       {farmData && (
@@ -328,17 +337,29 @@ const FarmForm = ({
                           style={{
                             display: "flex",
                             flexDirection: "column",
-                            gap: "15px",
-                            background: 'teal',
-                            borderRadius: '5px',
-                            padding: '5px',
-                            width: '100px'
+                            gap: "6px",
+                            background: "teal",
+                            borderRadius: "5px",
+                            padding: "5px",
+                            width: "100px",
                           }}>
+                          <Text
+                            className="tooltip"
+                            fontSize={12}
+                            fontWeight={"bold"}
+                            ml={25}
+                            mb={-25}
+                            mt={0}>
+                            {formatDate(p.dateUpdated)}
+                            <span className="tooltiptext">
+                              Дата на производство
+                            </span>
+                          </Text>
                           <div
                             style={{
                               display: "flex",
-                              marginBottom: "-40px",
-                              marginTop: "10px",
+                              marginBottom: "-10px",
+                              marginTop: "30px",
                               marginLeft: "3px",
                             }}>
                             <div className="tooltip">
@@ -347,6 +368,7 @@ const FarmForm = ({
                                   fontSize: "27px",
                                   color: "white",
                                   marginRight: "10px",
+                                  marginBottom: "-10px",
                                 }}
                               />
                               <span className="tooltiptext">
@@ -361,7 +383,6 @@ const FarmForm = ({
                             style={{
                               display: "flex",
                               marginLeft: "10px",
-                              marginTop: "15px",
                               marginBottom: "-25px",
                             }}></div>
                           <div
