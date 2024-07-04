@@ -208,10 +208,11 @@ const ShopOrderList: React.FC<Props> = ({
           onClick={() => (setShowForm(true), isDeliveryListOpen(true))}
         />
       )}
-      {showForm && (
+      {!isInLoginSelection && showForm && (
         <Box className="container-form" >
           <IoMdCloseCircle
             className="button-close"
+            fontSize={60}
             onClick={() => (setShowForm(false), isDeliveryListOpen(false))}
           />
           <Box mt={140} className="scrollable-content"
