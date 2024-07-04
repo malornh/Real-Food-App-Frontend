@@ -41,6 +41,8 @@ interface Props {
   shopId: number | undefined;
   isFarmFormOpen: boolean;
   handleClickedFarm: (farmId: number | undefined) => void;
+  accountType: number | undefined; //1 - user, 2 - shop, 3 - farm
+  isInLoginSelection: boolean;
 }
 
 const mapOrderToOrderDto = (order: Order): OrderDto => {    
@@ -99,6 +101,8 @@ const ShopOrderList: React.FC<Props> = ({
   shopId,
   isFarmFormOpen,
   handleClickedFarm,
+  accountType,
+  isInLoginSelection,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -196,7 +200,7 @@ const ShopOrderList: React.FC<Props> = ({
         top: 0,
         left: 0,
       }}>
-      {!showForm && (
+      {!isInLoginSelection && accountType===2 && !showForm && (
         <Image
           src={orderStand}
           className="button-list"

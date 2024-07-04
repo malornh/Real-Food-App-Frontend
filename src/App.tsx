@@ -90,7 +90,7 @@ const App = () => {
           handleClickedShop={(shopId)=>handleShopClick(shopId)}
         />
       )}
-      <ShopOrderList shopId={loginId} isDeliveryListOpen={()=>setIsDeliveryListOpen} isFarmFormOpen={isFarmFormOpen} handleClickedFarm={()=>null} />
+      <ShopOrderList shopId={loginId} accountType={accountType} isInLoginSelection={inLoginSelection} isDeliveryListOpen={(b)=>setIsDeliveryListOpen(b)} isFarmFormOpen={isFarmFormOpen} handleClickedFarm={()=>null} />
       <SofiaVectorMap
         handleShopClick={(shopId) => handleShopClick(shopId)}
         clickedMapShopId={clickedMapShopId}
