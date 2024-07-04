@@ -45,6 +45,7 @@ interface Props {
   handleIsShopClicked: (b: boolean) => void; //False means a farm is clicked.
   handleLoggedAs: (id: number | undefined, accountType: number, inLoginSelection: boolean)=>void;
   isFarmFormOpen: (b: boolean)=>void;
+  DeliveryFormClosed: ()=>void;
 }
 
 const AccountForm = ({
@@ -62,7 +63,8 @@ const AccountForm = ({
   forwardFarmUpdate,
   handleIsShopClicked,
   handleLoggedAs,
-  isFarmFormOpen
+  isFarmFormOpen,
+  DeliveryFormClosed
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
@@ -188,6 +190,7 @@ const AccountForm = ({
   const handleCardClick = (id: number, image: string) => {
     setLoginId(id);
     setLoginImage(image);
+    DeliveryFormClosed();
 
     if (accountType === 2) {
       setSelectedShopId(id);

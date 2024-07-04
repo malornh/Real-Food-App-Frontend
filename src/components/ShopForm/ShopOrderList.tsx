@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { IoMdCloseCircle } from "react-icons/io";
 import { Text, Box, Image, Flex } from "@chakra-ui/react";
-import './ShopOrderList.css';
+import "./ShopOrderList.css";
 import truck from "../../assets/deliveryButton.png";
-import orderStand from '../../assets/stand.png';
+import orderStand from "../../assets/stand.png";
 import axios from "axios";
 import { Product } from "../FarmForm/FarmForm";
 import { Farm } from "../FarmForm/EditFarm";
@@ -13,7 +13,7 @@ import { FaWindowClose } from "react-icons/fa";
 import { FaCheckSquare } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
 import { CgClose } from "react-icons/cg";
-import storeIcon from '../../assets/storeIcon.png';
+import storeIcon from "../../assets/storeIcon.png";
 
 interface OrderDto {
   id: number;
@@ -45,7 +45,7 @@ interface Props {
   isInLoginSelection: boolean;
 }
 
-const mapOrderToOrderDto = (order: Order): OrderDto => {    
+const mapOrderToOrderDto = (order: Order): OrderDto => {
   return {
     id: order.id,
     shopId: order.shop.id ?? 0, // Assuming a default value of 0 if shop id is undefined
@@ -107,9 +107,9 @@ const ShopOrderList: React.FC<Props> = ({
   const [showForm, setShowForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setShowForm(false);
-  }, [isFarmFormOpen])
+  }, [isFarmFormOpen]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -122,7 +122,7 @@ const ShopOrderList: React.FC<Props> = ({
         const statusOrder: Record<string, number> = {
           Pending: 1,
           Completed: 2,
-          Canceled: 3
+          Canceled: 3,
         };
 
         // Sort the orders: Pending first, then Completed, then Canceled
@@ -204,135 +204,149 @@ const ShopOrderList: React.FC<Props> = ({
         top: 0,
         left: 0,
       }}>
-      {!isFarmFormOpen && !isInLoginSelection && accountType===2 && !showForm && (
-        <Image
-          src={orderStand}
-          className="button-list"
-          style={{ left: showForm ? "calc(40%)" : "35px" }}
-          onClick={() => (setShowForm(true), isDeliveryListOpen(true))}
-        />
-      )}
+      {!isFarmFormOpen &&
+        !isInLoginSelection &&
+        accountType === 2 &&
+        !showForm && (
+          <Image
+            src={orderStand}
+            className="button-list"
+            style={{ left: showForm ? "calc(40%)" : "35px" }}
+            onClick={() => (setShowForm(true), isDeliveryListOpen(true))}
+          />
+        )}
       {!isInLoginSelection && showForm && (
-        <Box className="container-form" >
+        <Box className="container-form">
           <IoMdCloseCircle
             className="button-close"
             fontSize={60}
             onClick={() => (setShowForm(false), isDeliveryListOpen(false))}
           />
-          <Box mt={140} className="scrollable-content"
+          <Box
+            mt={140}
+            className="scrollable-content"
             height="calc(100% + 19px)"
             overflowY="auto">
-          <Box mb={150}>
-            {orders.map((o) => {
-              const shopCoords: [number, number] = [
-                o.shop.latitude,
-                o.shop.longitude,
-              ];
-              const farmCoords: [number, number] = [
-                o.farm.latitude,
-                o.farm.longitude,
-              ];
-              console.log(`Shop Coordinates: ${shopCoords}`);
-              console.log(`Farm Coordinates: ${farmCoords}`);
-              const distance = haversineDistance(
-                shopCoords,
-                farmCoords
-              ).toFixed(2);
-              console.log(`Calculated Distance: ${distance} km`);
+            <Box mb={150}>
+              {orders.map((o) => {
+                const shopCoords: [number, number] = [
+                  o.shop.latitude,
+                  o.shop.longitude,
+                ];
+                const farmCoords: [number, number] = [
+                  o.farm.latitude,
+                  o.farm.longitude,
+                ];
+                console.log(`Shop Coordinates: ${shopCoords}`);
+                console.log(`Farm Coordinates: ${farmCoords}`);
+                const distance = haversineDistance(
+                  shopCoords,
+                  farmCoords
+                ).toFixed(2);
+                console.log(`Calculated Distance: ${distance} km`);
 
-              return (
-                <Box className="order-card" key={o.id}>
-                  <Flex direction={"row"}>
-                    <Image
-                      padding={10}
-                      boxSize={130}
-                      borderRadius={15}
-                      src={o.product.image}
-                      alt={`Order ${o.id}`}
-                    />
-                    <Flex direction={"column"}>
-                      {/* Displaying distance */}
-                      <Text className="order-title">{o.product.name}</Text>
-                      <Text color={"teal"}>На: {distance} км</Text>
-                      <Text
-                        className="order-title"
-                        style={{ fontSize: "17px", width: "130px" }}>
-                        Количество: {o.quantity}
-                      </Text>
-                      <Text
-                        className="order-title"
-                        style={{ fontSize: "17px", width: "130px" }}>
-                        Цена: {(o.quantity * o.product.pricePerUnit).toFixed(2)}{" "}
-                        лв.
-                      </Text>
-                    </Flex>
-                    <LuArrowRightSquare
-                      style={{
-                        marginTop: "60px",
-                        marginLeft: "-20px",
-                        marginRight: "15px",
-                      }}
-                      fontSize={40}
-                      color="teal"
-                    />
-                    <Box position="relative" cursor="pointer" padding={10}>
-                    <Image
-                      boxSize={130}
-                      borderRadius={15}
-                      src={o.shop.image}
-                      alt={`Order ${o.id}`}
-                      onClick={() => handleClickedFarm(o.shop.id)}
-                    />
-                    <Box position="absolute" top={15} left={15} padding={2}>
-                      <Image src={storeIcon} boxSize={35} alt="Shop Icon" opacity={0.8} onClick={()=>handleClickedFarm(o.shop.id)} />
-                    </Box>
-                  </Box>
-                    <Box>
-                      <Box
-                        width={160}
-                        height={50}
-                        mt={10}
-                        mb={20}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center">
-                        <Text fontSize={30} color={"black"}>
-                          {o.status}
-                        </Text>
-                      </Box>
-                      {o.status === "Pending" && (
-                        <Flex direction={"row"} ml={5} mt={-10}>
-                          <FaWindowClose
-                            className="buttons-pending"
-                            style={{ cursor: "pointer", marginLeft: '60px' }}
-                            fontSize={30}
-                            color="red"
-                            onClick={() => handleCancelOrder(o.id)}
+                return (
+                  <Box className="order-card" key={o.id}>
+                    <Flex direction={"row"}>
+                    <Box position="relative" cursor="pointer" padding={10} mr={15}>
+                        <Image
+                          boxSize={130}
+                          borderRadius={15}
+                          src={o.shop.image}
+                          alt={`Order ${o.id}`}
+                          onClick={() => handleClickedFarm(o.shop.id)}
+                        />
+                        <Box position="absolute" top={15} left={15} padding={2}>
+                          <Image
+                            src={storeIcon}
+                            boxSize={35}
+                            alt="Shop Icon"
+                            opacity={0.8}
+                            onClick={() => handleClickedFarm(o.shop.id)}
                           />
-                        </Flex>
-                      )}
+                        </Box>
+                      </Box>
+                      <LuArrowRightSquare
+                        style={{
+                          marginTop: "60px",
+                          marginLeft: "-20px",
+                          marginRight: "15px",
+                        }}
+                        fontSize={40}
+                        color="teal"
+                      />
+                       <Image
+                        padding={10}
+                        boxSize={130}
+                        borderRadius={15}
+                        src={o.product.image}
+                        alt={`Order ${o.id}`}
+                      />
+                      <Flex direction={"column"}>
+                        <div className="tooltip">
+                          <Text className="order-title">{o.product.name.length > 9 ? `${o.product.name.substring(0,9)}...` : o.product.name}</Text>
+                          <span className="tooltiptext">{o.product.name}</span>
+                        </div>{" "}
+                        <Text color={"teal"}>На: {distance} км</Text>
+                        <Text
+                          className="order-title"
+                          style={{ fontSize: "17px", width: "150px" }}>
+                          Количество: {o.quantity}
+                        </Text>
+                        <Text
+                          className="order-title"
+                          style={{ fontSize: "17px", width: "150px" }}>
+                          Цена:{" "}
+                          {(o.quantity * o.product.pricePerUnit).toFixed(2)} лв.
+                        </Text>
+                      </Flex>
+                      
+                      <Box>
+                        <Box
+                          width={160}
+                          height={50}
+                          mt={10}
+                          mb={20}
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center">
+                          <Text fontSize={30} color={"black"}>
+                            {o.status}
+                          </Text>
+                        </Box>
+                        {o.status === "Pending" && (
+                          <Flex direction={"row"} ml={5} mt={-10}>
+                            <FaWindowClose
+                              className="buttons-pending"
+                              style={{ cursor: "pointer", marginLeft: "60px" }}
+                              fontSize={30}
+                              color="red"
+                              onClick={() => handleCancelOrder(o.id)}
+                            />
+                          </Flex>
+                        )}
 
-                      {o.status === "Completed" && (
-                        <FaCheck
-                          style={{ marginLeft: "50px" }}
-                          fontSize={50}
-                          color="green"
-                        />
-                      )}
+                        {o.status === "Completed" && (
+                          <FaCheck
+                            style={{ marginLeft: "50px" }}
+                            fontSize={50}
+                            color="green"
+                          />
+                        )}
 
-                      {o.status === "Canceled" && (
-                        <CgClose
-                          style={{ marginLeft: "50px", marginTop: '-10px' }}
-                          fontSize={70}
-                          color="red"
-                        />
-                      )}
-                    </Box>
-                  </Flex>
-                </Box>
-              );
-            })}
-          </Box>
+                        {o.status === "Canceled" && (
+                          <CgClose
+                            style={{ marginLeft: "50px", marginTop: "-10px" }}
+                            fontSize={70}
+                            color="red"
+                          />
+                        )}
+                      </Box>
+                    </Flex>
+                  </Box>
+                );
+              })}
+            </Box>
           </Box>
         </Box>
       )}

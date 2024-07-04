@@ -68,6 +68,7 @@ const App = () => {
           setInLoginSelection(inLoginSelection)
         )}
         isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
+        DeliveryFormClosed={()=>setIsDeliveryListOpen(false)}
       />
       <FarmContainer
         farmId={clickedMapFarmId}
