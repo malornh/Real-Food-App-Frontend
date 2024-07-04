@@ -14,6 +14,7 @@ import { FaCheckSquare } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
 import { CgClose } from "react-icons/cg";
 import storeIcon from "../../assets/storeIcon.png";
+import farmIcon from '../../assets/farmIcon.png';
 
 interface OrderDto {
   id: number;
@@ -248,21 +249,21 @@ const ShopOrderList: React.FC<Props> = ({
                 return (
                   <Box className="order-card" key={o.id}>
                     <Flex direction={"row"}>
-                    <Box position="relative" cursor="pointer" padding={10} mr={15}>
+                    <Box position="relative" cursor="pointer" padding={10} mr={20}>
                         <Image
                           boxSize={130}
                           borderRadius={15}
-                          src={o.shop.image}
+                          src={o.farm.image}
                           alt={`Order ${o.id}`}
-                          onClick={() => handleClickedFarm(o.shop.id)}
+                          onClick={() => handleClickedFarm(o.farm.id)}
                         />
                         <Box position="absolute" top={15} left={15} padding={2}>
                           <Image
-                            src={storeIcon}
+                            src={farmIcon}
                             boxSize={35}
                             alt="Shop Icon"
                             opacity={0.8}
-                            onClick={() => handleClickedFarm(o.shop.id)}
+                            onClick={() => handleClickedFarm(o.farm.id)}
                           />
                         </Box>
                       </Box>
@@ -270,7 +271,6 @@ const ShopOrderList: React.FC<Props> = ({
                         style={{
                           marginTop: "60px",
                           marginLeft: "-20px",
-                          marginRight: "15px",
                         }}
                         fontSize={40}
                         color="teal"

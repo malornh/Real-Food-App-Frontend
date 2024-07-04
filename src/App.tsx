@@ -97,7 +97,7 @@ const App = () => {
         isInLoginSelection={inLoginSelection}
         isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
         isFarmFormOpen={isFarmFormOpen}
-        handleClickedFarm={() => null}
+        handleClickedFarm={(farmId) => (setClickedMapFarmId(farmId), setIsDeliveryListOpen(false), setIsFarmFormOpen(true))}
       />
       <SofiaVectorMap
         handleShopClick={(shopId) => handleShopClick(shopId)}
