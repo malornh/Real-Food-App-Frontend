@@ -1,0 +1,115 @@
+.shop-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.button-list {
+    position: absolute;
+    top: 130px;
+    left: 410px;
+    z-index: 999;
+    padding: 10px;
+    width: 65px;
+    height: 65px;
+    color: teal;
+    border: none;
+    border-radius: 5px;
+    transition: left 0.4s;
+}
+
+.container-form {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    bottom: 15px;
+    width: 707px;
+    height: 707px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.3);
+    z-index: 998;
+    border-radius: 8px;
+    box-sizing: border-box;
+    opacity: 1;
+    overflow: hidden;
+}
+
+button-close {
+    position: absolute;
+    top: 8px;
+    left: 0px;
+    z-index: 998;
+    padding: 10px;
+    width: 90px;
+    height: 90px;
+    color: rgba(255, 0, 0, 0.8);
+    border: none;
+    border-radius: 5px;
+}
+
+list-categories {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-left: 90px;
+    margin-right: 90px;
+    margin-bottom: 10px;
+    border-radius: 30px;
+}
+
+card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.3s ease-in-out;
+}
+
+order-card {
+    height: 150px;
+    width: auto;
+    margin-top: 10px;
+    background-color: rgba(254, 216, 65, 0.8);
+    border-radius: 5px;
+}
+
+order-title {
+    color: black;
+    margin-bottom: -5px;
+    margin-right: 10px;
+    margin-top: 0;
+    width: 150px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+buttons-pending {
+
+}
+
+buttons-pending:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+card-border-selected {
+    border-color: teal;
+}
+
+card-border-non-selected {
+    border-color: lightgray;
+}
+
+scrollable-content {
+    height: calc(100% - 130px);
+    overflow-y: auto;
+}
+
+scrollable-content::-webkit-scrollbar {
+    width: 0px;
+    background-color: rgba(255, 255, 255, 0);
+}

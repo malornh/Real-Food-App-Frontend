@@ -5,6 +5,7 @@ import { Shop } from "./components/ShopForm/EditShop/EditShop";
 import FarmContainer from "./components/FarmContainer";
 import { Farm } from "./components/FarmForm/EditFarm";
 import OrderList from "./components/OrderList/OrderList";
+import ShopOrderList from "./components/ShopForm/ShopOrderList";
 
 const App = () => {
   const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(
@@ -89,6 +90,7 @@ const App = () => {
           handleClickedShop={(shopId)=>handleShopClick(shopId)}
         />
       )}
+      <ShopOrderList shopId={loginId} isDeliveryListOpen={()=>setIsDeliveryListOpen} isFarmFormOpen={isFarmFormOpen} handleClickedFarm={()=>null} />
       <SofiaVectorMap
         handleShopClick={(shopId) => handleShopClick(shopId)}
         clickedMapShopId={clickedMapShopId}

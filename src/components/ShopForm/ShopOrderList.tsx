@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { IoMdCloseCircle } from "react-icons/io";
 import { Text, Box, Image, Flex } from "@chakra-ui/react";
-import "./OrderList.css";
+import './ShopOrderList.css';
 import truck from "../../assets/deliveryButton.png";
+import orderStand from '../../assets/stand.png';
 import axios from "axios";
 import { Product } from "../FarmForm/FarmForm";
 import { Farm } from "../FarmForm/EditFarm";
@@ -37,12 +38,12 @@ interface Order {
 
 interface Props {
   isDeliveryListOpen: (b: boolean) => void;
-  farmId: number | undefined;
+  shopId: number | undefined;
   isFarmFormOpen: boolean;
-  handleClickedShop: (shopId: number | undefined) => void;
+  handleClickedFarm: (farmId: number | undefined) => void;
 }
 
-const mapOrderToOrderDto = (order: Order): OrderDto => {
+const mapOrderToOrderDto = (order: Order): OrderDto => {    
   return {
     id: order.id,
     shopId: order.shop.id ?? 0, // Assuming a default value of 0 if shop id is undefined
@@ -93,11 +94,11 @@ const haversineDistance = (
   return d;
 };
 
-const FarmContainer: React.FC<Props> = ({
+const ShopOrderList: React.FC<Props> = ({
   isDeliveryListOpen,
-  farmId,
+  shopId,
   isFarmFormOpen,
-  handleClickedShop,
+  handleClickedFarm,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -106,34 +107,33 @@ const FarmContainer: React.FC<Props> = ({
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Orders/AllFarmOrders/${farmId}`
+          `https://localhost:7218/api/Orders/AllShopOrders/${shopId}`
         );
-  
+
         // Define the order statuses as a Record
         const statusOrder: Record<string, number> = {
           Pending: 1,
           Completed: 2,
           Canceled: 3
         };
-  
+
         // Sort the orders: Pending first, then Completed, then Canceled
         const sortedOrders = response.data.sort((a: Order, b: Order) => {
           return statusOrder[a.status] - statusOrder[b.status];
         });
-  
+
         setOrders(sortedOrders);
-  
+
         // Manual test
         const testDistance = haversineDistance([42.705, 23.3097], [42.7, 23.3]);
         console.log(`Test Distance: ${testDistance.toFixed(2)} km`);
       } catch (error) {
-        console.error("Error fetching farm data:", error);
+        console.error("Error fetching shop data:", error);
       }
     };
-  
+
     fetchData();
-  }, [farmId]);
-  
+  }, [shopId]);
 
   function handleAcceptOrder(orderId: number | undefined) {
     if (orderId === undefined) return;
@@ -196,21 +196,21 @@ const FarmContainer: React.FC<Props> = ({
         top: 0,
         left: 0,
       }}>
-      {!isFarmFormOpen && !showForm && (
+      {!showForm && (
         <Image
-          src={truck}
-          className="list-button"
+          src={orderStand}
+          className="button-list"
           style={{ left: showForm ? "calc(40%)" : "35px" }}
           onClick={() => (setShowForm(true), isDeliveryListOpen(true))}
         />
       )}
       {showForm && (
-        <Box className="form-container" >
+        <Box className="container-form" >
           <IoMdCloseCircle
-            className="closeButton"
+            className="button-close"
             onClick={() => (setShowForm(false), isDeliveryListOpen(false))}
           />
-          <Box mt={140} className="scrollable"
+          <Box mt={140} className="scrollable-content"
             height="calc(100% + 19px)"
             overflowY="auto">
           <Box mb={150}>
@@ -232,7 +232,7 @@ const FarmContainer: React.FC<Props> = ({
               console.log(`Calculated Distance: ${distance} km`);
 
               return (
-                <Box className="order" key={o.id}>
+                <Box className="order-card" key={o.id}>
                   <Flex direction={"row"}>
                     <Image
                       padding={10}
@@ -243,15 +243,15 @@ const FarmContainer: React.FC<Props> = ({
                     />
                     <Flex direction={"column"}>
                       {/* Displaying distance */}
-                      <Text className="orderTitle">{o.product.name}</Text>
+                      <Text className="order-title">{o.product.name}</Text>
                       <Text color={"teal"}>На: {distance} км</Text>
                       <Text
-                        className="orderTitle"
+                        className="order-title"
                         style={{ fontSize: "17px", width: "130px" }}>
                         Количество: {o.quantity}
                       </Text>
                       <Text
-                        className="orderTitle"
+                        className="order-title"
                         style={{ fontSize: "17px", width: "130px" }}>
                         Цена: {(o.quantity * o.product.pricePerUnit).toFixed(2)}{" "}
                         лв.
@@ -272,10 +272,10 @@ const FarmContainer: React.FC<Props> = ({
                       borderRadius={15}
                       src={o.shop.image}
                       alt={`Order ${o.id}`}
-                      onClick={() => handleClickedShop(o.shop.id)}
+                      onClick={() => handleClickedFarm(o.shop.id)}
                     />
                     <Box position="absolute" top={15} left={15} padding={2}>
-                      <Image src={storeIcon} boxSize={35} alt="Shop Icon" opacity={0.8} onClick={()=>handleClickedShop(o.shop.id)} />
+                      <Image src={storeIcon} boxSize={35} alt="Shop Icon" opacity={0.8} onClick={()=>handleClickedFarm(o.shop.id)} />
                     </Box>
                   </Box>
                     <Box>
@@ -293,17 +293,10 @@ const FarmContainer: React.FC<Props> = ({
                       </Box>
                       {o.status === "Pending" && (
                         <Flex direction={"row"} ml={5} mt={-10}>
-                          <FaCheckSquare
-                            className="pendingButtons"
-                            style={{ marginRight: "15px", cursor: "pointer" }}
-                            fontSize={70}
-                            color="#32CD32"
-                            onClick={() => handleAcceptOrder(o.id)}
-                          />
                           <FaWindowClose
-                            className="pendingButtons"
-                            style={{ cursor: "pointer" }}
-                            fontSize={70}
+                            className="buttons-pending"
+                            style={{ cursor: "pointer", marginLeft: '60px' }}
+                            fontSize={30}
                             color="red"
                             onClick={() => handleCancelOrder(o.id)}
                           />
@@ -338,4 +331,4 @@ const FarmContainer: React.FC<Props> = ({
   );
 };
 
-export default FarmContainer;
+export default ShopOrderList;

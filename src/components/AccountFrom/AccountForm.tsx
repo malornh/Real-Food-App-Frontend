@@ -179,6 +179,7 @@ const AccountForm = ({
       if (accountType === 3 && loginId !== undefined) {
         setSelectedFarmId(loginId);
         handleFarmClick(loginId);
+        isFarmFormOpen(true);
       }
 
     }
