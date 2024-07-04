@@ -87,10 +87,17 @@ const App = () => {
           farmId={loginId}
           isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
           isFarmFormOpen={isFarmFormOpen}
-          handleClickedShop={(shopId)=>handleShopClick(shopId)}
+          handleClickedShop={(shopId) => handleShopClick(shopId)}
         />
       )}
-      <ShopOrderList shopId={loginId} accountType={accountType} isInLoginSelection={inLoginSelection} isDeliveryListOpen={(b)=>setIsDeliveryListOpen(b)} isFarmFormOpen={isFarmFormOpen} handleClickedFarm={()=>null} />
+      <ShopOrderList
+        shopId={loginId}
+        accountType={accountType}
+        isInLoginSelection={inLoginSelection}
+        isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
+        isFarmFormOpen={isFarmFormOpen}
+        handleClickedFarm={() => null}
+      />
       <SofiaVectorMap
         handleShopClick={(shopId) => handleShopClick(shopId)}
         clickedMapShopId={clickedMapShopId}
@@ -102,6 +109,7 @@ const App = () => {
         isShopClicked={isShopClicked}
         isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
         isDeliveryListOpen={isDeliveryListOpen}
+        DeliveryListClosed={() => setIsDeliveryListOpen(false)}
       />
     </div>
   );

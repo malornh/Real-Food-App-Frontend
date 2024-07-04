@@ -107,6 +107,10 @@ const ShopOrderList: React.FC<Props> = ({
   const [showForm, setShowForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
 
+  useEffect(()=>{
+    setShowForm(false);
+  }, [isFarmFormOpen])
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -200,7 +204,7 @@ const ShopOrderList: React.FC<Props> = ({
         top: 0,
         left: 0,
       }}>
-      {!isInLoginSelection && accountType===2 && !showForm && (
+      {!isFarmFormOpen && !isInLoginSelection && accountType===2 && !showForm && (
         <Image
           src={orderStand}
           className="button-list"

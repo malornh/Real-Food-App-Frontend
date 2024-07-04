@@ -20,6 +20,7 @@ interface Props {
   isShopClicked: boolean;
   isFarmFormOpen: (b:boolean)=>void;
   isDeliveryListOpen: boolean;
+  DeliveryListClosed: ()=>void;
 }
 
 const SofiaMap: React.FC<Props> = ({
@@ -32,7 +33,8 @@ const SofiaMap: React.FC<Props> = ({
   clickedMapFarmId,
   isShopClicked,
   isFarmFormOpen,
-  isDeliveryListOpen
+  isDeliveryListOpen,
+  DeliveryListClosed
 }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -145,6 +147,8 @@ const SofiaMap: React.FC<Props> = ({
         marker.on("click", () => {
           if (id !== undefined) {
             handleShopClick(id);
+            isFarmFormOpen(false);
+            DeliveryListClosed();
           }
         });
 
@@ -184,6 +188,7 @@ const SofiaMap: React.FC<Props> = ({
           if (id !== undefined) {
             handleFarmClick(id);
             isFarmFormOpen(true);
+            DeliveryListClosed();
           }
         });
 
