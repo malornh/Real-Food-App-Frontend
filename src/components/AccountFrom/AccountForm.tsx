@@ -154,6 +154,7 @@ const AccountForm = ({
 
   const toggleShopForm = () => {
     setShowForm((prevState) => !prevState);
+    loginId && handleShopClick(loginId);
   };
 
   const closeForm = () => {
