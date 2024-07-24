@@ -43,9 +43,13 @@ interface Props {
   forwardClickedFarmId: (farmId: number) => void;
   forwardFarmUpdate: (farm: Farm) => void;
   handleIsShopClicked: (b: boolean) => void; //False means a farm is clicked.
-  handleLoggedAs: (id: number | undefined, accountType: number, inLoginSelection: boolean)=>void;
-  isFarmFormOpen: (b: boolean)=>void;
-  DeliveryFormClosed: ()=>void;
+  handleLoggedAs: (
+    id: number | undefined,
+    accountType: number,
+    inLoginSelection: boolean
+  ) => void;
+  isFarmFormOpen: (b: boolean) => void;
+  DeliveryFormClosed: () => void;
 }
 
 const AccountForm = ({
@@ -64,7 +68,7 @@ const AccountForm = ({
   handleIsShopClicked,
   handleLoggedAs,
   isFarmFormOpen,
-  DeliveryFormClosed
+  DeliveryFormClosed,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
@@ -78,9 +82,9 @@ const AccountForm = ({
   const [loginId, setLoginId] = useState<number>();
   const [loginImage, setLoginImage] = useState("");
 
-  useEffect(()=>{
+  useEffect(() => {
     handleLoggedAs(loginId, accountType, inLoginSelection);
-  }, [loginId, accountType, inLoginSelection])
+  }, [loginId, accountType, inLoginSelection]);
 
   useEffect(() => {
     if (updatedFarm) {
@@ -154,7 +158,14 @@ const AccountForm = ({
 
   const toggleShopForm = () => {
     setShowForm((prevState) => !prevState);
-    loginId && handleShopClick(loginId);
+    if (loginId && accountType === 2) {
+      handleShopClick(loginId);
+      isFarmFormOpen(true);
+    }
+    if (loginId && accountType === 3) {
+      handleFarmClick(loginId);
+      isFarmFormOpen(true);
+    }
   };
 
   const closeForm = () => {
@@ -184,7 +195,6 @@ const AccountForm = ({
         handleFarmClick(loginId);
         isFarmFormOpen(true);
       }
-
     }
   };
 
@@ -268,8 +278,7 @@ const AccountForm = ({
       {showForm && (
         <div className="formContainerStyle">
           <Flex>
-            {(userShops || userFarms) &&
-              (
+            {(userShops || userFarms) && (
               <Flex flexDirection="column" mt={10} ml={80}>
                 <TbCircleLetterS
                   className={`miniCircleIcon ${
@@ -295,7 +304,9 @@ const AccountForm = ({
                   mt={20}
                   ml={80}
                   mb={49}
-                  onClick={() => (setInLoginSelection(true), setAccountType(2))}>
+                  onClick={() => (
+                    setInLoginSelection(true), setAccountType(2)
+                  )}>
                   Login as:
                 </Button>
               )}
