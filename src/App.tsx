@@ -130,6 +130,7 @@ const App = () => {
         productId={newProductId}
         shopId={newShopId}
         isFarmFormOpen={isFarmFormOpen}
+        accountType={accountType}
         handleCartFormOpen={()=>(setIsCartFormOpen(!isCartFormOpen), setIsDeliveryListOpen(true))}
         handleCartFormClose={()=>(setIsCartFormOpen(!isCartFormOpen), setIsDeliveryListOpen(false))}
       />

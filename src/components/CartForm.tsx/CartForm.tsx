@@ -29,12 +29,13 @@ interface Props {
   productId: number | undefined;
   shopId: number | undefined;
   isFarmFormOpen: boolean;
+  accountType: number | undefined;
   handleClickedShop: (shopId: number | undefined) => void;
   handleCartFormOpen: ()=>void;
   handleCartFormClose: ()=>void;
 }
 
-const CartOrders: React.FC<Props> = ({ isCartOpen, userId, handleClickedShop, handleCartFormOpen, handleCartFormClose, isFarmFormOpen }: Props) => {
+const CartOrders: React.FC<Props> = ({ isCartOpen, userId, handleClickedShop, handleCartFormOpen, handleCartFormClose, isFarmFormOpen, accountType }: Props) => {
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState<CartDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -99,7 +100,7 @@ const CartOrders: React.FC<Props> = ({ isCartOpen, userId, handleClickedShop, ha
 
   return (
     <div>
-      {!showCart && !isFarmFormOpen && (
+      {accountType===1 && !showCart && !isFarmFormOpen && (
         <Image
           fontSize={10}
           src={cart}
