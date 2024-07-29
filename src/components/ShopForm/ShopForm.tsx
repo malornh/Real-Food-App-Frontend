@@ -73,6 +73,7 @@ interface Props {
   accountType: number; //1 - user, 2 - shop, 3 - farm
   loginId: number | undefined;
   inLoginSelection: boolean;
+  handleClickedCart: (productId: number, shopId: number)=>void;
 }
 
 const sortOrders = (orders: OrderWithProduct[]) => {
@@ -115,6 +116,7 @@ const ShopForm: React.FC<Props> = ({
   accountType,
   loginId,
   inLoginSelection,
+  handleClickedCart
 }) => {
   const [shopData, setShopData] = useState<ShopData | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
@@ -404,7 +406,7 @@ const ShopForm: React.FC<Props> = ({
                         {accountType === 1 && !inLoginSelection && (
                           <PiShoppingCartSimpleDuotone
                             className="shopCartButton"
-                            onClick={() => null}
+                            onClick={() => handleClickedCart(order.productId, order.shopId)}
                           />
                         )}
                         {accountType === 2 &&

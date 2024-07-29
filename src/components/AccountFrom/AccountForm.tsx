@@ -50,6 +50,7 @@ interface Props {
   ) => void;
   isFarmFormOpen: (b: boolean) => void;
   DeliveryFormClosed: () => void;
+  handleClickedCart: (productId: number, shopId: number)=>void;
 }
 
 const AccountForm = ({
@@ -69,6 +70,7 @@ const AccountForm = ({
   handleLoggedAs,
   isFarmFormOpen,
   DeliveryFormClosed,
+  handleClickedCart,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
@@ -402,6 +404,7 @@ const AccountForm = ({
                 accountType={accountType}
                 loginId={loginId}
                 inLoginSelection={inLoginSelection}
+                handleClickedCart={(productId, shopId)=>handleClickedCart(productId, shopId)}
               />
             ) : (
               <UserForm />

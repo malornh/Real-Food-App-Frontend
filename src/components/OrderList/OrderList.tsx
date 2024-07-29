@@ -243,7 +243,13 @@ const FarmContainer: React.FC<Props> = ({
                     />
                     <Flex direction={"column"}>
                       {/* Displaying distance */}
-                      <Text className="orderTitle">{o.product.name}</Text>
+                      <div className="custom-tooltip">
+    <Text className="orderTitle">
+        {o.product.name.length > 9 ? `${o.product.name.substring(0, 9)}...` : o.product.name}
+    </Text>
+    <span className="custom-tooltiptext">{o.product.name}</span>
+</div>
+
                       <Text color={"teal"}>На: {distance} км</Text>
                       <Text
                         className="orderTitle"

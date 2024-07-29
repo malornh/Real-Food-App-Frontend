@@ -6,6 +6,7 @@ import FarmContainer from "./components/FarmContainer";
 import { Farm } from "./components/FarmForm/EditFarm";
 import OrderList from "./components/OrderList/OrderList";
 import ShopOrderList from "./components/ShopForm/ShopOrderList";
+import CartForm from "./components/CartForm.tsx/CartForm";
 
 const App = () => {
   const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(
@@ -28,6 +29,10 @@ const App = () => {
 
   const [isDeliveryListOpen, setIsDeliveryListOpen] = useState(false);
   const [isFarmFormOpen, setIsFarmFormOpen] = useState(false);
+  const [isCartFormOpen, setIsCartFormOpen] = useState(false);
+
+  const [newProductId, setNewProductId] = useState<number>();
+  const [newShopId, setNewShopId] = useState<number>();
 
   useEffect(() => {
     setClickedMapFarmId(updatedFarm?.id);
@@ -48,6 +53,94 @@ const App = () => {
 
   return (
     <div>
+      <AccountForm
+        userId={userId}
+        resetShopId={(n) => setClickedMapShopId(n)}
+        clickedMapShopId={clickedMapShopId}
+        markerClicked={markerClicked}
+        handleShopClick={(shopId) => setClickedMapShopId(shopId)}
+        handleFarmClick={(farmId) => setClickedMapFarmId(farmId)}
+        forwardShopUpdate={(shop) => setUpdatedShop(shop)}
+        forwardShopDelete={(shopId) => setDeletedShopId(shopId)}
+        forwardClickedFarmId={(farmId) => setClickedMapFarmId(farmId)}
+        forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
+        updatedFarm={updatedFarm}
+        deletedFarmId={deletedFarmId}
+        handleIsShopClicked={(b) => setIsShopClicked(b)}
+        handleLoggedAs={(id, accountType, inLoginSelection) => (
+          setLoginId(id),
+          setAccountType(accountType),
+          setInLoginSelection(inLoginSelection)
+        )}
+        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
+        DeliveryFormClosed={() => setIsDeliveryListOpen(false)}
+        handleClickedCart={(p, s) => (setNewProductId(p), setNewShopId(s))}
+      />
+      <FarmContainer
+        farmId={clickedMapFarmId}
+        resetFarmId={() => setClickedMapFarmId(undefined)}
+        userId={userId}
+        forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
+        forwardFarmDelete={(farmId) => setDeletedFarmId(farmId)}
+        handleIsShopClicked={(b) => setIsShopClicked(b)}
+        accountType={accountType}
+        loginId={loginId}
+        inLoginSelection={inLoginSelection}
+        isDeliveryListOpen={isDeliveryListOpen}
+        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
+      />
+      {accountType == 3 && !isFarmFormOpen && !inLoginSelection && (
+        <OrderList
+          farmId={loginId}
+          isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
+          isFarmFormOpen={isFarmFormOpen}
+          handleClickedShop={(shopId) => handleShopClick(shopId)}
+        />
+      )}
+      <ShopOrderList
+        shopId={loginId}
+        accountType={accountType}
+        isInLoginSelection={inLoginSelection}
+        isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
+        isFarmFormOpen={isFarmFormOpen}
+        handleClickedFarm={(farmId) => (
+          setClickedMapFarmId(farmId),
+          setIsDeliveryListOpen(false),
+          setIsFarmFormOpen(true),
+          setIsShopClicked(false)
+        )}
+      />
+      <SofiaVectorMap
+        handleShopClick={(shopId) => handleShopClick(shopId)}
+        clickedMapShopId={clickedMapShopId}
+        updatedShop={updatedShop}
+        deletedShopId={deletedShopId}
+        deletedFarmId={deletedFarmId}
+        handleFarmClick={(farmId) => handleFarmClick(farmId)}
+        clickedMapFarmId={clickedMapFarmId}
+        isShopClicked={isShopClicked}
+        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
+        isDeliveryListOpen={isDeliveryListOpen}
+        DeliveryListClosed={() => setIsDeliveryListOpen(false)}
+      />
+      <CartForm
+        isCartOpen={() => isCartFormOpen}
+        handleClickedShop={() => null}
+        userId={userId}
+        productId={newProductId}
+        shopId={newShopId}
+        isFarmFormOpen={isFarmFormOpen}
+        handleCartFormOpen={()=>(setIsCartFormOpen(!isCartFormOpen), setIsDeliveryListOpen(true))}
+        handleCartFormClose={()=>(setIsCartFormOpen(!isCartFormOpen), setIsDeliveryListOpen(false))}
+      />
+    </div>
+  );
+};
+
+export default App;
+
+{/*
+  
       <AccountForm
         userId={userId}
         resetShopId={(n) => setClickedMapShopId(n)}
@@ -112,8 +205,4 @@ const App = () => {
         isDeliveryListOpen={isDeliveryListOpen}
         DeliveryListClosed={() => setIsDeliveryListOpen(false)}
       />
-    </div>
-  );
-};
-
-export default App;
+  */}
