@@ -55,36 +55,50 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
 
   const updateFarm = async (farm: Farm) => {
     try {
-      const formData = new FormData();
-      formData.append('Id', String(farm.id));
-      formData.append('UserId', farm.userId);
-      formData.append('Name', farm.name);
-      if (farm.photoFile) {
-        formData.append('PhotoFile', farm.photoFile); // Append the image file
-      }
-      if (farm.photoId) {
-        formData.append('PhotoId', farm.photoId);
-      }
-      formData.append('Description', farm.description);
-      formData.append('Latitude', String(farm.latitude));
-      formData.append('Longitude', String(farm.longitude));
-      formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
+        const formData = new FormData();
+        formData.append('Id', String(farm.id));
+        formData.append('UserId', farm.userId);
+        formData.append('Name', farm.name);
 
-      const response = await fetch(`https://localhost:7218/api/Farms/${farm.id}`, {
-        method: 'PUT',
-        body: formData,
+        // Only include PhotoFile if it is provided
+        if (farm.photoFile) {
+            formData.append('PhotoFile', farm.photoFile);
+        }
+
+        formData.append('Description', farm.description);
+        formData.append('Latitude', String(farm.latitude));
+        formData.append('Longitude', String(farm.longitude));
+        formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
+
+        const response = await fetch(`https://localhost:7218/api/Farms`, { // Ensure the correct URL
+            method: 'PUT',
+            body: formData,
+        });
+
+        console.log('Updating farm:', {
+          id: farm.id,
+          userId: farm.userId,
+          name: farm.name,
+          photoId: farm.photoId,
+          description: farm.description,
+          latitude: farm.latitude,
+          longitude: farm.longitude,
+          defaultDeliveryRadius: farm.defaultDeliveryRadius,
+          photoFile: farm.photoFile ? farm.photoFile.name : 'No photo file'
       });
+      
 
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
-      }
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`Error: ${response.status} - ${error}`);
+        }
 
-      onFarmUpdate(farm); // Update the local farm state if necessary
+        onFarmUpdate(farm); // Update the local state after successful response
     } catch (error) {
-      console.error('Error updating farm:', error);
+        console.error('Error updating farm:', error);
     }
-  };
+};
+
 
   const createFarm = async (farm: Farm) => {
     try {
@@ -140,13 +154,15 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
         method: 'DELETE'
       });
 
+      
+
+      if (farm.id !== undefined) onDelete(farm.id);
+      onClose();
+      
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Error: ${response.status} - ${error}`);
       }
-
-      if (farm.id !== undefined) onDelete(farm.id);
-      onClose();
     } catch (error) {
       console.error('Error deleting farm:', error);
     }
