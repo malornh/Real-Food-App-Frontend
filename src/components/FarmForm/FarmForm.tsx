@@ -24,12 +24,13 @@ interface FarmData {
   id: number;
   userId: string;
   name: string;
-  image: string;
+  photoFile?: File | null;  // Changed this to be File type
+  photoId: string | undefined;
   description?: string;
   latitude: number;
   longitude: number;
   defaultDeliveryRadius: number;
-  rating: number;
+  rating: number | undefined;
   products: Product[];
 }
 
@@ -79,6 +80,7 @@ const FarmForm = ({
   const [isOrderModalOpen, setOrderModalOpen] = useState(false);
   const [selectedOrderProduct, setSelectedOrderProduct] =
     useState<Product | null>(null);
+  const photoPathUrl ='https://realfoodapp.b-cdn.net/';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,7 +119,8 @@ const FarmForm = ({
     const {
       id,
       userId,
-      image,
+      photoFile,
+      photoId,
       name,
       description,
       latitude,
@@ -128,7 +131,8 @@ const FarmForm = ({
     return {
       id: id,
       userId: userId,
-      image: image,
+      photoFile: photoFile,
+      photoId: photoId,
       name: name,
       description: description || "", // Using empty string as default for optional field
       latitude: latitude,
@@ -227,7 +231,7 @@ const FarmForm = ({
     <div>
       {farmData && (
         <div className="farmCategoriesContainer">
-          <img src={farmData.image} className="farmImage" />
+          <img src={photoPathUrl + farmData.photoId} className="farmImage" />
           <div className="farmInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{farmData.name}</h1>
@@ -478,7 +482,8 @@ const FarmForm = ({
                 ...prevData,
                 id: farm.id ?? prevData.id,
                 name: farm.name,
-                image: farm.image,
+                photoFile: farm.photoFile,
+                photoId: farm.photoId,
                 latitude: farm.latitude,
                 longitude: farm.longitude,
               };

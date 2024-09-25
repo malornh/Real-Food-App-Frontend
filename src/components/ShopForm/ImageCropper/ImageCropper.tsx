@@ -15,7 +15,7 @@ const ORIENTATION_TO_ANGLE: { [key: number]: number } = {
 
 interface ImageCropperProps {
   initialImage: string | undefined;
-  onImageChange: (newImage: string) => void; // Add this prop
+  onImageChange: (newFile: File) => void; // Updated prop to accept File
 }
 
 const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage, onImageChange }) => {
@@ -72,9 +72,10 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ initialImage, onImageChange
     try {
       if (newImageSrc && croppedAreaPixels) {
         const croppedImageBase64 = await getCroppedImg(newImageSrc, croppedAreaPixels, rotation);
+        const file = await dataURLtoFile(croppedImageBase64, 'cropped-image.png'); // Convert base64 to file
         setImageSrc(croppedImageBase64);
         setIsEditMode(false);
-        onImageChange(croppedImageBase64); // Call the callback with the new image
+        onImageChange(file); // Call the callback with the new file
       }
     } catch (e) {
       console.error(e);
@@ -211,6 +212,12 @@ function readFile(file: File): Promise<string> {
     reader.addEventListener('load', () => resolve(reader.result as string), false);
     reader.readAsDataURL(file);
   });
+}
+
+async function dataURLtoFile(dataUrl: string, fileName: string): Promise<File> {
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  return new File([blob], fileName, { type: blob.type });
 }
 
 export default ImageCropper;

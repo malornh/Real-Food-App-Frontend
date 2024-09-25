@@ -71,10 +71,10 @@ const EditProduct: React.FC<Props> = ({ isOpen, onClose, product, onProductUpdat
     }
   };
 
-  const handleImageChange = (newImage: string) => {
+  const handleImageChange = (newImage: File) => {
     setNewProduct(prevState => ({
       ...prevState,
-      image: newImage
+      photoFile: newImage
     }));
   };
 

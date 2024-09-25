@@ -12,7 +12,7 @@ import EditShop, { Shop } from './ShopForm/EditShop/EditShop'; // Adjust the imp
 import { Farm } from './FarmForm/EditFarm'
 import theme from './ShopForm/EditShop/theme';
 import defaultStore from '../assets/defaultStore.png'
-import defaultFarm from '../assets/defaultFarm.png'
+import initialFarm from '../assets/defaultFarm.png'
 import EditFarm from './FarmForm/EditFarm';
 
 interface Props {
@@ -54,7 +54,8 @@ const Create = ({ isOpen, onClose, userId, handleNewShop, handleNewFarm }: Props
         userId: userId,
         name: "",
         description: "",
-        image: defaultFarm, // Use defaultFarm if you have a separate default image for farms
+        photoFile: null, // Use defaultFarm if you have a separate default image for farms
+        photoId: undefined,
         latitude: 42.693,
         longitude: 23.319,
         defaultDeliveryRadius: undefined, // Set a default delivery radius

@@ -247,6 +247,10 @@ const AccountForm = ({
     });
   }
 
+  function completePhotoUrl(photoId: string | undefined){
+    return 'https://realfoodapp.b-cdn.net/' + photoId;
+  }
+
   const userShopIds = userShops
     ?.map((s) => s.id)
     .filter((id): id is number => id !== undefined);
@@ -354,10 +358,10 @@ const AccountForm = ({
                     className="cardStyle"
                     onClick={() =>
                       farm.id !== undefined &&
-                      handleCardClick(farm.id, farm.image)
+                      handleCardClick(farm.id, completePhotoUrl(farm.photoId))
                     }>
                     <img
-                      src={farm.image}
+                      src={completePhotoUrl(farm.photoId)}
                       alt={farm.name}
                       style={{
                         width: "80px",

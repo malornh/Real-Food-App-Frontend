@@ -1,16 +1,38 @@
 import React, { useState, useRef } from 'react';
-import { Text, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay, FormControl, Input, Textarea, Box, Flex, ChakraProvider, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
+import {
+  Text,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalOverlay,
+  FormControl,
+  Input,
+  Textarea,
+  Box,
+  Flex,
+  ChakraProvider,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay
+} from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
 import './EditFarm.css';
-import ImageCropper from '../ShopForm/ImageCropper/ImageCropper'
-import theme from '../ShopForm/EditShop/theme'
-import MapComponent from '../ShopForm/EditShop/MapComponent'
+import ImageCropper from '../ShopForm/ImageCropper/ImageCropper';
+import theme from '../ShopForm/EditShop/theme';
+import MapComponent from '../ShopForm/EditShop/MapComponent';
+import initialFarmImage from '../../assets/defaultFarm.png';
 
 export interface Farm {
   id: number | undefined;
   userId: string;
-  image: string;
   name: string;
+  photoFile?: File | null;  // Changed this to be File type
+  photoId: string | undefined;
   description: string;
   latitude: number;
   longitude: number;
@@ -33,18 +55,29 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
 
   const updateFarm = async (farm: Farm) => {
     try {
+      const formData = new FormData();
+      formData.append('Id', String(farm.id));
+      formData.append('UserId', farm.userId);
+      formData.append('Name', farm.name);
+      if (farm.photoFile) {
+        formData.append('PhotoFile', farm.photoFile); // Append the image file
+      }
+      formData.append('Description', farm.description);
+      formData.append('Latitude', String(farm.latitude));
+      formData.append('Longitude', String(farm.longitude));
+      formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
+
       const response = await fetch(`https://localhost:7218/api/Farms/${farm.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(farm)
+        body: formData,
       });
 
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Error: ${response.status} - ${error}`);
       }
+
+      onFarmUpdate(farm); // Update the local farm state if necessary
     } catch (error) {
       console.error('Error updating farm:', error);
     }
@@ -52,21 +85,29 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
 
   const createFarm = async (farm: Farm) => {
     try {
+      const formData = new FormData();
+      formData.append('UserId', farm.userId);
+      formData.append('Name', farm.name);
+      if (farm.photoFile) {
+        formData.append('PhotoFile', farm.photoFile); // Append the image file
+      }
+      formData.append('Description', farm.description);
+      formData.append('Latitude', String(farm.latitude));
+      formData.append('Longitude', String(farm.longitude));
+      formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
+
       const response = await fetch(`https://localhost:7218/api/Farms`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(farm)
+        body: formData,
       });
-      console.log(farm);
+
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Error: ${response.status} - ${error}`);
       }
 
       const responseFarm = await response.json();
-      onFarmUpdate(responseFarm);
+      onFarmUpdate(responseFarm); // Update the state with the newly created farm
       onClose();
     } catch (error) {
       console.error('Error creating farm:', error);
@@ -74,7 +115,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
   };
 
   const handleSave = async () => {
-    if(newFarm.id === undefined) {
+    if (newFarm.id === undefined) {
       await createFarm(newFarm);
     } else {
       await updateFarm(newFarm);
@@ -83,10 +124,10 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
     }
   };
 
-  const handleImageChange = (newImage: string) => {
+  const handleImageChange = (newFile: File) => {
     setNewFarm(prevState => ({
       ...prevState,
-      image: newImage
+      photoFile: newFile, // Store the selected file
     }));
   };
 
@@ -100,7 +141,8 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
         const error = await response.text();
         throw new Error(`Error: ${response.status} - ${error}`);
       }
-      if(farm.id !== undefined) onDelete(farm.id);
+
+      if (farm.id !== undefined) onDelete(farm.id);
       onClose();
     } catch (error) {
       console.error('Error deleting farm:', error);
@@ -123,8 +165,8 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={farm.image}
-                  onImageChange={handleImageChange}
+                  initialImage={initialFarmImage} // This could be the URL or placeholder
+                  onImageChange={handleImageChange} // Pass the new image file
                 />
                 <MapComponent
                   lat={farm.latitude}
@@ -202,10 +244,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
               </Box>
             </Flex>
           </ModalBody>
-          <ModalFooter
-            mb={-6}
-            flexDirection="row"
-            justifyContent="space-between">
+          <ModalFooter mb={-6} flexDirection="row" justifyContent="space-between">
             <Button
               as="label"
               colorScheme="red"
@@ -239,39 +278,22 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
       <AlertDialog
         isOpen={isDeleteConfirmOpen}
         leastDestructiveRef={cancelRef}
-        onClose={closeDeleteConfirm}>
+        onClose={closeDeleteConfirm}
+      >
         <AlertDialogOverlay>
-          <AlertDialogContent
-            mt={250}
-            color="black"
-            background="rgba(255, 255, 255, 0.95)">
+          <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Delete Farm
             </AlertDialogHeader>
-
-            <AlertDialogBody color="black">
-              Are you sure you want to delete{" "}
-              <Text as="span" fontWeight="bold">
-                {farm.name}
-              </Text>
-              ?
+            <AlertDialogBody>
+              Are you sure you want to delete this farm? This action cannot be undone.
             </AlertDialogBody>
-
             <AlertDialogFooter>
-              <Button
-                color="black"
-                ref={cancelRef}
-                onClick={closeDeleteConfirm}>
-                No
+              <Button ref={cancelRef} onClick={closeDeleteConfirm}>
+                Cancel
               </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => {
-                  handleDelete();
-                  closeDeleteConfirm();
-                }}
-                ml={3}>
-                Yes
+              <Button colorScheme="red" onClick={handleDelete}>
+                Delete
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
