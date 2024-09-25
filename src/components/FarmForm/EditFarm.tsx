@@ -62,6 +62,9 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
       if (farm.photoFile) {
         formData.append('PhotoFile', farm.photoFile); // Append the image file
       }
+      if (farm.photoId) {
+        formData.append('PhotoId', farm.photoId);
+      }
       formData.append('Description', farm.description);
       formData.append('Latitude', String(farm.latitude));
       formData.append('Longitude', String(farm.longitude));
@@ -149,6 +152,10 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
     }
   };
 
+  function completePhotoUrl(photoId: string | undefined){
+    return 'https://realfoodapp.b-cdn.net/' + photoId;
+  }
+
   const openDeleteConfirm = () => setIsDeleteConfirmOpen(true);
   const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);
 
@@ -165,7 +172,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={initialFarmImage} // This could be the URL or placeholder
+                  initialImage={completePhotoUrl(newFarm.photoId)} // This could be the URL or placeholder
                   onImageChange={handleImageChange} // Pass the new image file
                 />
                 <MapComponent

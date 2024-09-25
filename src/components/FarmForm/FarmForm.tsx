@@ -80,7 +80,7 @@ const FarmForm = ({
   const [isOrderModalOpen, setOrderModalOpen] = useState(false);
   const [selectedOrderProduct, setSelectedOrderProduct] =
     useState<Product | null>(null);
-  const photoPathUrl ='https://realfoodapp.b-cdn.net/';
+  const photoPathUrl = 'https://realfoodapp.b-cdn.net/';
 
   useEffect(() => {
     const fetchData = async () => {
