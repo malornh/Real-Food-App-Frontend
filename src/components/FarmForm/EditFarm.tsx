@@ -32,7 +32,7 @@ export interface Farm {
   id: number | undefined;
   userId: string;
   name: string;
-  photoFile?: File | null;  // Changed this to be File type
+  photoFile?: File | null;
   photoId: string | undefined;
   description: string;
   latitude: number;

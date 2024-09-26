@@ -45,7 +45,8 @@ export interface Product {
   deliveryRadius: number;
   minUnitOrder: number;
   dateUpdated: string;
-  image: string;
+  photoFile?: File | null;
+  photoId: string | undefined;
   type: string;
   rating: number | null;
 }
@@ -155,8 +156,8 @@ const FarmForm = ({
       pricePerUnit: 0,
       deliveryRadius: 0,
       minUnitOrder: 0,
-      dateUpdated: currentDate, // Assigning today's date
-      image: defaultProduct,
+      dateUpdated: currentDate,
+      photoId: undefined,
       type: "",
       rating: null,
     };
@@ -324,7 +325,7 @@ const FarmForm = ({
                         <Box boxSize={130}>
                           <img
                             className="original-image"
-                            src={p.image}
+                            src={completePhotoUrl(p.photoId)}
                             alt="Original Image"
                           />
                         </Box>

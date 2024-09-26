@@ -5,6 +5,7 @@ import './EditProduct.css';
 import ImageCropper from '../ShopForm/ImageCropper/ImageCropper';
 import theme from '../ShopForm/EditShop/theme';
 import { Product } from './FarmForm';
+import axios from 'axios';
 
 interface Props {
   isOpen: boolean;
@@ -21,46 +22,74 @@ const EditProduct: React.FC<Props> = ({ isOpen, onClose, product, onProductUpdat
 
   const updateProduct = async (product: Product) => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Products/${product.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(product)
-      });
+        const formData = new FormData();
+        formData.append('Id', String(product.id)); // Add product ID
+        formData.append('Name', product.name); // Add product name
+        formData.append('Type', product.type || ''); // Add product type
+        formData.append('FarmId', String(product.farmId)); // Add farm ID
+        formData.append('Description', product.description || ''); // Add product description
+        formData.append('Quantity', String(product.quantity)); // Add product quantity
+        formData.append('PricePerUnit', String(product.pricePerUnit)); // Add product price
+        formData.append('DeliveryRadius', String(product.deliveryRadius)); // Add delivery radius
+        formData.append('MinUnitOrder', String(product.minUnitOrder)); // Add minimum order unit
+        formData.append('Rating', product.rating ? String(product.rating) : ''); // Add rating
 
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
-      }
+        // If a new photo file is provided, append it to the FormData
+        if (product.photoFile) {
+            formData.append('PhotoFile', product.photoFile); // Append the image file
+        }
+
+        const response = await axios.put(`https://localhost:7218/api/Products`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        onProductUpdate(response.data); // Call the function to update the state with the response data
     } catch (error) {
-      console.error('Error updating product:', error);
+        if (axios.isAxiosError(error)) {
+            console.error('Error updating product:', error.response?.data || error.message);
+        } else {
+            console.error('Unexpected error updating product:', error);
+        }
     }
-  };
+};
 
-  const createProduct = async (product: Product) => {
+// Function to create a new product
+const createProduct = async (product: Product) => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Products`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(product)
-      });
+        const formData = new FormData();
+        formData.append('Name', product.name); // Add product name
+        formData.append('Type', product.type || ''); // Add product type
+        formData.append('FarmId', String(product.farmId)); // Add farm ID
+        formData.append('Description', product.description || ''); // Add product description
+        formData.append('Quantity', String(product.quantity)); // Add product quantity
+        formData.append('PricePerUnit', String(product.pricePerUnit)); // Add product price
+        formData.append('DeliveryRadius', String(product.deliveryRadius)); // Add delivery radius
+        formData.append('MinUnitOrder', String(product.minUnitOrder)); // Add minimum order unit
+        formData.append('Rating', product.rating ? String(product.rating) : ''); // Add rating
 
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
-      }
+        // If a photo file is provided, append it to the FormData
+        if (product.photoFile) {
+            formData.append('PhotoFile', product.photoFile); // Append the image file
+        }
 
-      const responseProduct = await response.json();
-      onProductUpdate(responseProduct);
-      onClose();
+        const response = await axios.post('https://localhost:7218/api/Products', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        onProductUpdate(response.data); // Update state with the newly created product
+        onClose(); // Close any dialogs or forms as needed
     } catch (error) {
-      console.error('Error creating product:', error);
+        if (axios.isAxiosError(error)) {
+            console.error('Error creating product:', error.response?.data || error.message);
+        } else {
+            console.error('Unexpected error creating product:', error);
+        }
     }
-  };
-
+};
   const handleSave = async () => {
     if (newProduct.id === undefined) {
       await createProduct(newProduct);
@@ -95,6 +124,10 @@ const EditProduct: React.FC<Props> = ({ isOpen, onClose, product, onProductUpdat
     }
   };
 
+    function completePhotoUrl(photoId: string | undefined){
+    return 'https://realfoodapp.b-cdn.net/' + photoId;
+  }
+
   const openDeleteConfirm = () => setIsDeleteConfirmOpen(true);
   const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);
 
@@ -111,7 +144,7 @@ const EditProduct: React.FC<Props> = ({ isOpen, onClose, product, onProductUpdat
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={product.image}
+                  initialImage={completePhotoUrl(product.photoId)}
                   onImageChange={handleImageChange}
                 />
                 <Box ml={5}>
