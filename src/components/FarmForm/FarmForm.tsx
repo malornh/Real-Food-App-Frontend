@@ -80,7 +80,6 @@ const FarmForm = ({
   const [isOrderModalOpen, setOrderModalOpen] = useState(false);
   const [selectedOrderProduct, setSelectedOrderProduct] =
     useState<Product | null>(null);
-  const photoPathUrl = 'https://realfoodapp.b-cdn.net/';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -227,11 +226,15 @@ const FarmForm = ({
     return `${day}-${month}-${year}`;
   };
 
+  function completePhotoUrl(photoId: string | undefined){
+    return 'https://realfoodapp.b-cdn.net/' + photoId;
+  }
+
   return (
     <div>
       {farmData && (
         <div className="farmCategoriesContainer">
-          <img src={photoPathUrl + farmData.photoId} className="farmImage" />
+          <img src={completePhotoUrl(farmData.photoId)} className="farmImage" />
           <div className="farmInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{farmData.name}</h1>

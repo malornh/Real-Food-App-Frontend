@@ -22,9 +22,10 @@ import EditShopProduct from "./EditShopProduct";
 
 interface ShopData {
   id: number;
-  image: string;
   userId: string;
   name: string;
+  photoFile?: File | null;
+  photoId: string | undefined;
   description: string;
   latitude: number;
   longitude: number;
@@ -172,7 +173,8 @@ const ShopForm: React.FC<Props> = ({
   const mapToShop = (shop: ShopData): Shop => ({
     id: shop.id,
     userId: shop.userId,
-    image: shop.image,
+    photoFile: shop.photoFile,
+    photoId: shop.photoId,
     name: shop.name,
     description: shop.description,
     latitude: shop.latitude,
@@ -189,7 +191,8 @@ const ShopForm: React.FC<Props> = ({
         // Only overwrite properties that are present in the updated shop data
         name: shop.name,
         description: shop.description,
-        image: shop.image,
+        photoFile: shop.photoFile,
+        photoId: shop.photoId,
         latitude: shop.latitude,
         longitude: shop.longitude,
       };
@@ -214,11 +217,15 @@ const ShopForm: React.FC<Props> = ({
     });
   };
 
+  function completePhotoUrl(photoId: string | undefined){
+    return 'https://realfoodapp.b-cdn.net/' + photoId;
+  }
+
   return (
     <div>
       {shopData && (
         <div className="shopCardContainer">
-          <img src={shopData.image} className="shopImage" />
+          <img src={completePhotoUrl(shopData.photoId)} className="shopImage" />
           <div className="shopInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="shopTitle">{shopData.name}</h1>

@@ -325,10 +325,10 @@ const AccountForm = ({
                     className="cardStyle"
                     onClick={() =>
                       shop.id !== undefined &&
-                      handleCardClick(shop.id, shop.image)
+                      handleCardClick(shop.id, completePhotoUrl(shop.photoId))
                     }>
                     <img
-                      src={shop.image}
+                      src={completePhotoUrl(shop.photoId)}
                       alt={shop.name}
                       style={{
                         width: "80px",

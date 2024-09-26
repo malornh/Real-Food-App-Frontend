@@ -41,7 +41,8 @@ const Create = ({ isOpen, onClose, userId, handleNewShop, handleNewFarm }: Props
           userId: userId,
           name: "",
           description: "",
-          image: defaultStore,
+          photoFile: null,
+          photoId: undefined,
           latitude: 42.693,
           longitude: 23.319,
           rating: undefined,
@@ -54,7 +55,7 @@ const Create = ({ isOpen, onClose, userId, handleNewShop, handleNewFarm }: Props
         userId: userId,
         name: "",
         description: "",
-        photoFile: null, // Use defaultFarm if you have a separate default image for farms
+        photoFile: null,
         photoId: undefined,
         latitude: 42.693,
         longitude: 23.319,

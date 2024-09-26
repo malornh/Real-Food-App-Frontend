@@ -69,6 +69,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
         formData.append('Latitude', String(farm.latitude));
         formData.append('Longitude', String(farm.longitude));
         formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
+        formData.append('Rating', String(farm.rating));
 
         const response = await fetch(`https://localhost:7218/api/Farms`, { // Ensure the correct URL
             method: 'PUT',
@@ -112,6 +113,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
       formData.append('Latitude', String(farm.latitude));
       formData.append('Longitude', String(farm.longitude));
       formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
+      formData.append('Rating', String(farm.rating));
 
       const response = await fetch(`https://localhost:7218/api/Farms`, {
         method: 'POST',

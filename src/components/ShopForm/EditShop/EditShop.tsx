@@ -1,5 +1,25 @@
 import React, { useState, useRef } from 'react';
-import { Text, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay, FormControl, Input, Textarea, Box, Flex, ChakraProvider, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
+import {
+  Text,
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalOverlay,
+  FormControl,
+  Input,
+  Textarea,
+  Box,
+  Flex,
+  ChakraProvider,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+} from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
 import './EditShop.css';
 import ImageCropper from '../ImageCropper/ImageCropper';
@@ -9,8 +29,9 @@ import MapComponent from './MapComponent';
 export interface Shop {
   id: number | undefined;
   userId: string;
-  image: string;
   name: string;
+  photoFile?: File | null;
+  photoId: string | undefined;
   description: string;
   latitude: number;
   longitude: number;
@@ -32,18 +53,33 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
 
   const updateShop = async (shop: Shop) => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Shops/${shop.id}`, {
+      const formData = new FormData();
+      formData.append('Id', String(shop.id));
+      formData.append('UserId', shop.userId);
+      formData.append('Name', shop.name);
+      
+      if (shop.photoFile) {
+        formData.append('PhotoFile', shop.photoFile);
+      }
+      if(shop.photoId){
+        formData.append('PhotoId', shop.photoId);
+      }
+      formData.append('Description', shop.description);
+      formData.append('Latitude', String(shop.latitude));
+      formData.append('Longitude', String(shop.longitude));
+      formData.append('Rating', String(shop.rating));
+
+      const response = await fetch(`https://localhost:7218/api/Shops`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(shop)
+        body: formData,
       });
 
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Error: ${response.status} - ${error}`);
       }
+
+      onShopUpdate(shop); // Update the local state after successful response
     } catch (error) {
       console.error('Error updating shop:', error);
     }
@@ -51,65 +87,72 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
 
   const createShop = async (shop: Shop) => {
     try {
-        const response = await fetch(`https://localhost:7218/api/Shops`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(shop)
-        });
-
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(`Error: ${response.status} - ${error}`);
-        }
-
-        const responseShop = await response.json();
-        onShopUpdate(responseShop);
-        onClose();
-    } catch (error) {
-        console.error('Error updating shop:', error);
-    }
-};
-
-
-  const handleSave = async () => {
-    if(newShop.id === undefined)
-      {
-        await createShop(newShop);
-      }else
-      {
-        await updateShop(newShop);
-        onShopUpdate(newShop);
-        onClose();
+      const formData = new FormData();
+      formData.append('UserId', shop.userId);
+      formData.append('Name', shop.name);
+      if (shop.photoFile) {
+        formData.append('PhotoFile', shop.photoFile);
       }
-    
-    
-  };
+      formData.append('Description', shop.description);
+      formData.append('Latitude', String(shop.latitude));
+      formData.append('Longitude', String(shop.longitude));
 
-  const handleImageChange = (newImage: string) => {
-    setNewShop(prevState => ({
-      ...prevState,
-      image: newImage
-    }));
-  };
-
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`https://localhost:7218/api/Shops/${shop.id}`, {
-        method: 'DELETE'
+      const response = await fetch(`https://localhost:7218/api/Shops`, {
+        method: 'POST',
+        body: formData,
       });
 
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Error: ${response.status} - ${error}`);
       }
-      {shop.id !== undefined && onDelete(shop.id);}
+
+      const responseShop = await response.json();
+      onShopUpdate(responseShop);
+      onClose();
+    } catch (error) {
+      console.error('Error creating shop:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    if (newShop.id === undefined) {
+      await createShop(newShop);
+    } else {
+      await updateShop(newShop);
+      onShopUpdate(newShop);
+      onClose();
+    }
+  };
+
+  const handleImageChange = (newFile: File) => {
+    setNewShop((prevState) => ({
+      ...prevState,
+      photoFile: newFile, // Store the selected file
+    }));
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`https://localhost:7218/api/Shops/${shop.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Error: ${response.status} - ${error}`);
+      }
+
+      if (shop.id !== undefined) onDelete(shop.id);
       onClose();
     } catch (error) {
       console.error('Error deleting shop:', error);
     }
   };
+
+  function completePhotoUrl(photoId: string | undefined) {
+    return 'https://realfoodapp.b-cdn.net/' + photoId;
+  }
 
   const openDeleteConfirm = () => setIsDeleteConfirmOpen(true);
   const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);
@@ -117,18 +160,14 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
   return (
     <ChakraProvider theme={theme}>
       <Modal isCentered isOpen={isOpen} onClose={onClose} size="xl">
-        <ModalOverlay
-          bg="blackAlpha.300"
-          backdropFilter="blur(10px) hue-rotate(90deg)"
-          className="modal-overlay"
-        />
-        <ModalContent className="modalContent" maxW="68vw" maxH="95%">
-          <ModalBody style={{ overflowY: "auto" }} mt={-2}>
+        <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
+        <ModalContent maxW="68vw" maxH="95%">
+          <ModalBody style={{ overflowY: 'auto' }} mt={-2}>
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={shop.image}
-                  onImageChange={handleImageChange}
+                  initialImage={completePhotoUrl(newShop.photoId)} // Use the image URL or placeholder
+                  onImageChange={handleImageChange} // Pass the new image file
                 />
                 <MapComponent
                   lat={shop.latitude}
@@ -139,12 +178,12 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
                       latitude: lat,
                     }))
                   }
-                  outLong={(long) => {
+                  outLong={(long) =>
                     setNewShop((prevState) => ({
                       ...prevState,
                       longitude: long,
-                    }));
-                  }}
+                    }))
+                  }
                 />
               </Box>
               <Box ml={5} mt={-1}>
@@ -177,7 +216,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
                     }
                     placeholder="Enter description"
                     fontSize="20px"
-                    height="520px"
+                    height="455px"
                     width="575px"
                     borderRadius="10px"
                     color="black"
@@ -187,33 +226,21 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
               </Box>
             </Flex>
           </ModalBody>
-          <ModalFooter
-            mb={-6}
-            flexDirection="row"
-            justifyContent="space-between">
-           {newShop.id !== undefined && <Button
-              as="label"
-              colorScheme="red"
-              ml={383}
-              width={100}
-              onClick={openDeleteConfirm}>
+          <ModalFooter mb={-6} flexDirection="row" justifyContent="space-between">
+            <Button colorScheme="red" ml={383} width={100} onClick={openDeleteConfirm}>
               Delete Shop
-            </Button>}
-            <Box ml={newShop.id !== undefined ? 0 : 763}>
-              <Button
-                as="label"
-                colorScheme="teal"
-                mr={5}
-                width={100}
-                onClick={handleSave}>
+            </Button>
+            <Box>
+              <Button colorScheme="teal" mr={5} width={100} onClick={handleSave}>
                 Save
               </Button>
               <Button
                 style={{
-                  color: "black",
-                  background: "rgba(145, 150, 150, 0.2)",
+                  color: 'black',
+                  background: 'rgba(145, 150, 150, 0.2)',
                 }}
-                onClick={onClose}>
+                onClick={onClose}
+              >
                 Close
               </Button>
             </Box>
@@ -221,42 +248,19 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
         </ModalContent>
       </Modal>
 
-      <AlertDialog
-        isOpen={isDeleteConfirmOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={closeDeleteConfirm}>
+      <AlertDialog isOpen={isDeleteConfirmOpen} leastDestructiveRef={cancelRef} onClose={closeDeleteConfirm}>
         <AlertDialogOverlay>
-          <AlertDialogContent
-            mt={250}
-            color="black"
-            background="rgba(255, 255, 255, 0.95)">
+          <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Delete Shop
             </AlertDialogHeader>
-
-            <AlertDialogBody color="black">
-              Are you sure you want to delete{" "}
-              <Text as="span" fontWeight="bold">
-                {shop.name}
-              </Text>
-              ?
-            </AlertDialogBody>
-
+            <AlertDialogBody>Are you sure you want to delete this shop? This action cannot be undone.</AlertDialogBody>
             <AlertDialogFooter>
-              <Button
-                color="black"
-                ref={cancelRef}
-                onClick={closeDeleteConfirm}>
-                No
+              <Button ref={cancelRef} onClick={closeDeleteConfirm}>
+                Cancel
               </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => {
-                  handleDelete();
-                  closeDeleteConfirm();
-                }}
-                ml={3}>
-                Yes
+              <Button colorScheme="red" onClick={handleDelete}>
+                Delete
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
