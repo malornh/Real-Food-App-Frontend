@@ -60,11 +60,9 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
         formData.append('UserId', farm.userId);
         formData.append('Name', farm.name);
 
-        // Only include PhotoFile if it is provided
         if (farm.photoFile) {
             formData.append('PhotoFile', farm.photoFile);
         }
-
         formData.append('Description', farm.description);
         formData.append('Latitude', String(farm.latitude));
         formData.append('Longitude', String(farm.longitude));
@@ -75,19 +73,6 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
             method: 'PUT',
             body: formData,
         });
-
-        console.log('Updating farm:', {
-          id: farm.id,
-          userId: farm.userId,
-          name: farm.name,
-          photoId: farm.photoId,
-          description: farm.description,
-          latitude: farm.latitude,
-          longitude: farm.longitude,
-          defaultDeliveryRadius: farm.defaultDeliveryRadius,
-          photoFile: farm.photoFile ? farm.photoFile.name : 'No photo file'
-      });
-      
 
         if (!response.ok) {
             const error = await response.text();
@@ -191,7 +176,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
               <Box mt={-5} ml={-6}>
                 <ImageCropper
                   initialImage={completePhotoUrl(newFarm.photoId)} // This could be the URL or placeholder
-                  onImageChange={handleImageChange} // Pass the new image file
+                  onImageChange={(photo)=>handleImageChange(photo)} // Pass the new image file
                 />
                 <MapComponent
                   lat={farm.latitude}

@@ -167,7 +167,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
               <Box mt={-5} ml={-6}>
                 <ImageCropper
                   initialImage={completePhotoUrl(newShop.photoId)} // Use the image URL or placeholder
-                  onImageChange={handleImageChange} // Pass the new image file
+                  onImageChange={(photo)=>handleImageChange(photo)} // Pass the new image file
                 />
                 <MapComponent
                   lat={shop.latitude}
