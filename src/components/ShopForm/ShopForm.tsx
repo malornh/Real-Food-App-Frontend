@@ -123,9 +123,7 @@ const ShopForm: React.FC<Props> = ({
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<OrderWithProduct | null>(
-    null
-  );
+  const [selectedOrder, setSelectedOrder] = useState<OrderWithProduct | null>(null);
 
   const typeList = Array.from(
     new Set(shopData?.orders.map((o) => o.product.type))
@@ -183,20 +181,18 @@ const ShopForm: React.FC<Props> = ({
   });
 
   function handleShopUpdate(shop: Shop): void {
-    forwardShopUpdate(shop); // Forwarding the updated shop data
     setShopData((currentShopData) => {
-      if (!currentShopData) return currentShopData; // Check for null or undefined
+      if (!currentShopData) return currentShopData; 
       return {
-        ...currentShopData, // Spread all existing properties
-        // Only overwrite properties that are present in the updated shop data
+        ...currentShopData, 
         name: shop.name,
         description: shop.description,
-        photoFile: shop.photoFile,
-        photoId: shop.photoId,
+        photoId: shop.photoId,   
         latitude: shop.latitude,
         longitude: shop.longitude,
       };
     });
+    forwardShopUpdate(shop); 
   }
 
   const handleProductEditClick = (order: OrderWithProduct) => {

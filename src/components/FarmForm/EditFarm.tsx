@@ -26,6 +26,7 @@ import ImageCropper from '../ShopForm/ImageCropper/ImageCropper';
 import theme from '../ShopForm/EditShop/theme';
 import MapComponent from '../ShopForm/EditShop/MapComponent';
 import initialFarmImage from '../../assets/defaultFarm.png';
+import axios from 'axios';
 
 export interface Farm {
   id: number | undefined;
@@ -54,79 +55,80 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
   const cancelRef = useRef<HTMLButtonElement>(null);
 
   const updateFarm = async (farm: Farm) => {
-    try {
-        const formData = new FormData();
-        formData.append('Id', String(farm.id));
-        formData.append('UserId', farm.userId);
-        formData.append('Name', farm.name);
+      try {
+          const formData = new FormData();
+          formData.append('Id', String(farm.id));
+          formData.append('UserId', farm.userId);
+          formData.append('Name', farm.name);
+  
+          if (farm.photoFile) {
+              formData.append('PhotoFile', farm.photoFile);
+          }
+  
+          formData.append('Description', farm.description);
+          formData.append('Latitude', String(farm.latitude));
+          formData.append('Longitude', String(farm.longitude));
+          formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
+          formData.append('Rating', String(farm.rating));
+  
+          const response = await axios.put(`https://localhost:7218/api/Farms`, formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data',
+              },
+          });
+  
+          onFarmUpdate(response.data);
+      } catch (error) {
+          if (axios.isAxiosError(error)) {
+              console.error('Error updating farm:', error.response?.data || error.message);
+          } else {
+              console.error('Unexpected error updating farm:', error);
+          }
+      }
+  };
 
-        if (farm.photoFile) {
-            formData.append('PhotoFile', farm.photoFile);
-        }
-        formData.append('Description', farm.description);
-        formData.append('Latitude', String(farm.latitude));
-        formData.append('Longitude', String(farm.longitude));
-        formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
-        formData.append('Rating', String(farm.rating));
-
-        const response = await fetch(`https://localhost:7218/api/Farms`, { // Ensure the correct URL
-            method: 'PUT',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(`Error: ${response.status} - ${error}`);
-        }
-
-        onFarmUpdate(farm); // Update the local state after successful response
-    } catch (error) {
-        console.error('Error updating farm:', error);
-    }
-};
-
-
-  const createFarm = async (farm: Farm) => {
-    try {
+const createFarm = async (farm: Farm) => {
+  try {
       const formData = new FormData();
       formData.append('UserId', farm.userId);
       formData.append('Name', farm.name);
+      
       if (farm.photoFile) {
-        formData.append('PhotoFile', farm.photoFile); // Append the image file
+          formData.append('PhotoFile', farm.photoFile);
       }
+
       formData.append('Description', farm.description);
       formData.append('Latitude', String(farm.latitude));
       formData.append('Longitude', String(farm.longitude));
       formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
       formData.append('Rating', String(farm.rating));
 
-      const response = await fetch(`https://localhost:7218/api/Farms`, {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post('https://localhost:7218/api/Farms', formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data',
+          },
       });
 
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
+      onFarmUpdate(response.data); 
+      onClose(); 
+  } catch (error) {
+      if (axios.isAxiosError(error)) {
+          console.error('Error creating farm:', error.response?.data || error.message);
+      } else {
+          console.error('Unexpected error creating farm:', error);
       }
+  }
+};
 
-      const responseFarm = await response.json();
-      onFarmUpdate(responseFarm); // Update the state with the newly created farm
-      onClose();
-    } catch (error) {
-      console.error('Error creating farm:', error);
-    }
-  };
-
-  const handleSave = async () => {
-    if (newFarm.id === undefined) {
-      await createFarm(newFarm);
-    } else {
-      await updateFarm(newFarm);
-      onFarmUpdate(newFarm);
-      onClose();
-    }
-  };
+const handleSave = async () => {
+  if (newFarm.id === undefined) {
+    await createFarm(newFarm);
+  } else {
+    await updateFarm(newFarm);
+    onFarmUpdate(newFarm);
+    onClose();
+  }
+};
 
   const handleImageChange = (newFile: File) => {
     setNewFarm(prevState => ({

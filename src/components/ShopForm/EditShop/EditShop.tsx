@@ -25,6 +25,7 @@ import './EditShop.css';
 import ImageCropper from '../ImageCropper/ImageCropper';
 import theme from './theme'; // Import the custom theme
 import MapComponent from './MapComponent';
+import axios from 'axios';
 
 export interface Shop {
   id: number | undefined;
@@ -57,63 +58,68 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
       formData.append('Id', String(shop.id));
       formData.append('UserId', shop.userId);
       formData.append('Name', shop.name);
-      
+  
       if (shop.photoFile) {
         formData.append('PhotoFile', shop.photoFile);
-      }
-      if(shop.photoId){
-        formData.append('PhotoId', shop.photoId);
       }
       formData.append('Description', shop.description);
       formData.append('Latitude', String(shop.latitude));
       formData.append('Longitude', String(shop.longitude));
       formData.append('Rating', String(shop.rating));
-
-      const response = await fetch(`https://localhost:7218/api/Shops`, {
-        method: 'PUT',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
-      }
-
-      onShopUpdate(shop); // Update the local state after successful response
-    } catch (error) {
-      console.error('Error updating shop:', error);
+  
+      const response = await axios.put(
+        `https://localhost:7218/api/Shops`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data', 
+          },
+        }
+      );
+  
+      const updatedShop = response.data;
+  
+      onShopUpdate(updatedShop);
+      
+    } catch (error : any) {
+      console.error('Error updating shop:', error.response?.data || error.message);
     }
   };
+  
 
   const createShop = async (shop: Shop) => {
     try {
       const formData = new FormData();
       formData.append('UserId', shop.userId);
       formData.append('Name', shop.name);
+      
       if (shop.photoFile) {
         formData.append('PhotoFile', shop.photoFile);
       }
       formData.append('Description', shop.description);
       formData.append('Latitude', String(shop.latitude));
       formData.append('Longitude', String(shop.longitude));
-
-      const response = await fetch(`https://localhost:7218/api/Shops`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
-      }
-
-      const responseShop = await response.json();
+  
+      const response = await axios.post(
+        `https://localhost:7218/api/Shops`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+  
+      const responseShop = response.data;
+  
       onShopUpdate(responseShop);
+  
       onClose();
-    } catch (error) {
-      console.error('Error creating shop:', error);
+    } catch (error: any) {
+      console.error('Error creating shop:', error.response?.data || error.message);
     }
   };
+  
 
   const handleSave = async () => {
     if (newShop.id === undefined) {
