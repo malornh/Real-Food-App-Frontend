@@ -80,7 +80,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
       const updatedShop = response.data;
   
       onShopUpdate(updatedShop);
-      
+
     } catch (error : any) {
       console.error('Error updating shop:', error.response?.data || error.message);
     }
@@ -138,23 +138,24 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
     }));
   };
 
-  const handleDelete = async () => {
+const handleDelete = async () => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Shops/${shop.id}`, {
-        method: 'DELETE',
-      });
+        const response = await axios.delete(`https://localhost:7218/api/Shops/${shop.id}`);
 
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
-      }
-
-      if (shop.id !== undefined) onDelete(shop.id);
-      onClose();
+        if (response.status === 200) {
+            if (shop.id !== undefined) {
+                onDelete(shop.id); 
+            }
+            onClose(); 
+        }
     } catch (error) {
-      console.error('Error deleting shop:', error);
+        if (axios.isAxiosError(error)) {
+            console.error('Error deleting shop:', error.response?.data || error.message);
+        } else {
+            console.error('Unexpected error deleting shop:', error);
+        }
     }
-  };
+};
 
   function completePhotoUrl(photoId: string | undefined) {
     return 'https://realfoodapp.b-cdn.net/' + photoId;

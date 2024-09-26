@@ -109,20 +109,23 @@ const createProduct = async (product: Product) => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Products/${product.id}`, {
-        method: 'DELETE'
-      });
+        const response = await axios.delete(`https://localhost:7218/api/Products/${product.id}`);
 
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
-      }
-      if (product.id !== undefined) onDelete(product.id);
-      onClose();
+        // Check if the response status is within the successful range
+        if (response.status === 200) {
+            if (product.id !== undefined) {
+                onDelete(product.id); // Call the onDelete callback if product ID is defined
+            }
+            onClose(); // Close any dialogs or forms as needed
+        }
     } catch (error) {
-      console.error('Error deleting product:', error);
+        if (axios.isAxiosError(error)) {
+            console.error('Error deleting product:', error.response?.data || error.message);
+        } else {
+            console.error('Unexpected error deleting product:', error);
+        }
     }
-  };
+};
 
     function completePhotoUrl(photoId: string | undefined){
     return 'https://realfoodapp.b-cdn.net/' + photoId;

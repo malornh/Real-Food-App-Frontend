@@ -139,23 +139,22 @@ const handleSave = async () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Farms/${farm.id}`, {
-        method: 'DELETE'
-      });
+        const response = await axios.delete(`https://localhost:7218/api/Farms/${farm.id}`);
 
-      
-
-      if (farm.id !== undefined) onDelete(farm.id);
-      onClose();
-      
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
-      }
+        if (response.status === 200) {
+            if (farm.id !== undefined) {
+                onDelete(farm.id);
+            }
+            onClose();
+        }
     } catch (error) {
-      console.error('Error deleting farm:', error);
+        if (axios.isAxiosError(error)) {
+            console.error('Error deleting farm:', error.response?.data || error.message);
+        } else {
+            console.error('Unexpected error deleting farm:', error);
+        }
     }
-  };
+};
 
   function completePhotoUrl(photoId: string | undefined){
     return 'https://realfoodapp.b-cdn.net/' + photoId;
