@@ -90,6 +90,10 @@ const CreateOrder: React.FC<Props> = ({
       setTotalPrice(product.quantity * product.pricePerUnit);
     }
   };
+  
+  function completePhotoUrl(photoId: string | undefined){
+    return 'https://realfoodapp.b-cdn.net/' + photoId;
+  }
 
   return (
     <ChakraProvider theme={theme}>
@@ -107,7 +111,7 @@ const CreateOrder: React.FC<Props> = ({
                 mb={5}
                 borderRadius={10}
                 boxSize={280}
-                src={product.image}
+                src={completePhotoUrl(product.photoId)}
               />
               <Box mt={2}>
                 <Text mb={2} fontSize={40} color={"black"}>

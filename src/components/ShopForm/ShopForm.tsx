@@ -53,7 +53,7 @@ interface ProductDetails {
   type: string;
   pricePerUnit: number;
   unitOfMeasurement: number;
-  image: string;
+  photoId: string | undefined;
   rating: number | null;
   dateUpdated: string;
 }
@@ -61,7 +61,7 @@ interface ProductDetails {
 interface Farm {
   id: number;
   name: string;
-  image: string;
+  photoId: string | undefined;
 }
 
 interface Props {
@@ -309,7 +309,7 @@ const ShopForm: React.FC<Props> = ({
                             <div className="flip-card-front">
                               <img
                                 className="original-image"
-                                src={order.product.image}
+                                src={completePhotoUrl(order.product.photoId)}
                                 alt="Original Image"
                               />
                             </div>
@@ -320,7 +320,7 @@ const ShopForm: React.FC<Props> = ({
                                   handleClickedFarmId(order.shortFarm.id),
                                   handleIsShopClicked(false)
                                 )}
-                                src={order.shortFarm.image}
+                                src={completePhotoUrl(order.shortFarm.photoId)}
                                 alt="Hover Image"
                               />
                             </div>
