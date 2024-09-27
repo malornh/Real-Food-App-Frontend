@@ -14,6 +14,7 @@ import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { TbCircleLetterS } from "react-icons/tb";
 import { TbCircleLetterF } from "react-icons/tb";
 import LoginRegisterForm from "../LoginRegisterForm/LoginRegisterForm";
+import { getToken } from '../../services/auth.ts';
 
 export interface Card {
   imgUrl: string;
@@ -302,7 +303,7 @@ const AccountForm = ({
               </Flex>
             )}
             <div className="cardsContainerStyle">
-              {!inLoginSelection && (
+              {!inLoginSelection && getToken() != null &&(
                 <Button
                   background={"rgba(254, 216, 65, 0.8)"}
                   color={"black"}
