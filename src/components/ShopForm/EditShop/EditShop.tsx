@@ -36,7 +36,7 @@ export interface Shop {
   description: string;
   latitude: number;
   longitude: number;
-  rating: number | null;
+  rating: number | undefined;
 }
 
 interface Props {

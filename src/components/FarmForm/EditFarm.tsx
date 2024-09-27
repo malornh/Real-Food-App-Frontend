@@ -39,7 +39,7 @@ export interface Farm {
   latitude: number;
   longitude: number;
   defaultDeliveryRadius: number | undefined;
-  rating: number | null;
+  rating: number | undefined;
 }
 
 interface Props {

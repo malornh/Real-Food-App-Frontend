@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Flex, Button, Input, Heading, Tabs, TabList, TabPanels, TabPanel, Tab, Text } from '@chakra-ui/react';
 import axios from 'axios'; // Import Axios
 import './LoginRegisterForm.css';
-import { setToken, clearToken, getToken } from '../../services/auth'; // Adjust the import as per your file structure
+import { setToken, clearToken, getToken } from '../../services/auth';
 
 // Define interfaces for form values and errors
 interface FormValues {
@@ -134,7 +134,7 @@ function LoginRegisterForm() {
       {getToken() ? ( // Conditional rendering based on the token state
         <Flex direction="column" alignItems="center">
           <Heading as="h2" size="lg" textAlign="center" mb="6" color="black">Welcome!</Heading>
-          <Button onClick={handleLogout} colorScheme="red">Logout</Button>
+          <Button onClick={handleLogout} colorScheme="red" background='rgb(76, 76, 255)' color="white">Logout</Button>
         </Flex>
       ) : (
         <Tabs variant="enclosed" isFitted onChange={handleTabChange} index={activeTab}>
