@@ -27,6 +27,7 @@ import theme from '../ShopForm/EditShop/theme';
 import MapComponent from '../ShopForm/EditShop/MapComponent';
 import initialFarmImage from '../../assets/defaultFarm.png';
 import axios from 'axios';
+import { setToken, clearToken, getToken } from '../../services/auth.ts';
 
 export interface Farm {
   id: number | undefined;
@@ -38,7 +39,7 @@ export interface Farm {
   latitude: number;
   longitude: number;
   defaultDeliveryRadius: number | undefined;
-  rating: number | undefined;
+  rating: number | null;
 }
 
 interface Props {
@@ -87,39 +88,43 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
       }
   };
 
-const createFarm = async (farm: Farm) => {
-  try {
-      const formData = new FormData();
-      formData.append('UserId', farm.userId);
-      formData.append('Name', farm.name);
-      
-      if (farm.photoFile) {
-          formData.append('PhotoFile', farm.photoFile);
-      }
-
-      formData.append('Description', farm.description);
-      formData.append('Latitude', String(farm.latitude));
-      formData.append('Longitude', String(farm.longitude));
-      formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
-      formData.append('Rating', String(farm.rating));
-
-      const response = await axios.post('https://localhost:7218/api/Farms', formData, {
-          headers: {
-              'Content-Type': 'multipart/form-data',
-          },
-      });
-
-      onFarmUpdate(response.data); 
-      onClose(); 
-  } catch (error) {
-      if (axios.isAxiosError(error)) {
-          console.error('Error creating farm:', error.response?.data || error.message);
-      } else {
-          console.error('Unexpected error creating farm:', error);
-      }
-  }
-};
-
+  const createFarm = async (farm: Farm) => {
+    try {
+        const formData = new FormData();
+        formData.append('UserId', farm.userId);
+        formData.append('Name', farm.name);
+        
+        if (farm.photoFile) {
+            formData.append('PhotoFile', farm.photoFile);
+        }
+  
+        formData.append('Description', farm.description);
+        formData.append('Latitude', String(farm.latitude));
+        formData.append('Longitude', String(farm.longitude));
+        formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
+  
+        // Get the JWT token from the auth module
+        const token = getToken();
+        console.log(token);
+  
+        const response = await axios.post('https://localhost:7218/api/Farms', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`, // Add the token to the Authorization header
+            },
+        });
+  
+        onFarmUpdate(response.data); 
+        onClose(); 
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error creating farm:', error.response?.data || error.message);
+        } else {
+            console.error('Unexpected error creating farm:', error);
+        }
+    }
+  };
+  
 const handleSave = async () => {
   if (newFarm.id === undefined) {
     await createFarm(newFarm);

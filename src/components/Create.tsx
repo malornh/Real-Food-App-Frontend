@@ -45,7 +45,7 @@ const Create = ({ isOpen, onClose, userId, handleNewShop, handleNewFarm }: Props
           photoId: undefined,
           latitude: 42.693,
           longitude: 23.319,
-          rating: undefined,
+          rating: null,
         };
     }
 
@@ -60,7 +60,7 @@ const Create = ({ isOpen, onClose, userId, handleNewShop, handleNewFarm }: Props
         latitude: 42.693,
         longitude: 23.319,
         defaultDeliveryRadius: undefined, // Set a default delivery radius
-        rating: undefined // Set a default rating
+        rating: null // Set a default rating
       };
     }
     

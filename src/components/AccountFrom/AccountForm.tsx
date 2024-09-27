@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./AccountForm.css";
-import UserForm from "../UserForm/UserForm";
+import UserForm from "../LoginRegisterForm/LoginRegisterForm";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { IoMdCloseCircle } from "react-icons/io";
 import { HiMiniPlusCircle } from "react-icons/hi2";
@@ -13,6 +13,7 @@ import { Farm } from "../FarmForm/EditFarm";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { TbCircleLetterS } from "react-icons/tb";
 import { TbCircleLetterF } from "react-icons/tb";
+import LoginRegisterForm from "../LoginRegisterForm/LoginRegisterForm";
 
 export interface Card {
   imgUrl: string;
@@ -411,7 +412,7 @@ const AccountForm = ({
                 handleClickedCart={(productId, shopId)=>handleClickedCart(productId, shopId)}
               />
             ) : (
-              <UserForm />
+                <LoginRegisterForm />
             )}
           </div>
         </div>
