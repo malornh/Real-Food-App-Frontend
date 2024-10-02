@@ -7,6 +7,7 @@ import storeIcon from "../../assets/storeIcon.png";
 import './CartForm.css';
 import cart from '../../assets/cartButton.png';
 import { Shop } from "../ShopForm/EditShop/EditShop";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 
 interface Product {
   id: number;
@@ -148,7 +149,7 @@ const CartOrders: React.FC<Props> = ({ isCartOpen, userId, handleClickedShop, ha
                       <Image
                         boxSize={130}
                         borderRadius={15}
-                        src={cart.shop.image}
+                        src={completePhotoUrl(cart.shop.photoId)}
                         alt={`Shop ${cart.product.id}`}
                         onClick={() => handleClickedShop(cart.product.id)}
                       />

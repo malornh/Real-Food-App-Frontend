@@ -6,6 +6,7 @@ import ImageCropper from '../ShopForm/ImageCropper/ImageCropper';
 import theme from '../ShopForm/EditShop/theme';
 import { Product } from './FarmForm';
 import axios from 'axios';
+import { completePhotoUrl } from '../Images/CompletePhotoUrl';
 
 interface Props {
   isOpen: boolean;
@@ -39,7 +40,7 @@ const EditProduct: React.FC<Props> = ({ isOpen, onClose, product, onProductUpdat
             formData.append('PhotoFile', product.photoFile); // Append the image file
         }
 
-        const response = await axios.put(`https://localhost:7218/api/Products`, formData, {
+        const response = await axios.put(`https://localhost:7218/api/Products/${product.id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -126,10 +127,6 @@ const createProduct = async (product: Product) => {
         }
     }
 };
-
-    function completePhotoUrl(photoId: string | undefined){
-    return 'https://realfoodapp.b-cdn.net/' + photoId;
-  }
 
   const openDeleteConfirm = () => setIsDeleteConfirmOpen(true);
   const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);

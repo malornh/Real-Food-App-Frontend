@@ -19,6 +19,7 @@ import "./ShopForm.css";
 import EditShop, { Shop } from "./EditShop/EditShop";
 import soldOut from "../../assets/soldOut.png";
 import EditShopProduct from "./EditShopProduct";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 
 interface ShopData {
   id: number;
@@ -212,10 +213,6 @@ const ShopForm: React.FC<Props> = ({
       orders: updatedOrders,
     });
   };
-
-  function completePhotoUrl(photoId: string | undefined){
-    return 'https://realfoodapp.b-cdn.net/' + photoId;
-  }
 
   return (
     <div>

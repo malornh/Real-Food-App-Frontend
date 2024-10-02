@@ -28,6 +28,7 @@ import MapComponent from '../ShopForm/EditShop/MapComponent';
 import initialFarmImage from '../../assets/defaultFarm.png';
 import axios from 'axios';
 import { setToken, clearToken, getToken } from '../../services/auth.ts';
+import { completePhotoUrl } from '../Images/CompletePhotoUrl.ts';
 
 export interface Farm {
   id: number | undefined;
@@ -72,7 +73,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
           formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
           formData.append('Rating', String(farm.rating));
   
-          const response = await axios.put(`https://localhost:7218/api/Farms`, formData, {
+          const response = await axios.put(`https://localhost:7218/api/Farms/${farm.id}`, formData, {
               headers: {
                   'Content-Type': 'multipart/form-data',
               },
@@ -160,10 +161,6 @@ const handleSave = async () => {
         }
     }
 };
-
-  function completePhotoUrl(photoId: string | undefined){
-    return 'https://realfoodapp.b-cdn.net/' + photoId;
-  }
 
   const openDeleteConfirm = () => setIsDeleteConfirmOpen(true);
   const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);

@@ -15,6 +15,7 @@ import { TbCircleLetterS } from "react-icons/tb";
 import { TbCircleLetterF } from "react-icons/tb";
 import LoginRegisterForm from "../LoginRegisterForm/LoginRegisterForm";
 import { getToken } from '../../services/auth.ts';
+import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
 
 export interface Card {
   imgUrl: string;
@@ -115,7 +116,7 @@ const AccountForm = ({
     const fetchShops = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Shops/ByUser/${userId}`
+          `https://localhost:7218/api/Shops/ByUser/`
         );
         setUserShops(response.data);
       } catch (error: any) {
@@ -130,7 +131,7 @@ const AccountForm = ({
     const fetchFarms = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Farms/ByUser/${userId}`
+          `https://localhost:7218/api/Farms/ByUser/`
         );
         setUserFarms(response.data);
       } catch (error: any) {
@@ -247,10 +248,6 @@ const AccountForm = ({
         }
       });
     });
-  }
-
-  function completePhotoUrl(photoId: string | undefined){
-    return 'https://realfoodapp.b-cdn.net/' + photoId;
   }
 
   const userShopIds = userShops

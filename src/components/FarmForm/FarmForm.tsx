@@ -20,6 +20,7 @@ import EditProduct from "./EditProduct";
 import defaultProduct from "../../assets/defaultProduct.png";
 import CreateOrder, { Order } from "./CreateOrder";
 import { setToken, clearToken, getToken } from '../../services/auth';
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 
 interface FarmData {
   id: number;
@@ -227,10 +228,6 @@ const FarmForm = ({
 
     return `${day}-${month}-${year}`;
   };
-
-  function completePhotoUrl(photoId: string | undefined){
-    return 'https://realfoodapp.b-cdn.net/' + photoId;
-  }
 
   return (
     <div>

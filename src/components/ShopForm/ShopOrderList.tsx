@@ -15,6 +15,7 @@ import { FaCheck } from "react-icons/fa";
 import { CgClose } from "react-icons/cg";
 import storeIcon from "../../assets/storeIcon.png";
 import farmIcon from '../../assets/farmIcon.png';
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 
 interface OrderDto {
   id: number;
@@ -253,7 +254,7 @@ const ShopOrderList: React.FC<Props> = ({
                         <Image
                           boxSize={130}
                           borderRadius={15}
-                          src={o.farm.image}
+                          src={completePhotoUrl(o.farm.photoId)}
                           alt={`Order ${o.id}`}
                           onClick={() => handleClickedFarm(o.farm.id)}
                         />
@@ -279,7 +280,7 @@ const ShopOrderList: React.FC<Props> = ({
                         padding={10}
                         boxSize={130}
                         borderRadius={15}
-                        src={o.product.image}
+                        src={completePhotoUrl(o.product.photoId)}
                         alt={`Order ${o.id}`}
                       />
                       <Flex direction={"column"}>

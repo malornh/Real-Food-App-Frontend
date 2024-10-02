@@ -26,6 +26,7 @@ import ImageCropper from '../ImageCropper/ImageCropper';
 import theme from './theme'; // Import the custom theme
 import MapComponent from './MapComponent';
 import axios from 'axios';
+import { completePhotoUrl } from '../../Images/CompletePhotoUrl';
 
 export interface Shop {
   id: number | undefined;
@@ -68,7 +69,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
       formData.append('Rating', String(shop.rating));
   
       const response = await axios.put(
-        `https://localhost:7218/api/Shops`,
+        `https://localhost:7218/api/Shops/${shop.id}`,
         formData,
         {
           headers: {
@@ -156,10 +157,6 @@ const handleDelete = async () => {
         }
     }
 };
-
-  function completePhotoUrl(photoId: string | undefined) {
-    return 'https://realfoodapp.b-cdn.net/' + photoId;
-  }
 
   const openDeleteConfirm = () => setIsDeleteConfirmOpen(true);
   const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);
