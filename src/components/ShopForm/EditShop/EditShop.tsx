@@ -27,10 +27,11 @@ import theme from './theme'; // Import the custom theme
 import MapComponent from './MapComponent';
 import axios from 'axios';
 import { completePhotoUrl } from '../../Images/CompletePhotoUrl';
+import { useContextProvider } from "../../../ContextProvider.tsx";
 
 export interface Shop {
   id: number | undefined;
-  userId: string;
+  userId: string | null;
   name: string;
   photoFile?: File | null;
   photoId: string | undefined;
@@ -52,12 +53,13 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
   const [newShop, setNewShop] = useState<Shop>({ ...shop });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const { token } = useContextProvider();
 
   const updateShop = async (shop: Shop) => {
     try {
       const formData = new FormData();
       formData.append('Id', String(shop.id));
-      formData.append('UserId', shop.userId);
+      formData.append('UserId', String(shop.userId));
       formData.append('Name', shop.name);
   
       if (shop.photoFile) {
@@ -74,6 +76,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
         {
           headers: {
             'Content-Type': 'multipart/form-data', 
+             Authorization: `Bearer ${token}`
           },
         }
       );
@@ -91,7 +94,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
   const createShop = async (shop: Shop) => {
     try {
       const formData = new FormData();
-      formData.append('UserId', shop.userId);
+      formData.append('UserId', String(shop.userId));
       formData.append('Name', shop.name);
       
       if (shop.photoFile) {
@@ -107,6 +110,7 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
         {
           headers: {
             'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`
           },
         }
       );
@@ -141,7 +145,12 @@ const EditShop: React.FC<Props> = ({ isOpen, onClose, shop, onShopUpdate, onDele
 
 const handleDelete = async () => {
     try {
-        const response = await axios.delete(`https://localhost:7218/api/Shops/${shop.id}`);
+        const response = await axios.delete(`https://localhost:7218/api/Shops/${shop.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+          });
 
         if (response.status === 200) {
             if (shop.id !== undefined) {

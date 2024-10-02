@@ -14,7 +14,7 @@ import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { TbCircleLetterS } from "react-icons/tb";
 import { TbCircleLetterF } from "react-icons/tb";
 import LoginRegisterForm from "../LoginRegisterForm/LoginRegisterForm";
-import { getToken } from '../../services/auth.ts';
+import { useContextProvider } from "../../ContextProvider.tsx";
 import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
 
 export interface Card {
@@ -33,7 +33,6 @@ interface ShortShops {
 }
 
 interface Props {
-  userId: string;
   clickedMapShopId?: number | undefined;
   markerClicked: boolean;
   updatedFarm: Farm | undefined;
@@ -57,7 +56,6 @@ interface Props {
 }
 
 const AccountForm = ({
-  userId,
   clickedMapShopId,
   markerClicked,
   updatedFarm,
@@ -82,10 +80,10 @@ const AccountForm = ({
   const [userShops, setUserShops] = useState<Shop[]>();
   const [userFarms, setUserFarms] = useState<Farm[]>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [accountType, setAccountType] = useState(1); //1 - account, 2 - shops, 3 - farms
   const [inLoginSelection, setInLoginSelection] = useState(false);
   const [loginId, setLoginId] = useState<number>();
   const [loginImage, setLoginImage] = useState("");
+  const { token, userId, accountType, setAccountType } = useContextProvider();
 
   useEffect(() => {
     handleLoggedAs(loginId, accountType, inLoginSelection);
@@ -116,22 +114,32 @@ const AccountForm = ({
     const fetchShops = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Shops/ByUser/`
+          `https://localhost:7218/api/Shops/UserShops/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
+        console.log(response.data);
         setUserShops(response.data);
       } catch (error: any) {
         console.error("Error fetching shops:", error.message);
       }
     };
-
     fetchShops();
-  }, [userId]);
+  }, [token]);
 
   useEffect(() => {
     const fetchFarms = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Farms/ByUser/`
+          `https://localhost:7218/api/Farms/UserFarms/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
         setUserFarms(response.data);
       } catch (error: any) {
@@ -140,7 +148,7 @@ const AccountForm = ({
     };
 
     fetchFarms();
-  }, [userId, deletedFarmId]);
+  }, [token, deletedFarmId]);
 
   useEffect(() => {
     if (clickedMapShopId !== undefined) {
@@ -283,7 +291,7 @@ const AccountForm = ({
       {showForm && (
         <div className="formContainerStyle">
           <Flex>
-            {(userShops || userFarms) && (
+            {(
               <Flex flexDirection="column" mt={10} ml={80}>
                 <TbCircleLetterS
                   className={`miniCircleIcon ${
@@ -300,7 +308,7 @@ const AccountForm = ({
               </Flex>
             )}
             <div className="cardsContainerStyle">
-              {!inLoginSelection && getToken() != null &&(
+              {(userShops || userFarms) && !inLoginSelection && token != null &&(
                 <Button
                   background={"rgba(254, 216, 65, 0.8)"}
                   color={"black"}
@@ -386,7 +394,7 @@ const AccountForm = ({
                 onClick={handleAddNewCard}
                 className="plusIcon"
               />
-              <IoMdArrowDropdownCircle className="miniCircleIcon" />
+              <IoMdArrowDropdownCircle className="miniCircleIcon" onClick={()=>console.log(token)} />
             </Flex>
           </Flex>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
@@ -404,7 +412,6 @@ const AccountForm = ({
                 }}
                 handleClickedFarmId={(farmId) => forwardClickedFarmId(farmId)}
                 handleIsShopClicked={(b) => handleIsShopClicked(b)}
-                accountType={accountType}
                 loginId={loginId}
                 inLoginSelection={inLoginSelection}
                 handleClickedCart={(productId, shopId)=>handleClickedCart(productId, shopId)}

@@ -13,7 +13,6 @@ const App = () => {
     undefined
   );
   const [markerClicked, setMarkerClicked] = useState(false);
-  const userId = "0f17881d-b0cd-45b1-afdc-b15f93eeabcc";
   const [updatedShop, setUpdatedShop] = useState<Shop>();
   const [deletedShopId, setDeletedShopId] = useState<number | undefined>();
   const [clickedMapFarmId, setClickedMapFarmId] = useState<
@@ -54,7 +53,6 @@ const App = () => {
   return (
     <div>
       <AccountForm
-        userId={userId}
         resetShopId={(n) => setClickedMapShopId(n)}
         clickedMapShopId={clickedMapShopId}
         markerClicked={markerClicked}
@@ -79,7 +77,6 @@ const App = () => {
       <FarmContainer
         farmId={clickedMapFarmId}
         resetFarmId={() => setClickedMapFarmId(undefined)}
-        userId={userId}
         forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
         forwardFarmDelete={(farmId) => setDeletedFarmId(farmId)}
         handleIsShopClicked={(b) => setIsShopClicked(b)}
@@ -126,7 +123,6 @@ const App = () => {
       <CartForm
         isCartOpen={() => isCartFormOpen}
         handleClickedShop={() => null}
-        userId={userId}
         productId={newProductId}
         shopId={newShopId}
         isFarmFormOpen={isFarmFormOpen}
@@ -139,71 +135,3 @@ const App = () => {
 };
 
 export default App;
-
-{/*
-  
-      <AccountForm
-        userId={userId}
-        resetShopId={(n) => setClickedMapShopId(n)}
-        clickedMapShopId={clickedMapShopId}
-        markerClicked={markerClicked}
-        handleShopClick={(shopId) => setClickedMapShopId(shopId)}
-        handleFarmClick={(farmId) => setClickedMapFarmId(farmId)}
-        forwardShopUpdate={(shop) => setUpdatedShop(shop)}
-        forwardShopDelete={(shopId) => setDeletedShopId(shopId)}
-        forwardClickedFarmId={(farmId) => setClickedMapFarmId(farmId)}
-        forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
-        updatedFarm={updatedFarm}
-        deletedFarmId={deletedFarmId}
-        handleIsShopClicked={(b) => setIsShopClicked(b)}
-        handleLoggedAs={(id, accountType, inLoginSelection) => (
-          setLoginId(id),
-          setAccountType(accountType),
-          setInLoginSelection(inLoginSelection)
-        )}
-        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
-        DeliveryFormClosed={()=>setIsDeliveryListOpen(false)}
-      />
-      <FarmContainer
-        farmId={clickedMapFarmId}
-        resetFarmId={() => setClickedMapFarmId(undefined)}
-        userId={userId}
-        forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
-        forwardFarmDelete={(farmId) => setDeletedFarmId(farmId)}
-        handleIsShopClicked={(b) => setIsShopClicked(b)}
-        accountType={accountType}
-        loginId={loginId}
-        inLoginSelection={inLoginSelection}
-        isDeliveryListOpen={isDeliveryListOpen}
-        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
-      />
-      {accountType == 3 && !isFarmFormOpen && !inLoginSelection && (
-        <OrderList
-          farmId={loginId}
-          isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
-          isFarmFormOpen={isFarmFormOpen}
-          handleClickedShop={(shopId) => handleShopClick(shopId)}
-        />
-      )}
-      <ShopOrderList
-        shopId={loginId}
-        accountType={accountType}
-        isInLoginSelection={inLoginSelection}
-        isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
-        isFarmFormOpen={isFarmFormOpen}
-        handleClickedFarm={(farmId) => (setClickedMapFarmId(farmId), setIsDeliveryListOpen(false), setIsFarmFormOpen(true), setIsShopClicked(false))}
-      />
-      <SofiaVectorMap
-        handleShopClick={(shopId) => handleShopClick(shopId)}
-        clickedMapShopId={clickedMapShopId}
-        updatedShop={updatedShop}
-        deletedShopId={deletedShopId}
-        deletedFarmId={deletedFarmId}
-        handleFarmClick={(farmId) => handleFarmClick(farmId)}
-        clickedMapFarmId={clickedMapFarmId}
-        isShopClicked={isShopClicked}
-        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
-        isDeliveryListOpen={isDeliveryListOpen}
-        DeliveryListClosed={() => setIsDeliveryListOpen(false)}
-      />
-  */}

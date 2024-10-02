@@ -27,12 +27,12 @@ import theme from '../ShopForm/EditShop/theme';
 import MapComponent from '../ShopForm/EditShop/MapComponent';
 import initialFarmImage from '../../assets/defaultFarm.png';
 import axios from 'axios';
-import { setToken, clearToken, getToken } from '../../services/auth.ts';
 import { completePhotoUrl } from '../Images/CompletePhotoUrl.ts';
+import { useContextProvider } from '../../ContextProvider.tsx';
 
 export interface Farm {
   id: number | undefined;
-  userId: string;
+  userId: string | null;
   name: string;
   photoFile?: File | null;
   photoId: string | undefined;
@@ -55,12 +55,13 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
   const [newFarm, setNewFarm] = useState<Farm>({ ...farm });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const { token } = useContextProvider();
 
   const updateFarm = async (farm: Farm) => {
       try {
           const formData = new FormData();
           formData.append('Id', String(farm.id));
-          formData.append('UserId', farm.userId);
+          formData.append('UserId', String(farm.userId));
           formData.append('Name', farm.name);
   
           if (farm.photoFile) {
@@ -76,6 +77,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
           const response = await axios.put(`https://localhost:7218/api/Farms/${farm.id}`, formData, {
               headers: {
                   'Content-Type': 'multipart/form-data',
+                  Authorization: `Bearer ${token}`
               },
           });
   
@@ -92,7 +94,7 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
   const createFarm = async (farm: Farm) => {
     try {
         const formData = new FormData();
-        formData.append('UserId', farm.userId);
+        formData.append('UserId', String(farm.userId));
         formData.append('Name', farm.name);
         
         if (farm.photoFile) {
@@ -104,14 +106,10 @@ const EditFarm: React.FC<Props> = ({ isOpen, onClose, farm, onFarmUpdate, onDele
         formData.append('Longitude', String(farm.longitude));
         formData.append('DefaultDeliveryRadius', String(farm.defaultDeliveryRadius));
   
-        // Get the JWT token from the auth module
-        const token = getToken();
-        console.log(token);
-  
         const response = await axios.post('https://localhost:7218/api/Farms', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${token}`, // Add the token to the Authorization header
+                Authorization: `Bearer ${token}`,
             },
         });
   
@@ -145,7 +143,11 @@ const handleSave = async () => {
 
   const handleDelete = async () => {
     try {
-        const response = await axios.delete(`https://localhost:7218/api/Farms/${farm.id}`);
+        const response = await axios.delete(`https://localhost:7218/api/Farms/${farm.id}`,{
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
 
         if (response.status === 200) {
             if (farm.id !== undefined) {

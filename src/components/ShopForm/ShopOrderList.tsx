@@ -16,6 +16,7 @@ import { CgClose } from "react-icons/cg";
 import storeIcon from "../../assets/storeIcon.png";
 import farmIcon from '../../assets/farmIcon.png';
 import { completePhotoUrl } from "../Images/CompletePhotoUrl";
+import { useContextProvider } from "../../ContextProvider";
 
 interface OrderDto {
   id: number;
@@ -108,6 +109,7 @@ const ShopOrderList: React.FC<Props> = ({
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
+  const { token } = useContextProvider();
 
   useEffect(() => {
     setShowForm(false);
@@ -117,7 +119,11 @@ const ShopOrderList: React.FC<Props> = ({
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Orders/AllShopOrders/${shopId}`
+          `https://localhost:7218/api/Orders/AllShopOrders/${shopId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
 
         // Define the order statuses as a Record
@@ -157,7 +163,11 @@ const ShopOrderList: React.FC<Props> = ({
     axios
       .put(
         `https://localhost:7218/api/Orders/${orderId}`,
-        mapOrderToOrderDto(updatedOrder)
+        mapOrderToOrderDto(updatedOrder), {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       )
       .then((response) => {
         console.log("Order updated successfully:", response.data);
@@ -184,7 +194,11 @@ const ShopOrderList: React.FC<Props> = ({
     axios
       .put(
         `https://localhost:7218/api/Orders/${orderId}`,
-        mapOrderToOrderDto(updatedOrder)
+        mapOrderToOrderDto(updatedOrder), {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       )
       .then((response) => {
         console.log("Order updated successfully:", response.data);

@@ -18,7 +18,7 @@ import EditFarm from './FarmForm/EditFarm';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  userId: string;
+  userId: string | null;
   handleNewShop: (shop: Shop)=>void;
   handleNewFarm: (farm: Farm)=>void;
 }

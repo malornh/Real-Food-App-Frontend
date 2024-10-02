@@ -19,12 +19,12 @@ import { HiMiniPlusCircle } from "react-icons/hi2";
 import EditProduct from "./EditProduct";
 import defaultProduct from "../../assets/defaultProduct.png";
 import CreateOrder, { Order } from "./CreateOrder";
-import { setToken, clearToken, getToken } from '../../services/auth';
 import { completePhotoUrl } from "../Images/CompletePhotoUrl";
+import { useContextProvider } from "../../ContextProvider.tsx";
 
 interface FarmData {
   id: number;
-  userId: string;
+  userId: string | null;
   name: string;
   photoFile?: File | null;  // Changed this to be File type
   photoId: string | undefined;
@@ -55,20 +55,16 @@ export interface Product {
 
 interface Props {
   farmId: number;
-  userId: string;
   forwardFarmUpdate: (farm: Farm) => void;
   handleFarmDelete: (farmId: number) => void;
-  accountType: number | undefined; //1 - user, 2 - shop, 3 - farm
   loginId: number | undefined;
   inLoginSelection: boolean;
 }
 
 const FarmForm = ({
   farmId,
-  userId,
   forwardFarmUpdate,
   handleFarmDelete,
-  accountType,
   loginId,
   inLoginSelection,
 }: Props) => {
@@ -83,6 +79,7 @@ const FarmForm = ({
   const [isOrderModalOpen, setOrderModalOpen] = useState(false);
   const [selectedOrderProduct, setSelectedOrderProduct] =
     useState<Product | null>(null);
+  const { userId, accountType } = useContextProvider();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,6 +88,9 @@ const FarmForm = ({
           `https://localhost:7218/api/Farms/${farmId}/FarmWithProducts`
         );
         setFarmData(response.data);
+        console.log("FarmData + UserId: ");
+        console.log(response.data);
+        console.log(userId);
         setProductTypes(
           Array.from(new Set(farmData?.products.map((p) => p.type))).sort()
         );
@@ -237,8 +237,7 @@ const FarmForm = ({
           <div className="farmInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{farmData.name}</h1>
-              {farmData.userId === userId &&
-                farmData.id === loginId &&
+              { farmData.id === loginId &&
                 accountType === 3 &&
                 !inLoginSelection && (
                   <FcSettings
@@ -272,7 +271,8 @@ const FarmForm = ({
                 </Tab>
               ))}
           </TabList>
-          {farmData?.userId === userId && (
+          {farmData !== undefined &&
+           farmData.id === loginId && (
             <HiMiniPlusCircle
               onClick={() => handleOpenEditProduct(newProduct(farmData.id))}
               className="farmProductPlusButton"
@@ -453,8 +453,7 @@ const FarmForm = ({
                               onClick={() => handleOpenOrderModal(p)}
                             />
                           )}
-                          {farmData.userId === userId &&
-                            farmData.id === loginId &&
+                          {farmData.id === loginId &&
                             accountType === 3 &&
                             !inLoginSelection && (
                               <FcSettings

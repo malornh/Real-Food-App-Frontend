@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import theme from "../ShopForm/EditShop/theme";
 import { Product } from "./FarmForm";
+import { useContextProvider } from "../../ContextProvider";
 
 export interface Order {
   id?: number;
@@ -42,6 +43,7 @@ const CreateOrder: React.FC<Props> = ({
 }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const { token } = useContextProvider();
 
   const createOrder = async (order: Order) => {
     try {
@@ -49,6 +51,7 @@ const CreateOrder: React.FC<Props> = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(order),
       });

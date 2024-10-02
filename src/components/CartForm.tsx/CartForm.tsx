@@ -8,6 +8,7 @@ import './CartForm.css';
 import cart from '../../assets/cartButton.png';
 import { Shop } from "../ShopForm/EditShop/EditShop";
 import { completePhotoUrl } from "../Images/CompletePhotoUrl";
+import { useContextProvider } from "../../ContextProvider";
 
 interface Product {
   id: number;
@@ -26,7 +27,6 @@ interface CartDto {
 
 interface Props {
   isCartOpen: (b: boolean) => void;
-  userId: string;
   productId: number | undefined;
   shopId: number | undefined;
   isFarmFormOpen: boolean;
@@ -36,18 +36,25 @@ interface Props {
   handleCartFormClose: ()=>void;
 }
 
-const CartOrders: React.FC<Props> = ({ isCartOpen, userId, handleClickedShop, handleCartFormOpen, handleCartFormClose, isFarmFormOpen, accountType }: Props) => {
+const CartOrders: React.FC<Props> = ({ isCartOpen, handleClickedShop, handleCartFormOpen, handleCartFormClose, isFarmFormOpen, accountType }: Props) => {
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState<CartDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [productId, setProductId] = useState<number | undefined>(undefined);
   const [shopId, setShopId] = useState<number | undefined>(undefined);
+  const { token, userId } = useContextProvider();
 
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<CartDto[]>(`https://localhost:7218/api/cart/user/${userId}`);
+        const response = await axios.get<CartDto[]>(`https://localhost:7218/api/Carts/UserCarts`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
         setCartItems(response.data);
         setLoading(false);
       } catch (error) {
@@ -72,7 +79,11 @@ const CartOrders: React.FC<Props> = ({ isCartOpen, userId, handleClickedShop, ha
     };
 
     try {
-      const response = await axios.post("https://localhost:7218/api/cart", newCartDto);
+      const response = await axios.post("https://localhost:7218/api/Carts", newCartDto, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setCartItems([...cartItems, response.data]);
     } catch (error) {
       console.error("Error adding product to cart:", error);
@@ -83,7 +94,11 @@ const CartOrders: React.FC<Props> = ({ isCartOpen, userId, handleClickedShop, ha
     if (cartId === undefined) return;
 
     try {
-      await axios.delete(`https://localhost:7218/api/cart/${cartId}`);
+      await axios.delete(`https://localhost:7218/api/Carts/${cartId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setCartItems((prevCartItems) => prevCartItems.filter((cart) => cart.id !== cartId));
     } catch (error) {
       console.error("Error removing cart item:", error);

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Flex, Button, Input, Heading, Tabs, TabList, TabPanels, TabPanel, Tab, Text } from '@chakra-ui/react';
 import axios from 'axios'; // Import Axios
 import './LoginRegisterForm.css';
-import { setToken, clearToken, getToken } from '../../services/auth';
+import { useContextProvider } from '../../ContextProvider';
 
 // Define interfaces for form values and errors
 interface FormValues {
@@ -18,6 +18,8 @@ interface FormErrors {
 }
 
 function LoginRegisterForm() {
+  const { token, setToken, clearToken, setUserId } = useContextProvider();
+
   const [formValues, setFormValues] = useState<FormValues>({
     email: '',
     password: '',
@@ -67,10 +69,8 @@ function LoginRegisterForm() {
         password: formValues.password,
       });
       console.log('Registration successful:', response.data);
-      // Optionally handle success (e.g., show a message or redirect)
     } catch (error) {
       console.error('Registration error:', error);
-      // Optionally set error messages based on response
     }
   };
 
@@ -83,20 +83,30 @@ function LoginRegisterForm() {
       
       // Check the response to see if it contains the token
       if (response.data && response.data.accessToken) {
-        setToken(response.data.accessToken); // Store token using setToken
-        console.log("TOKEN SET: ", getToken()); // Log to verify
+        const accessToken = response.data.accessToken; // Get token directly from response
+        setToken(accessToken); // Store token using setToken
+
+        // Fetch user ID using the new token
+        const responseUserId = await axios.get('https://localhost:7218/api/Users/UserId', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Use the new token here
+          }
+        });
+        if (responseUserId.data) {
+          setUserId(responseUserId.data);
+        } else {
+          console.error("UserId not found in the response:", responseUserId.data);
+        }
       } else {
         console.error("Token not found in response:", response.data);
       }
-      console.log('TOKEN::: ' + getToken());
+
       console.log('Login successful:', response.data);
     } catch (error) {
       console.error('Login error:', error);
-      // Optionally set error messages based on response
     }
   };
   
-
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const errors = validate();
@@ -131,7 +141,7 @@ function LoginRegisterForm() {
 
   return (
     <div className='form'>
-      {getToken() ? ( // Conditional rendering based on the token state
+      {token ? ( // Conditional rendering based on the token state
         <Flex direction="column" alignItems="center">
           <Heading as="h2" size="lg" textAlign="center" mb="6" color="black">Welcome!</Heading>
           <Button onClick={handleLogout} colorScheme="red" background='rgb(76, 76, 255)' color="white">Logout</Button>

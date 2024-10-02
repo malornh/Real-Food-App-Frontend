@@ -6,15 +6,14 @@ import { Box } from '@chakra-ui/react';
 import FarmForm from './FarmForm/FarmForm';
 import SearchForm from './SearchForm';
 import { Farm } from './FarmForm/EditFarm';
+import { useContextProvider } from '../ContextProvider';
 
 interface Props {
   farmId: number | undefined;
   resetFarmId: ()=>void;
-  userId: string;
   forwardFarmUpdate: (farm: Farm)=>void;
   forwardFarmDelete: (farmId: number)=>void;
   handleIsShopClicked: (b: boolean)=>void;
-  accountType: number | undefined;
   loginId: number | undefined;
   inLoginSelection: boolean;
   isDeliveryListOpen: boolean;
@@ -24,17 +23,16 @@ interface Props {
 const FarmContainer = ({
   farmId,
   resetFarmId,
-  userId,
   forwardFarmUpdate,
   forwardFarmDelete,
   handleIsShopClicked,
-  accountType,
   loginId,
   inLoginSelection,
   isDeliveryListOpen,
   isFarmFormOpen
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
+  const { userId } = useContextProvider();
 
   useEffect(() => {
     if (farmId !== undefined) {
@@ -97,7 +95,6 @@ const FarmContainer = ({
           <div className="scrollable">
             {farmId !== undefined ? (
               <FarmForm
-                userId={userId}
                 farmId={farmId}
                 forwardFarmUpdate={(farm) => {
                   forwardFarmUpdate(farm);
@@ -105,7 +102,6 @@ const FarmContainer = ({
                 handleFarmDelete={(farmId) => (
                   forwardFarmDelete(farmId), setShowForm(false)
                 )}
-                accountType={accountType}
                 loginId={loginId}
                 inLoginSelection={inLoginSelection}
               />

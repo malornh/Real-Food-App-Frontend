@@ -7,6 +7,7 @@ import theme from '../ShopForm/EditShop/theme';
 import { Product } from './FarmForm';
 import axios from 'axios';
 import { completePhotoUrl } from '../Images/CompletePhotoUrl';
+import { useContextProvider } from '../../ContextProvider';
 
 interface Props {
   isOpen: boolean;
@@ -20,6 +21,7 @@ const EditProduct: React.FC<Props> = ({ isOpen, onClose, product, onProductUpdat
   const [newProduct, setNewProduct] = useState<Product>({ ...product });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const { token } = useContextProvider();
 
   const updateProduct = async (product: Product) => {
     try {
@@ -43,6 +45,7 @@ const EditProduct: React.FC<Props> = ({ isOpen, onClose, product, onProductUpdat
         const response = await axios.put(`https://localhost:7218/api/Products/${product.id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`
             },
         });
 
@@ -78,6 +81,7 @@ const createProduct = async (product: Product) => {
         const response = await axios.post('https://localhost:7218/api/Products', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`
             },
         });
 
@@ -110,7 +114,11 @@ const createProduct = async (product: Product) => {
 
   const handleDelete = async () => {
     try {
-        const response = await axios.delete(`https://localhost:7218/api/Products/${product.id}`);
+        const response = await axios.delete(`https://localhost:7218/api/Products/${product.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
 
         // Check if the response status is within the successful range
         if (response.status === 200) {

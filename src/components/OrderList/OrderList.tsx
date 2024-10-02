@@ -13,6 +13,8 @@ import { FaCheckSquare } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
 import { CgClose } from "react-icons/cg";
 import storeIcon from '../../assets/storeIcon.png';
+import { useContextProvider } from "../../ContextProvider";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 
 interface OrderDto {
   id: number;
@@ -101,12 +103,17 @@ const FarmContainer: React.FC<Props> = ({
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
+  const { token } = useContextProvider();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Orders/AllFarmOrders/${farmId}`
+          `https://localhost:7218/api/Orders/AllFarmOrders/${farmId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
   
         // Define the order statuses as a Record
@@ -238,7 +245,7 @@ const FarmContainer: React.FC<Props> = ({
                       padding={10}
                       boxSize={130}
                       borderRadius={15}
-                      src={o.product.image}
+                      src={completePhotoUrl(o.product.photoId)}
                       alt={`Order ${o.id}`}
                     />
                     <Flex direction={"column"}>
@@ -276,7 +283,7 @@ const FarmContainer: React.FC<Props> = ({
                     <Image
                       boxSize={130}
                       borderRadius={15}
-                      src={o.shop.image}
+                      src={completePhotoUrl(o.shop.photoId)}
                       alt={`Order ${o.id}`}
                       onClick={() => handleClickedShop(o.shop.id)}
                     />

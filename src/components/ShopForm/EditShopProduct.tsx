@@ -14,6 +14,7 @@ import {
 import theme from "../ShopForm/EditShop/theme";
 import { Text } from "@chakra-ui/react";
 import { OrderWithProduct } from "./ShopForm";
+import { useContextProvider } from "../../ContextProvider";
 
 interface ProductDetails {
   id: number;
@@ -53,6 +54,7 @@ const EditOrder: React.FC<Props> = ({
 }) => {
   const [initialOrder, _] = useState<OrderWithProduct>({ ...order });
   const [newOrder, setNewOrder] = useState<Order>({ ...order });
+  const { token } = useContextProvider();
 
   const updateOrder = async (order: Order) => {
     try {
@@ -62,6 +64,7 @@ const EditOrder: React.FC<Props> = ({
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`
           },
           body: JSON.stringify(order),
         }

@@ -20,6 +20,7 @@ import EditShop, { Shop } from "./EditShop/EditShop";
 import soldOut from "../../assets/soldOut.png";
 import EditShopProduct from "./EditShopProduct";
 import { completePhotoUrl } from "../Images/CompletePhotoUrl";
+import { useContextProvider } from "../../ContextProvider";
 
 interface ShopData {
   id: number;
@@ -72,7 +73,6 @@ interface Props {
   forwardShopDelete: (shopId: number) => void;
   handleClickedFarmId: (farmId: number) => void;
   handleIsShopClicked: (b: boolean) => void;
-  accountType: number; //1 - user, 2 - shop, 3 - farm
   loginId: number | undefined;
   inLoginSelection: boolean;
   handleClickedCart: (productId: number, shopId: number)=>void;
@@ -115,7 +115,6 @@ const ShopForm: React.FC<Props> = ({
   forwardShopDelete,
   handleClickedFarmId,
   handleIsShopClicked,
-  accountType,
   loginId,
   inLoginSelection,
   handleClickedCart
@@ -125,6 +124,7 @@ const ShopForm: React.FC<Props> = ({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<OrderWithProduct | null>(null);
+  const { accountType } = useContextProvider();
 
   const typeList = Array.from(
     new Set(shopData?.orders.map((o) => o.product.type))
