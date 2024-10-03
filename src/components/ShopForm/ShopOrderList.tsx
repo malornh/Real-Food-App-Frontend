@@ -44,7 +44,6 @@ interface Props {
   shopId: number | undefined;
   isFarmFormOpen: boolean;
   handleClickedFarm: (farmId: number | undefined) => void;
-  accountType: number | undefined; //1 - user, 2 - shop, 3 - farm
   isInLoginSelection: boolean;
 }
 
@@ -104,12 +103,11 @@ const ShopOrderList: React.FC<Props> = ({
   shopId,
   isFarmFormOpen,
   handleClickedFarm,
-  accountType,
   isInLoginSelection,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
-  const { token } = useContextProvider();
+  const { token, accountType } = useContextProvider();
 
   useEffect(() => {
     setShowForm(false);

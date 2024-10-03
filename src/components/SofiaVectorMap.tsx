@@ -8,38 +8,59 @@ import axios from "axios";
 import { Shop } from "./ShopForm/EditShop/EditShop";
 import { Farm } from "./FarmForm/EditFarm";
 import customFarmIcon from "../assets/farmIcon.png";
+import { useContextProvider } from "../ContextProvider";
 
 interface Props {
-  handleShopClick: (shopId: number) => void;
-  clickedMapShopId: number | undefined;
   updatedShop: Shop | undefined;
   deletedShopId: number | undefined;
   deletedFarmId: number | undefined;
-  handleFarmClick: (farmId: number) => void;
-  clickedMapFarmId: number | undefined;
-  isShopClicked: boolean;
-  isFarmFormOpen: (b:boolean)=>void;
-  isDeliveryListOpen: boolean;
-  DeliveryListClosed: ()=>void;
 }
 
 const SofiaMap: React.FC<Props> = ({
-  handleShopClick,
-  clickedMapShopId,
   updatedShop,
   deletedShopId,
   deletedFarmId,
-  handleFarmClick,
-  clickedMapFarmId,
-  isShopClicked,
-  isFarmFormOpen,
-  isDeliveryListOpen,
-  DeliveryListClosed
 }) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const [shops, setShops] = useState<Shop[]>([]);
   const [farms, setFarms] = useState<Farm[]>([]);
+  const { 
+    clickedFarmId, 
+    setClickedFarmId,
+    clickedShopId,
+    setClickedShopId, 
+    isFarmFormOpen , 
+    setIsFarmFormOpen, 
+    isShopFormOpen,
+    setIsShopFormOpen,
+    isDeliveryListOpen, 
+    setIsDeliveryListOpen, 
+    isShopClicked,
+    setIsShopClicked
+   } = useContextProvider();
+
+  console.log(setClickedFarmId);
+
+  const handleShopClick = (id : number | undefined) => {
+    setClickedFarmId(undefined);
+    setClickedShopId(id);
+    //setMarkerClicked((prevState) => !prevState);
+    setIsShopClicked(true);
+    setIsFarmFormOpen(false);
+    setIsShopFormOpen(true);
+    setIsDeliveryListOpen(false);
+  }
+
+  const handleFarmClick = (id : number | undefined) => {
+    setClickedFarmId(id);
+    setClickedShopId(undefined);
+    //setMarkerClicked((prevState) => !prevState);
+    setIsShopClicked(false);
+    setIsFarmFormOpen(true);
+    setIsShopFormOpen(false);
+    setIsDeliveryListOpen(false);
+  }
 
   useEffect(() => {
     if (!updatedShop) return; // If updatedShop is undefined, exit the function
@@ -125,11 +146,11 @@ const SofiaMap: React.FC<Props> = ({
         }
       });
 
-      shops.forEach(({ id, name, image, description, latitude, longitude }) => {
+      shops.forEach(({ id, name, photoId, description, latitude, longitude }) => {
         const customIcon = L.divIcon({
           className: "custom-div-icon",
           html: `<div style="color: black; ${
-            id === clickedMapShopId
+            id === clickedShopId
               ? "border-radius: 50px; background: blue; font-size: 30px;"
               : ""
           }">
@@ -146,9 +167,7 @@ const SofiaMap: React.FC<Props> = ({
 
         marker.on("click", () => {
           if (id !== undefined) {
-            handleShopClick(id);
-            isFarmFormOpen(false);
-            DeliveryListClosed();
+           handleShopClick(id);
           }
         });
 
@@ -156,8 +175,8 @@ const SofiaMap: React.FC<Props> = ({
           //TO-DO: implement shop info bubble
         });
 
-        if (id === clickedMapShopId && isShopClicked === true) {
-          if (clickedMapFarmId === undefined) {
+        if (id === clickedShopId && isShopClicked === true) {
+          if (clickedFarmId === undefined) {
             mapRef.current?.setView([latitude, longitude + 0.06], 13); // To be optimized. It's hardcoded for now.
           } else {
             mapRef.current?.setView([latitude, longitude], 13); // To be optimized. It's hardcoded for now.
@@ -169,7 +188,7 @@ const SofiaMap: React.FC<Props> = ({
         const farmIcon = L.divIcon({
           className: "farm-div-icon",
           html: `<div style="color: black; ${
-            id === clickedMapFarmId
+            id === clickedFarmId
               ? "border-radius: 50px; background: green; font-size: 30px;"
               : ""
           }">
@@ -186,9 +205,7 @@ const SofiaMap: React.FC<Props> = ({
 
         marker.on("click", () => {
           if (id !== undefined) {
-            handleFarmClick(id);
-            isFarmFormOpen(true);
-            DeliveryListClosed();
+           handleFarmClick(id);
           }
         });
 
@@ -199,8 +216,8 @@ const SofiaMap: React.FC<Props> = ({
         if(isDeliveryListOpen){
           mapRef.current?.setView([latitude, longitude], 13);
         }else{
-          if (id === clickedMapFarmId && isShopClicked === false) {
-            if (clickedMapShopId === undefined) {
+          if (id === clickedFarmId && isShopClicked === false) {
+            if (clickedShopId === undefined) {
               mapRef.current?.setView([latitude, longitude - 0.06], 13);
             } else {
               mapRef.current?.setView([latitude, longitude], 13);
@@ -211,7 +228,7 @@ const SofiaMap: React.FC<Props> = ({
       
       });
     }
-  }, [shops, handleShopClick, clickedMapShopId, clickedMapFarmId]);
+  }, [shops, clickedShopId, clickedFarmId]);
 
   return (
     <div

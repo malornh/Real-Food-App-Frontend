@@ -30,19 +30,18 @@ interface Props {
   productId: number | undefined;
   shopId: number | undefined;
   isFarmFormOpen: boolean;
-  accountType: number | undefined;
   handleClickedShop: (shopId: number | undefined) => void;
   handleCartFormOpen: ()=>void;
   handleCartFormClose: ()=>void;
 }
 
-const CartOrders: React.FC<Props> = ({ isCartOpen, handleClickedShop, handleCartFormOpen, handleCartFormClose, isFarmFormOpen, accountType }: Props) => {
+const CartOrders: React.FC<Props> = ({ isCartOpen, handleClickedShop, handleCartFormOpen, handleCartFormClose, isFarmFormOpen }: Props) => {
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState<CartDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [productId, setProductId] = useState<number | undefined>(undefined);
   const [shopId, setShopId] = useState<number | undefined>(undefined);
-  const { token, userId } = useContextProvider();
+  const { token, userId, accountType } = useContextProvider();
 
   useEffect(() => {
     const fetchCartItems = async () => {

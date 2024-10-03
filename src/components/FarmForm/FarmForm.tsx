@@ -54,7 +54,6 @@ export interface Product {
 }
 
 interface Props {
-  farmId: number;
   forwardFarmUpdate: (farm: Farm) => void;
   handleFarmDelete: (farmId: number) => void;
   loginId: number | undefined;
@@ -62,7 +61,6 @@ interface Props {
 }
 
 const FarmForm = ({
-  farmId,
   forwardFarmUpdate,
   handleFarmDelete,
   loginId,
@@ -79,18 +77,15 @@ const FarmForm = ({
   const [isOrderModalOpen, setOrderModalOpen] = useState(false);
   const [selectedOrderProduct, setSelectedOrderProduct] =
     useState<Product | null>(null);
-  const { userId, accountType } = useContextProvider();
+  const { userId, accountType, clickedFarmId } = useContextProvider();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get<FarmData>(
-          `https://localhost:7218/api/Farms/${farmId}/FarmWithProducts`
+          `https://localhost:7218/api/Farms/${clickedFarmId}/FarmWithProducts`
         );
         setFarmData(response.data);
-        console.log("FarmData + UserId: ");
-        console.log(response.data);
-        console.log(userId);
         setProductTypes(
           Array.from(new Set(farmData?.products.map((p) => p.type))).sort()
         );
@@ -100,7 +95,7 @@ const FarmForm = ({
     };
 
     fetchData();
-  }, [farmId]);
+  }, [clickedFarmId]);
 
   const handleOpenOrderModal = (product: Product) => {
     setSelectedOrderProduct(product);

@@ -7,6 +7,7 @@ import { Farm } from "./components/FarmForm/EditFarm";
 import OrderList from "./components/OrderList/OrderList";
 import ShopOrderList from "./components/ShopForm/ShopOrderList";
 import CartForm from "./components/CartForm.tsx/CartForm";
+import { useContextProvider } from "./ContextProvider";
 
 const App = () => {
   const [clickedMapShopId, setClickedMapShopId] = useState<number | undefined>(
@@ -23,7 +24,6 @@ const App = () => {
   const [isShopClicked, setIsShopClicked] = useState<boolean>(true);
 
   const [inLoginSelection, setInLoginSelection] = useState(false);
-  const [accountType, setAccountType] = useState<number | undefined>(); //1 - user, 2 - shop, 3 - farm
   const [loginId, setLoginId] = useState<number | undefined>();
 
   const [isDeliveryListOpen, setIsDeliveryListOpen] = useState(false);
@@ -32,6 +32,7 @@ const App = () => {
 
   const [newProductId, setNewProductId] = useState<number>();
   const [newShopId, setNewShopId] = useState<number>();
+  const { accountType, setAccountType } = useContextProvider(); 
 
   useEffect(() => {
     setClickedMapFarmId(updatedFarm?.id);
@@ -54,10 +55,7 @@ const App = () => {
     <div>
       <AccountForm
         resetShopId={(n) => setClickedMapShopId(n)}
-        clickedMapShopId={clickedMapShopId}
         markerClicked={markerClicked}
-        handleShopClick={(shopId) => setClickedMapShopId(shopId)}
-        handleFarmClick={(farmId) => setClickedMapFarmId(farmId)}
         forwardShopUpdate={(shop) => setUpdatedShop(shop)}
         forwardShopDelete={(shopId) => setDeletedShopId(shopId)}
         forwardClickedFarmId={(farmId) => setClickedMapFarmId(farmId)}
@@ -65,7 +63,7 @@ const App = () => {
         updatedFarm={updatedFarm}
         deletedFarmId={deletedFarmId}
         handleIsShopClicked={(b) => setIsShopClicked(b)}
-        handleLoggedAs={(id, accountType, inLoginSelection) => (
+        handleLoggedAs={(id, inLoginSelection) => (
           setLoginId(id),
           setAccountType(accountType),
           setInLoginSelection(inLoginSelection)
@@ -75,16 +73,12 @@ const App = () => {
         handleClickedCart={(p, s) => (setNewProductId(p), setNewShopId(s))}
       />
       <FarmContainer
-        farmId={clickedMapFarmId}
         resetFarmId={() => setClickedMapFarmId(undefined)}
         forwardFarmUpdate={(farm) => setUpdatedFarm(farm)}
         forwardFarmDelete={(farmId) => setDeletedFarmId(farmId)}
         handleIsShopClicked={(b) => setIsShopClicked(b)}
-        accountType={accountType}
         loginId={loginId}
         inLoginSelection={inLoginSelection}
-        isDeliveryListOpen={isDeliveryListOpen}
-        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
       />
       {accountType == 3 && !isFarmFormOpen && !inLoginSelection && (
         <OrderList
@@ -96,7 +90,6 @@ const App = () => {
       )}
       <ShopOrderList
         shopId={loginId}
-        accountType={accountType}
         isInLoginSelection={inLoginSelection}
         isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
         isFarmFormOpen={isFarmFormOpen}
@@ -108,17 +101,9 @@ const App = () => {
         )}
       />
       <SofiaVectorMap
-        handleShopClick={(shopId) => handleShopClick(shopId)}
-        clickedMapShopId={clickedMapShopId}
         updatedShop={updatedShop}
         deletedShopId={deletedShopId}
         deletedFarmId={deletedFarmId}
-        handleFarmClick={(farmId) => handleFarmClick(farmId)}
-        clickedMapFarmId={clickedMapFarmId}
-        isShopClicked={isShopClicked}
-        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
-        isDeliveryListOpen={isDeliveryListOpen}
-        DeliveryListClosed={() => setIsDeliveryListOpen(false)}
       />
       <CartForm
         isCartOpen={() => isCartFormOpen}
@@ -126,7 +111,6 @@ const App = () => {
         productId={newProductId}
         shopId={newShopId}
         isFarmFormOpen={isFarmFormOpen}
-        accountType={accountType}
         handleCartFormOpen={()=>(setIsCartFormOpen(!isCartFormOpen), setIsDeliveryListOpen(true))}
         handleCartFormClose={()=>(setIsCartFormOpen(!isCartFormOpen), setIsDeliveryListOpen(false))}
       />

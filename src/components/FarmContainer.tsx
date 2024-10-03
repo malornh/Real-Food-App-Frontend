@@ -9,38 +9,32 @@ import { Farm } from './FarmForm/EditFarm';
 import { useContextProvider } from '../ContextProvider';
 
 interface Props {
-  farmId: number | undefined;
   resetFarmId: ()=>void;
   forwardFarmUpdate: (farm: Farm)=>void;
   forwardFarmDelete: (farmId: number)=>void;
   handleIsShopClicked: (b: boolean)=>void;
   loginId: number | undefined;
   inLoginSelection: boolean;
-  isDeliveryListOpen: boolean;
-  isFarmFormOpen: (b: boolean)=>void;
 }
 
 const FarmContainer = ({
-  farmId,
   resetFarmId,
   forwardFarmUpdate,
   forwardFarmDelete,
   handleIsShopClicked,
   loginId,
   inLoginSelection,
-  isDeliveryListOpen,
-  isFarmFormOpen
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
-  const { userId } = useContextProvider();
+  const { userId, isFarmFormOpen, setIsFarmFormOpen, isDeliveryListOpen, clickedFarmId, setClickedFarmId } = useContextProvider();
 
   useEffect(() => {
-    if (farmId !== undefined) {
+    if (clickedFarmId !== undefined) {
       setShowForm(true);
     } else {
       setShowForm(false);
     }
-  }, [farmId]);
+  }, [clickedFarmId]);
 
   const toggleForm = () => {
     if (showForm) {
@@ -50,10 +44,12 @@ const FarmContainer = ({
   };
 
   const closeForm = () => {
-    resetFarmId();
+    setClickedFarmId(undefined);
+
     setShowForm(false);
+
     handleIsShopClicked(true);
-    isFarmFormOpen(false);
+    setIsFarmFormOpen(false);
   };
 
   return (
@@ -68,7 +64,7 @@ const FarmContainer = ({
       {!isDeliveryListOpen && <HiSearchCircle
         className="button"
         style={{ left: showForm ? "calc(40%)" : "25px" }}
-        onClick={()=>(setShowForm(true), isFarmFormOpen(true))} //TO-DO: Implement search menu
+        onClick={()=>(setShowForm(true), setIsFarmFormOpen(true))} //TO-DO: Implement search menu
       />}
       {showForm && (
         <div className="container">
@@ -93,9 +89,8 @@ const FarmContainer = ({
             </div>
           </Box>
           <div className="scrollable">
-            {farmId !== undefined ? (
+            {clickedFarmId !== undefined ? (
               <FarmForm
-                farmId={farmId}
                 forwardFarmUpdate={(farm) => {
                   forwardFarmUpdate(farm);
                 }}

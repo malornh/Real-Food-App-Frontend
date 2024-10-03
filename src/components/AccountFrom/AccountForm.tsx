@@ -33,13 +33,10 @@ interface ShortShops {
 }
 
 interface Props {
-  clickedMapShopId?: number | undefined;
   markerClicked: boolean;
   updatedFarm: Farm | undefined;
   deletedFarmId: number | undefined;
   resetShopId: (n: number | undefined) => void;
-  handleShopClick: (shopId: number) => void;
-  handleFarmClick: (farmId: number) => void;
   forwardShopUpdate: (shop: Shop) => void;
   forwardShopDelete: (shopId: number) => void;
   forwardClickedFarmId: (farmId: number) => void;
@@ -47,7 +44,6 @@ interface Props {
   handleIsShopClicked: (b: boolean) => void; //False means a farm is clicked.
   handleLoggedAs: (
     id: number | undefined,
-    accountType: number,
     inLoginSelection: boolean
   ) => void;
   isFarmFormOpen: (b: boolean) => void;
@@ -56,13 +52,10 @@ interface Props {
 }
 
 const AccountForm = ({
-  clickedMapShopId,
   markerClicked,
   updatedFarm,
   deletedFarmId,
   resetShopId,
-  handleShopClick,
-  handleFarmClick,
   forwardShopUpdate,
   forwardShopDelete,
   forwardClickedFarmId,
@@ -83,11 +76,23 @@ const AccountForm = ({
   const [inLoginSelection, setInLoginSelection] = useState(false);
   const [loginId, setLoginId] = useState<number>();
   const [loginImage, setLoginImage] = useState("");
-  const { token, userId, accountType, setAccountType } = useContextProvider();
+  const { 
+          token, 
+          userId, 
+          accountType, 
+          setAccountType, 
+          setClickedFarmId, 
+          clickedShopId, 
+          setClickedShopId, 
+          setIsShopClicked, 
+          setIsFarmFormOpen,
+          isShopFormOpen,
+          setIsShopFormOpen,
+         } = useContextProvider();
 
   useEffect(() => {
-    handleLoggedAs(loginId, accountType, inLoginSelection);
-  }, [loginId, accountType, inLoginSelection]);
+    handleLoggedAs(loginId, inLoginSelection);
+  }, [loginId, inLoginSelection]);
 
   useEffect(() => {
     if (updatedFarm) {
@@ -151,8 +156,8 @@ const AccountForm = ({
   }, [token, deletedFarmId]);
 
   useEffect(() => {
-    if (clickedMapShopId !== undefined) {
-      setSelectedShopId(clickedMapShopId);
+    if (clickedShopId !== undefined) {
+      setSelectedShopId(clickedShopId);
     }
 
     if (firstStart) {
@@ -161,13 +166,13 @@ const AccountForm = ({
     } else {
       setShowForm(true);
     }
-  }, [clickedMapShopId, markerClicked]);
+  }, [clickedShopId, markerClicked]);
 
   useEffect(() => {
-    if (clickedMapShopId === undefined) {
+    if (clickedShopId === undefined) {
       setShowForm(false);
     }
-  }, [clickedMapShopId]);
+  }, [clickedShopId]);
 
   const toggleShopForm = () => {
     setShowForm((prevState) => !prevState);
@@ -180,6 +185,19 @@ const AccountForm = ({
       isFarmFormOpen(true);
     }
   };
+
+  const handleShopClick = (id: number | undefined) => {
+    setClickedFarmId(undefined);
+    setClickedShopId(id);
+    setIsShopClicked(true);
+  }
+
+  const handleFarmClick = (id: number | undefined) => {
+    setClickedFarmId(id);
+    setClickedShopId(undefined);
+    setIsShopClicked(false);
+    setIsFarmFormOpen(true);
+  }
 
   const closeForm = () => {
     resetShopId(undefined);
@@ -399,11 +417,10 @@ const AccountForm = ({
           </Flex>
           <IoMdCloseCircle className="closeButtonStyle" onClick={closeForm} />
           <div className="scrollableContent">
-            {selectedShopId !== undefined ? (
+            {clickedShopId !== undefined ? (
               <ShopForm
                 forwardShopUpdate={(shop) => handleShopUpdate(shop)}
-                shopId={selectedShopId}
-                isShopOwned={isOwnedByUser(userShopIds, selectedShopId)}
+                isShopOwned={isOwnedByUser(userShopIds, clickedShopId)}
                 forwardShopDelete={(shopId) => {
                   setUserShops((prevUserShops) =>
                     (prevUserShops ?? []).filter((shop) => shop.id !== shopId)

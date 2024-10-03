@@ -67,7 +67,6 @@ interface Farm {
 }
 
 interface Props {
-  shopId: number | undefined;
   isShopOwned: boolean | undefined;
   forwardShopUpdate: (shop: Shop) => void;
   forwardShopDelete: (shopId: number) => void;
@@ -109,7 +108,6 @@ const formatDate = (dateString: string) => {
 };
 
 const ShopForm: React.FC<Props> = ({
-  shopId,
   isShopOwned,
   forwardShopUpdate,
   forwardShopDelete,
@@ -124,7 +122,7 @@ const ShopForm: React.FC<Props> = ({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<OrderWithProduct | null>(null);
-  const { accountType } = useContextProvider();
+  const { accountType, isShopFormOpen, setIsShopFormOpen, clickedShopId, setClickedShopId, productFarmClick } = useContextProvider();
 
   const typeList = Array.from(
     new Set(shopData?.orders.map((o) => o.product.type))
@@ -132,14 +130,15 @@ const ShopForm: React.FC<Props> = ({
 
   useEffect(() => {
     const fetchShopData = async () => {
-      console.log(shopId);
+      console.log(clickedShopId);
       try {
-        if (shopId !== undefined) {
+        if (clickedShopId !== undefined) {
           const response = await axios.get<ShopData>(
-            `https://localhost:7218/api/Shops/${shopId}/OrdersWithFarms`
+            `https://localhost:7218/api/Shops/${clickedShopId}/OrdersWithFarms`
           );
           const sortedOrders = sortOrders(response.data.orders);
           setShopData({ ...response.data, orders: sortedOrders });
+          console.log(shopData);
         }
       } catch (error) {
         console.error(error);
@@ -147,7 +146,7 @@ const ShopForm: React.FC<Props> = ({
     };
 
     fetchShopData();
-  }, [shopId]); // Ensure shopId is correctly updated on product updates
+  }, [clickedShopId]); // Ensure shopId is correctly updated on product updates
 
   const flipImage = (orderId: number) => {
     setHoveredOrderId(orderId);
@@ -314,8 +313,7 @@ const ShopForm: React.FC<Props> = ({
                               <img
                                 className="hover-image"
                                 onClick={() => (
-                                  handleClickedFarmId(order.shortFarm.id),
-                                  handleIsShopClicked(false)
+                                  productFarmClick(order.shortFarm.id)
                                 )}
                                 src={completePhotoUrl(order.shortFarm.photoId)}
                                 alt="Hover Image"
