@@ -19,7 +19,7 @@ import "./ShopForm.css";
 import EditShop, { Shop } from "./EditShop/EditShop";
 import soldOut from "../../assets/soldOut.png";
 import EditShopProduct from "./EditShopProduct";
-import { completePhotoUrl } from "../Images/CompletePhotoUrl";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
 import { useContextProvider } from "../../ContextProvider";
 
 interface ShopData {

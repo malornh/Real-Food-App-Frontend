@@ -7,7 +7,7 @@ import storeIcon from "../../assets/storeIcon.png";
 import './CartForm.css';
 import cart from '../../assets/cartButton.png';
 import { Shop } from "../ShopForm/EditShop/EditShop";
-import { completePhotoUrl } from "../Images/CompletePhotoUrl";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
 import { useContextProvider } from "../../ContextProvider";
 
 interface Product {
@@ -26,22 +26,23 @@ interface CartDto {
 }
 
 interface Props {
-  isCartOpen: (b: boolean) => void;
   productId: number | undefined;
-  shopId: number | undefined;
-  isFarmFormOpen: boolean;
-  handleClickedShop: (shopId: number | undefined) => void;
-  handleCartFormOpen: ()=>void;
-  handleCartFormClose: ()=>void;
 }
 
-const CartOrders: React.FC<Props> = ({ isCartOpen, handleClickedShop, handleCartFormOpen, handleCartFormClose, isFarmFormOpen }: Props) => {
+const CartOrders: React.FC<Props> = ({  }: Props) => {
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState<CartDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [productId, setProductId] = useState<number | undefined>(undefined);
-  const [shopId, setShopId] = useState<number | undefined>(undefined);
-  const { token, userId, accountType } = useContextProvider();
+  const { token, 
+          userId, 
+          accountType, 
+          isCartFormOpen,
+          setIsCartFormOpen,
+          clickedShopId,
+          isFarmFormOpen,
+          handleCartShopClick,
+        } = useContextProvider();
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -66,7 +67,7 @@ const CartOrders: React.FC<Props> = ({ isCartOpen, handleClickedShop, handleCart
   }, [userId]);
 
   const handleAddToCart = async () => {
-    if (!productId || !shopId) {
+    if (!productId || !clickedShopId) {
       alert("Product ID and Shop ID are required");
       return;
     }
@@ -74,7 +75,7 @@ const CartOrders: React.FC<Props> = ({ isCartOpen, handleClickedShop, handleCart
     const newCartDto = {
       userId,
       productId,
-      shopId
+      clickedShopId
     };
 
     try {
@@ -122,19 +123,17 @@ const CartOrders: React.FC<Props> = ({ isCartOpen, handleClickedShop, handleCart
           className="cart-button"
           onClick={() => {
             setShowCart(true);
-            isCartOpen(true);
-            handleCartFormOpen();
+            setIsCartFormOpen(true);
           }}
         />
       )}
-      {showCart && (
+      {isCartFormOpen && (
         <Box className="cart-form-container">
           <IoMdCloseCircle
             className="cart-close-button"
             onClick={() => {
               setShowCart(false);
-              isCartOpen(false);
-              handleCartFormClose();
+              setIsCartFormOpen(false);
             }}
           />
           <Box mt={140} className="cart-scrollable" height="calc(100% + 19px)" overflowY="auto">
@@ -165,10 +164,10 @@ const CartOrders: React.FC<Props> = ({ isCartOpen, handleClickedShop, handleCart
                         borderRadius={15}
                         src={completePhotoUrl(cart.shop.photoId)}
                         alt={`Shop ${cart.product.id}`}
-                        onClick={() => handleClickedShop(cart.product.id)}
+                        onClick={() => handleCartShopClick(cart.product.id, cart.shop.id)}
                       />
                       <Box position="absolute" top={15} left={15} padding={2}>
-                        <Image src={storeIcon} boxSize={35} alt="Shop Icon" opacity={0.8} onClick={() => handleClickedShop(cart.product.id)} />
+                        <Image src={storeIcon} boxSize={35} alt="Shop Icon" opacity={0.8} onClick={() => handleCartShopClick(cart.product.id, cart.shop.id)} />
                       </Box>
                     </Box>
                     <Box>

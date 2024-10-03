@@ -81,12 +81,7 @@ const App = () => {
         inLoginSelection={inLoginSelection}
       />
       {accountType == 3 && !isFarmFormOpen && !inLoginSelection && (
-        <OrderList
-          farmId={loginId}
-          isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
-          isFarmFormOpen={isFarmFormOpen}
-          handleClickedShop={(shopId) => handleShopClick(shopId)}
-        />
+        <OrderList />
       )}
       <ShopOrderList
         shopId={loginId}
@@ -106,13 +101,7 @@ const App = () => {
         deletedFarmId={deletedFarmId}
       />
       <CartForm
-        isCartOpen={() => isCartFormOpen}
-        handleClickedShop={() => null}
         productId={newProductId}
-        shopId={newShopId}
-        isFarmFormOpen={isFarmFormOpen}
-        handleCartFormOpen={()=>(setIsCartFormOpen(!isCartFormOpen), setIsDeliveryListOpen(true))}
-        handleCartFormClose={()=>(setIsCartFormOpen(!isCartFormOpen), setIsDeliveryListOpen(false))}
       />
     </div>
   );

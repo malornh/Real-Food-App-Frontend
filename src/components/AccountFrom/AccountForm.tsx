@@ -66,15 +66,12 @@ const AccountForm = ({
   DeliveryFormClosed,
   handleClickedCart,
 }: Props) => {
-  const [showForm, setShowForm] = useState(false);
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [selectedFarmId, setSelectedFarmId] = useState<number | undefined>();
   const [firstStart, setFirstStart] = useState(true);
   const [userShops, setUserShops] = useState<Shop[]>();
   const [userFarms, setUserFarms] = useState<Farm[]>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [inLoginSelection, setInLoginSelection] = useState(false);
-  const [loginId, setLoginId] = useState<number>();
   const [loginImage, setLoginImage] = useState("");
   const { 
           token, 
@@ -88,6 +85,12 @@ const AccountForm = ({
           setIsFarmFormOpen,
           isShopFormOpen,
           setIsShopFormOpen,
+          isAccountFormOpen,
+          setIsAccountFormOpen,
+          inLoginSelection,
+          setInLoginSelection,
+          loginId,
+          setLoginId,
          } = useContextProvider();
 
   useEffect(() => {
@@ -161,21 +164,22 @@ const AccountForm = ({
     }
 
     if (firstStart) {
-      setShowForm(false);
+      setIsShopFormOpen(false);
       setFirstStart(false);
     } else {
-      setShowForm(true);
+      setIsShopFormOpen(true);
     }
   }, [clickedShopId, markerClicked]);
 
   useEffect(() => {
     if (clickedShopId === undefined) {
-      setShowForm(false);
+      setIsShopFormOpen(false);
     }
   }, [clickedShopId]);
 
   const toggleShopForm = () => {
-    setShowForm((prevState) => !prevState);
+    setIsAccountFormOpen(!isAccountFormOpen);
+
     if (loginId && accountType === 2) {
       handleShopClick(loginId);
       isFarmFormOpen(true);
@@ -200,8 +204,7 @@ const AccountForm = ({
   }
 
   const closeForm = () => {
-    resetShopId(undefined);
-    setShowForm((prevState) => !prevState);
+    setIsAccountFormOpen(false);
     handleIsShopClicked(false);
     setInLoginSelection(false);
   };
@@ -215,7 +218,8 @@ const AccountForm = ({
       setLoginImage("");
     } else {
       if (accountType === 1) {
-        setSelectedShopId(undefined);
+        setIsAccountFormOpen(true);
+        setClickedShopId(undefined);
       }
       if (accountType === 2 && loginId !== undefined) {
         setSelectedShopId(loginId);
@@ -291,22 +295,22 @@ const AccountForm = ({
       {loginImage === "" || inLoginSelection ? (
         <RiAccountCircleFill
           className="buttonStyle"
-          style={{ right: showForm ? "calc(40%)" : "25px" }}
-          onClick={showForm ? toggleAccount : toggleShopForm}
+          style={{ right: isAccountFormOpen ? "calc(40%)" : "25px" }}
+          onClick={isAccountFormOpen ? toggleAccount : toggleShopForm}
         />
       ) : (
         <img
           src={loginImage}
           className="buttonStyle"
           style={{
-            right: showForm ? "calc(40%)" : "25px",
+            right: isAccountFormOpen ? "calc(40%)" : "25px",
             borderRadius: "50%",
           }}
-          onClick={showForm ? toggleAccount : toggleShopForm}
+          onClick={isAccountFormOpen ? toggleAccount : toggleShopForm}
         />
       )}
 
-      {showForm && (
+      {isAccountFormOpen && (
         <div className="formContainerStyle">
           <Flex>
             {(

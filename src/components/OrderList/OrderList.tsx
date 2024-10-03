@@ -14,7 +14,7 @@ import { FaCheck } from "react-icons/fa";
 import { CgClose } from "react-icons/cg";
 import storeIcon from '../../assets/storeIcon.png';
 import { useContextProvider } from "../../ContextProvider";
-import { completePhotoUrl } from "../Images/CompletePhotoUrl";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
 
 interface OrderDto {
   id: number;
@@ -38,10 +38,6 @@ interface Order {
 }
 
 interface Props {
-  isDeliveryListOpen: (b: boolean) => void;
-  farmId: number | undefined;
-  isFarmFormOpen: boolean;
-  handleClickedShop: (shopId: number | undefined) => void;
 }
 
 const mapOrderToOrderDto = (order: Order): OrderDto => {
@@ -96,20 +92,22 @@ const haversineDistance = (
 };
 
 const FarmContainer: React.FC<Props> = ({
-  isDeliveryListOpen,
-  farmId,
-  isFarmFormOpen,
-  handleClickedShop,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
-  const { token } = useContextProvider();
+  const { token, 
+          setIsOrderFormOpen, 
+          setIsDeliveryListOpen,
+          loginId,
+          isFarmFormOpen,
+          handleShopClick,
+        } = useContextProvider();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Orders/AllFarmOrders/${farmId}`, {
+          `https://localhost:7218/api/Orders/AllFarmOrders/${loginId}`, {
             headers: {
               Authorization: `Bearer ${token}`
             }
@@ -139,7 +137,7 @@ const FarmContainer: React.FC<Props> = ({
     };
   
     fetchData();
-  }, [farmId]);
+  }, [loginId]);
   
 
   function handleAcceptOrder(orderId: number | undefined) {
@@ -208,14 +206,14 @@ const FarmContainer: React.FC<Props> = ({
           src={truck}
           className="list-button"
           style={{ left: showForm ? "calc(40%)" : "35px" }}
-          onClick={() => (setShowForm(true), isDeliveryListOpen(true))}
+          onClick={() => (setIsOrderFormOpen(true), setIsDeliveryListOpen(true))}
         />
       )}
       {showForm && (
         <Box className="form-container" >
           <IoMdCloseCircle
             className="closeButton"
-            onClick={() => (setShowForm(false), isDeliveryListOpen(false))}
+            onClick={() => (setIsOrderFormOpen(false), setIsDeliveryListOpen(false))}
           />
           <Box mt={140} className="scrollable"
             height="calc(100% + 19px)"
@@ -285,10 +283,10 @@ const FarmContainer: React.FC<Props> = ({
                       borderRadius={15}
                       src={completePhotoUrl(o.shop.photoId)}
                       alt={`Order ${o.id}`}
-                      onClick={() => handleClickedShop(o.shop.id)}
+                      onClick={() => handleShopClick(o.shop.id)}
                     />
                     <Box position="absolute" top={15} left={15} padding={2}>
-                      <Image src={storeIcon} boxSize={35} alt="Shop Icon" opacity={0.8} onClick={()=>handleClickedShop(o.shop.id)} />
+                      <Image src={storeIcon} boxSize={35} alt="Shop Icon" opacity={0.8} onClick={()=>handleShopClick(o.shop.id)} />
                     </Box>
                   </Box>
                     <Box>

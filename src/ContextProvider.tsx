@@ -9,12 +9,14 @@ interface ContextProps {
   clearUserId: () => void;
   accountType: number;
   setAccountType: (accountType: number) => void;
+
   clickedFarmId: number | undefined;
   setClickedFarmId: (id: number | undefined) => void;
   clickedShopId: number | undefined;
   setClickedShopId: (id: number | undefined) => void;
   isShopClicked: boolean;
   setIsShopClicked: (b: boolean) => void;
+
   isDeliveryListOpen: boolean;
   setIsDeliveryListOpen: (open: boolean) => void;
   isFarmFormOpen: boolean;
@@ -25,7 +27,20 @@ interface ContextProps {
   setIsCartFormOpen: (open: boolean) => void;
   isOrderFormOpen: boolean;
   setIsOrderFormOpen: (open: boolean) => void;
+  isAccountFormOpen: boolean;
+  setIsAccountFormOpen: (b: boolean) => void;
+
   productFarmClick: (farmId: number) => void;
+  accountButtonClick: (newLoginId: number | undefined) => void;
+
+  handleFarmClick: (id : number | undefined) => void;
+  handleShopClick: (id : number | undefined) => void;
+  handleCartShopClick: (productId: number, shopId: number | undefined) => void;
+
+  inLoginSelection: boolean;
+  setInLoginSelection: (b: boolean) => void;
+  loginId: number | undefined;
+  setLoginId: (id: number | undefined) => void;
 }
 
 const Context = createContext<ContextProps | undefined>(undefined);
@@ -45,6 +60,8 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [clickedFarmId, setClickedFarmIdState] = useState<number | undefined>(undefined);
   const [clickedShopId, setClickedShopIdState] = useState<number | undefined>(undefined);
   const [isShopClicked, setIsShopClickedState] = useState<boolean>(true); // False if a farm is clicked
+  const [inLoginSelection, setInLoginSelectionState] = useState<boolean>(false);
+  const [loginId, setLoginIdState] = useState<number | undefined>(undefined);
 
   // New state variables
   const [isDeliveryListOpen, setIsDeliveryListOpenState] = useState<boolean>(false);
@@ -52,6 +69,7 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [isShopFormOpen, setIsShopFormOpenState] = useState<boolean>(false);
   const [isCartFormOpen, setIsCartFormOpenState] = useState<boolean>(false);
   const [isOrderFormOpen, setIsOrderFormOpenState] = useState<boolean>(false);
+  const [isAccountFormOpen, setIsAccountFormOpenState] = useState<boolean>(false);
 
   const setToken = (newToken: string) => {
     setTokenState(newToken);
@@ -119,6 +137,21 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     localStorage.setItem('isOrderFormOpen', String(open));
   };
 
+  const setInLoginSelection = (b: boolean) => {
+    setInLoginSelectionState(b);
+    localStorage.setItem('inLoginSelection', String(b));
+  };
+
+  const setLoginId = (id: number | undefined) => {
+    setLoginIdState(id);
+    localStorage.setItem('loginId', String(id));
+  };
+
+  const setIsAccountFormOpen = (b: boolean) => {
+    setIsAccountFormOpenState(b);
+    localStorage.setItem('isAccountFormOpen', String(b));
+  }
+
   const productFarmClick = (farmId: number) => {
     setIsDeliveryListOpen(false);
     setIsCartFormOpen(false);
@@ -126,6 +159,38 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
 
     setIsFarmFormOpen(true);
     setClickedFarmId(farmId);
+  }
+
+  const accountButtonClick = (newLoginId: number | undefined) => {
+    setLoginId(newLoginId);
+    if(inLoginSelection)
+    {
+      setClickedShopId(undefined);
+    }
+  }
+
+  const handleShopClick = (id : number | undefined) => {
+    setClickedFarmId(undefined);
+    setClickedShopId(id);
+    setIsShopClicked(true);
+    setIsFarmFormOpen(false);
+    setIsShopFormOpen(true);
+    setIsDeliveryListOpen(false);
+    setIsAccountFormOpen(true);
+  }
+
+  const handleFarmClick = (id : number | undefined) => {
+    setIsAccountFormOpen(false);
+    setClickedFarmId(id);
+    setClickedShopId(undefined);
+    setIsShopClicked(false);
+    setIsFarmFormOpen(true);
+    setIsShopFormOpen(false);
+    setIsDeliveryListOpen(false);
+  }
+
+  const handleCartShopClick = (productId: number, shopId: number | undefined) => {
+    handleShopClick(shopId);
   }
 
   return (
@@ -154,7 +219,17 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
       setIsCartFormOpen,
       isOrderFormOpen,
       setIsOrderFormOpen,
-      productFarmClick
+      productFarmClick,
+      inLoginSelection,
+      setInLoginSelection,
+      loginId,
+      setLoginId,
+      accountButtonClick,
+      isAccountFormOpen,
+      setIsAccountFormOpen,
+      handleFarmClick,
+      handleShopClick,
+      handleCartShopClick,
     }}>
       {children}
     </Context.Provider>

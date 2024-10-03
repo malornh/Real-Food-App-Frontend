@@ -29,38 +29,13 @@ const SofiaMap: React.FC<Props> = ({
     clickedFarmId, 
     setClickedFarmId,
     clickedShopId,
-    setClickedShopId, 
-    isFarmFormOpen , 
-    setIsFarmFormOpen, 
-    isShopFormOpen,
-    setIsShopFormOpen,
     isDeliveryListOpen, 
-    setIsDeliveryListOpen, 
     isShopClicked,
-    setIsShopClicked
+    handleFarmClick,
+    handleShopClick,
    } = useContextProvider();
 
   console.log(setClickedFarmId);
-
-  const handleShopClick = (id : number | undefined) => {
-    setClickedFarmId(undefined);
-    setClickedShopId(id);
-    //setMarkerClicked((prevState) => !prevState);
-    setIsShopClicked(true);
-    setIsFarmFormOpen(false);
-    setIsShopFormOpen(true);
-    setIsDeliveryListOpen(false);
-  }
-
-  const handleFarmClick = (id : number | undefined) => {
-    setClickedFarmId(id);
-    setClickedShopId(undefined);
-    //setMarkerClicked((prevState) => !prevState);
-    setIsShopClicked(false);
-    setIsFarmFormOpen(true);
-    setIsShopFormOpen(false);
-    setIsDeliveryListOpen(false);
-  }
 
   useEffect(() => {
     if (!updatedShop) return; // If updatedShop is undefined, exit the function

@@ -26,7 +26,13 @@ const FarmContainer = ({
   inLoginSelection,
 }: Props) => {
   const [showForm, setShowForm] = useState(false);
-  const { userId, isFarmFormOpen, setIsFarmFormOpen, isDeliveryListOpen, clickedFarmId, setClickedFarmId } = useContextProvider();
+  const { setIsFarmFormOpen, 
+          isDeliveryListOpen, 
+          clickedFarmId, 
+          setClickedFarmId,
+          isCartFormOpen,
+          isOrderFormOpen,
+        } = useContextProvider();
 
   useEffect(() => {
     if (clickedFarmId !== undefined) {
@@ -44,7 +50,7 @@ const FarmContainer = ({
   };
 
   const closeForm = () => {
-    setClickedFarmId(undefined);
+    setIsFarmFormOpen(false);
 
     setShowForm(false);
 
@@ -61,7 +67,10 @@ const FarmContainer = ({
         width: "100vw",
         height: "100vh",
       }}>
-      {!isDeliveryListOpen && <HiSearchCircle
+      {!isDeliveryListOpen &&
+       !isCartFormOpen &&
+       !isOrderFormOpen &&
+      <HiSearchCircle
         className="button"
         style={{ left: showForm ? "calc(40%)" : "25px" }}
         onClick={()=>(setShowForm(true), setIsFarmFormOpen(true))} //TO-DO: Implement search menu
