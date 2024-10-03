@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./AccountForm.css";
-import UserForm from "../LoginRegisterForm/LoginRegisterForm";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { IoMdCloseCircle } from "react-icons/io";
 import { HiMiniPlusCircle } from "react-icons/hi2";
 import ShopForm from "../ShopForm/ShopForm";
 import axios from "axios";
 import { Shop } from "../ShopForm/EditShop/EditShop";
-import { Box, Button, Flex, useDisclosure } from "@chakra-ui/react"; // Ensure you import Box from Chakra UI
+import { Button, Flex, useDisclosure } from "@chakra-ui/react"; // Ensure you import Box from Chakra UI
 import Create from "../Create";
 import { Farm } from "../FarmForm/EditFarm";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
@@ -24,19 +23,10 @@ export interface Card {
   rating: number;
 }
 
-interface ShortShops {
-  id: number;
-  name: string;
-  image: string;
-  latitude: number;
-  longitude: number;
-}
-
 interface Props {
   markerClicked: boolean;
   updatedFarm: Farm | undefined;
   deletedFarmId: number | undefined;
-  resetShopId: (n: number | undefined) => void;
   forwardShopUpdate: (shop: Shop) => void;
   forwardShopDelete: (shopId: number) => void;
   forwardClickedFarmId: (farmId: number) => void;
@@ -46,25 +36,17 @@ interface Props {
     id: number | undefined,
     inLoginSelection: boolean
   ) => void;
-  isFarmFormOpen: (b: boolean) => void;
-  DeliveryFormClosed: () => void;
-  handleClickedCart: (productId: number, shopId: number)=>void;
 }
 
 const AccountForm = ({
   markerClicked,
   updatedFarm,
   deletedFarmId,
-  resetShopId,
   forwardShopUpdate,
   forwardShopDelete,
-  forwardClickedFarmId,
   forwardFarmUpdate,
   handleIsShopClicked,
   handleLoggedAs,
-  isFarmFormOpen,
-  DeliveryFormClosed,
-  handleClickedCart,
 }: Props) => {
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [selectedFarmId, setSelectedFarmId] = useState<number | undefined>();
@@ -83,7 +65,6 @@ const AccountForm = ({
           setClickedShopId, 
           setIsShopClicked, 
           setIsFarmFormOpen,
-          isShopFormOpen,
           setIsShopFormOpen,
           isAccountFormOpen,
           setIsAccountFormOpen,
@@ -91,6 +72,10 @@ const AccountForm = ({
           setInLoginSelection,
           loginId,
           setLoginId,
+          setIsCartFormOpen,
+          setIsDeliveryListOpen,
+          setIsOrderFormOpen,
+          setShowCart,
          } = useContextProvider();
 
   useEffect(() => {
@@ -182,11 +167,11 @@ const AccountForm = ({
 
     if (loginId && accountType === 2) {
       handleShopClick(loginId);
-      isFarmFormOpen(true);
+      setIsFarmFormOpen(true);
     }
     if (loginId && accountType === 3) {
       handleFarmClick(loginId);
-      isFarmFormOpen(true);
+      setIsFarmFormOpen(true);
     }
   };
 
@@ -216,6 +201,7 @@ const AccountForm = ({
       setAccountType(1);
       setInLoginSelection(false);
       setLoginImage("");
+      setShowCart(true);
     } else {
       if (accountType === 1) {
         setIsAccountFormOpen(true);
@@ -228,7 +214,7 @@ const AccountForm = ({
       if (accountType === 3 && loginId !== undefined) {
         setSelectedFarmId(loginId);
         handleFarmClick(loginId);
-        isFarmFormOpen(true);
+        setIsFarmFormOpen(true);
       }
     }
   };
@@ -236,7 +222,7 @@ const AccountForm = ({
   const handleCardClick = (id: number, image: string) => {
     setLoginId(id);
     setLoginImage(image);
-    DeliveryFormClosed();
+    setIsDeliveryListOpen(false);
 
     if (accountType === 2) {
       setSelectedShopId(id);
@@ -249,7 +235,7 @@ const AccountForm = ({
       handleFarmClick(id);
       handleIsShopClicked(false);
       setInLoginSelection(false);
-      isFarmFormOpen(true);
+      setIsFarmFormOpen(true);
     }
   };
 
@@ -340,7 +326,11 @@ const AccountForm = ({
                   ml={80}
                   mb={49}
                   onClick={() => (
-                    setInLoginSelection(true), setAccountType(2)
+                    setInLoginSelection(true), 
+                    setAccountType(2), 
+                    setIsDeliveryListOpen(false),
+                    setIsOrderFormOpen(false),
+                    setIsCartFormOpen(false)
                   )}>
                   Login as:
                 </Button>
@@ -431,11 +421,8 @@ const AccountForm = ({
                   );
                   forwardShopDelete(shopId);
                 }}
-                handleClickedFarmId={(farmId) => forwardClickedFarmId(farmId)}
-                handleIsShopClicked={(b) => handleIsShopClicked(b)}
                 loginId={loginId}
                 inLoginSelection={inLoginSelection}
-                handleClickedCart={(productId, shopId)=>handleClickedCart(productId, shopId)}
               />
             ) : (
                 <LoginRegisterForm />

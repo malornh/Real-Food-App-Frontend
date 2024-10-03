@@ -54,7 +54,6 @@ const App = () => {
   return (
     <div>
       <AccountForm
-        resetShopId={(n) => setClickedMapShopId(n)}
         markerClicked={markerClicked}
         forwardShopUpdate={(shop) => setUpdatedShop(shop)}
         forwardShopDelete={(shopId) => setDeletedShopId(shopId)}
@@ -68,9 +67,6 @@ const App = () => {
           setAccountType(accountType),
           setInLoginSelection(inLoginSelection)
         )}
-        isFarmFormOpen={(b) => setIsFarmFormOpen(b)}
-        DeliveryFormClosed={() => setIsDeliveryListOpen(false)}
-        handleClickedCart={(p, s) => (setNewProductId(p), setNewShopId(s))}
       />
       <FarmContainer
         resetFarmId={() => setClickedMapFarmId(undefined)}

@@ -70,11 +70,8 @@ interface Props {
   isShopOwned: boolean | undefined;
   forwardShopUpdate: (shop: Shop) => void;
   forwardShopDelete: (shopId: number) => void;
-  handleClickedFarmId: (farmId: number) => void;
-  handleIsShopClicked: (b: boolean) => void;
   loginId: number | undefined;
   inLoginSelection: boolean;
-  handleClickedCart: (productId: number, shopId: number)=>void;
 }
 
 const sortOrders = (orders: OrderWithProduct[]) => {
@@ -111,18 +108,21 @@ const ShopForm: React.FC<Props> = ({
   isShopOwned,
   forwardShopUpdate,
   forwardShopDelete,
-  handleClickedFarmId,
-  handleIsShopClicked,
   loginId,
   inLoginSelection,
-  handleClickedCart
 }) => {
   const [shopData, setShopData] = useState<ShopData | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<OrderWithProduct | null>(null);
-  const { accountType, isShopFormOpen, setIsShopFormOpen, clickedShopId, setClickedShopId, productFarmClick } = useContextProvider();
+  const { accountType, 
+          clickedShopId,  
+          productFarmClick,
+          token,
+          cartItems,
+          setCartItems,
+         } = useContextProvider();
 
   const typeList = Array.from(
     new Set(shopData?.orders.map((o) => o.product.type))
@@ -211,6 +211,23 @@ const ShopForm: React.FC<Props> = ({
       ...shopData,
       orders: updatedOrders,
     });
+  };
+
+  const handleAddToCart = async (orderId: number) => {try {
+    const formData = new FormData();
+    formData.append("orderId", orderId.toString()); 
+
+    const response = await axios.post("https://localhost:7218/api/Carts", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Set the Content-Type to form data
+      }
+    });
+
+      setCartItems([...cartItems, response.data]);
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
   };
 
   return (
@@ -404,7 +421,7 @@ const ShopForm: React.FC<Props> = ({
                         {accountType === 1 && !inLoginSelection && (
                           <PiShoppingCartSimpleDuotone
                             className="shopCartButton"
-                            onClick={() => handleClickedCart(order.productId, order.shopId)}
+                            onClick={() => handleAddToCart(order.id)}
                           />
                         )}
                         {accountType === 2 &&

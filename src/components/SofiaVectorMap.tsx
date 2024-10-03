@@ -29,7 +29,9 @@ const SofiaMap: React.FC<Props> = ({
     clickedFarmId, 
     setClickedFarmId,
     clickedShopId,
-    isDeliveryListOpen, 
+    isDeliveryListOpen,
+    isCartFormOpen,
+    isFarmFormOpen,
     isShopClicked,
     handleFarmClick,
     handleShopClick,
@@ -151,7 +153,7 @@ const SofiaMap: React.FC<Props> = ({
         });
 
         if (id === clickedShopId && isShopClicked === true) {
-          if (clickedFarmId === undefined) {
+          if (isFarmFormOpen) {
             mapRef.current?.setView([latitude, longitude + 0.06], 13); // To be optimized. It's hardcoded for now.
           } else {
             mapRef.current?.setView([latitude, longitude], 13); // To be optimized. It's hardcoded for now.

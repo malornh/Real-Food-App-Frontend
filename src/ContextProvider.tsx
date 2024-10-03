@@ -1,4 +1,5 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
+import { CartDto } from './components/CartForm.tsx/CartForm';
 
 interface ContextProps {
   token: string | null;
@@ -30,6 +31,9 @@ interface ContextProps {
   isAccountFormOpen: boolean;
   setIsAccountFormOpen: (b: boolean) => void;
 
+  showCart: boolean;
+  setShowCart: (b: boolean) => void;
+
   productFarmClick: (farmId: number) => void;
   accountButtonClick: (newLoginId: number | undefined) => void;
 
@@ -41,6 +45,9 @@ interface ContextProps {
   setInLoginSelection: (b: boolean) => void;
   loginId: number | undefined;
   setLoginId: (id: number | undefined) => void;
+
+  cartItems: CartDto[],
+  setCartItems: (cartItems: CartDto[]) => void;
 }
 
 const Context = createContext<ContextProps | undefined>(undefined);
@@ -70,6 +77,8 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [isCartFormOpen, setIsCartFormOpenState] = useState<boolean>(false);
   const [isOrderFormOpen, setIsOrderFormOpenState] = useState<boolean>(false);
   const [isAccountFormOpen, setIsAccountFormOpenState] = useState<boolean>(false);
+  const [cartItems, setCartItemsState] = useState<CartDto[]>([]);
+  const [showCart, setShowCartState] = useState<boolean>(true);
 
   const setToken = (newToken: string) => {
     setTokenState(newToken);
@@ -152,6 +161,12 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     localStorage.setItem('isAccountFormOpen', String(b));
   }
 
+  const setShowCart = (b: boolean) => {
+    setShowCartState(b);
+    localStorage.setItem('showCart', String(b));
+  }
+
+
   const productFarmClick = (farmId: number) => {
     setIsDeliveryListOpen(false);
     setIsCartFormOpen(false);
@@ -193,6 +208,11 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     handleShopClick(shopId);
   }
 
+  const setCartItems = (cartItems: CartDto[]) => {
+    setCartItemsState(cartItems);
+    localStorage.setItem('cartItems', String(...cartItems));
+  }
+
   return (
     <Context.Provider value={{ 
       token, 
@@ -230,6 +250,10 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
       handleFarmClick,
       handleShopClick,
       handleCartShopClick,
+      cartItems,
+      setCartItems,
+      showCart,
+      setShowCart,
     }}>
       {children}
     </Context.Provider>

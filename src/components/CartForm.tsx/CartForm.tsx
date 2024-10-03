@@ -13,12 +13,12 @@ import { useContextProvider } from "../../ContextProvider";
 interface Product {
   id: number;
   name: string;
-  image: string;
+  photoId: string | undefined;
   pricePerUnit: number;
   quantity: number;
 }
 
-interface CartDto {
+export interface CartDto {
   id: number;
   userId: string;
   product: Product;
@@ -30,8 +30,6 @@ interface Props {
 }
 
 const CartOrders: React.FC<Props> = ({  }: Props) => {
-  const [showCart, setShowCart] = useState(false);
-  const [cartItems, setCartItems] = useState<CartDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [productId, setProductId] = useState<number | undefined>(undefined);
   const { token, 
@@ -42,6 +40,11 @@ const CartOrders: React.FC<Props> = ({  }: Props) => {
           clickedShopId,
           isFarmFormOpen,
           handleCartShopClick,
+          cartItems,
+          setCartItems,
+          inLoginSelection,
+          showCart,
+          setShowCart,
         } = useContextProvider();
 
   useEffect(() => {
@@ -99,7 +102,7 @@ const CartOrders: React.FC<Props> = ({  }: Props) => {
           Authorization: `Bearer ${token}`
         }
       });
-      setCartItems((prevCartItems) => prevCartItems.filter((cart) => cart.id !== cartId));
+      setCartItems(cartItems.filter((cart) => cart.id !== cartId));
     } catch (error) {
       console.error("Error removing cart item:", error);
     }
@@ -116,23 +119,29 @@ const CartOrders: React.FC<Props> = ({  }: Props) => {
 
   return (
     <div>
-      {accountType===1 && !showCart && !isFarmFormOpen && (
+      {accountType===1 &&
+      showCart &&
+      !isFarmFormOpen && 
+      !inLoginSelection &&
+      (
         <Image
           fontSize={10}
           src={cart}
           className="cart-button"
           onClick={() => {
-            setShowCart(true);
+            setShowCart(false);
             setIsCartFormOpen(true);
           }}
         />
       )}
-      {isCartFormOpen && (
+      {isCartFormOpen &&
+      !inLoginSelection &&
+      (
         <Box className="cart-form-container">
           <IoMdCloseCircle
             className="cart-close-button"
             onClick={() => {
-              setShowCart(false);
+              setShowCart(true);
               setIsCartFormOpen(false);
             }}
           />
@@ -145,7 +154,7 @@ const CartOrders: React.FC<Props> = ({  }: Props) => {
                       padding={10}
                       boxSize={130}
                       borderRadius={15}
-                      src={cart.product.image}
+                      src={completePhotoUrl(cart.product.photoId)}
                       alt={`Cart ${cart.id}`}
                     />
                     <Flex direction={"column"}>
