@@ -19,10 +19,10 @@ import "./ShopForm.css";
 import EditShop, { Shop } from "./EditShop/EditShop";
 import soldOut from "../../assets/soldOut.png";
 import EditShopProduct from "./EditShopProduct";
-import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 import { useContextProvider } from "../../ContextProvider";
 
-interface ShopData {
+export interface ShopData {
   id: number;
   userId: string;
   name: string;
@@ -111,7 +111,6 @@ const ShopForm: React.FC<Props> = ({
   loginId,
   inLoginSelection,
 }) => {
-  const [shopData, setShopData] = useState<ShopData | undefined>(undefined);
   const [hoveredOrderId, setHoveredOrderId] = useState<number | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
@@ -123,6 +122,8 @@ const ShopForm: React.FC<Props> = ({
           cartItems,
           setCartItems,
           userId,
+          shopData,
+          setShopData,
          } = useContextProvider();
 
   const adaptedShopData = {
@@ -201,17 +202,19 @@ const typeList = Array.from(
   });
 
   function handleShopUpdate(shop: Shop): void {
-    setShopData((currentShopData) => {
-      if (!currentShopData) return currentShopData; 
-      return {
-        ...currentShopData, 
-        name: shop.name,
-        description: shop.description,
-        photoId: shop.photoId,   
-        latitude: shop.latitude,
-        longitude: shop.longitude,
-      };
+    setShopData({
+      ...(shopData || {}),
+      name: shop.name,
+      description: shop.description,
+      photoId: shop.photoId,
+      latitude: shop.latitude,
+      longitude: shop.longitude,
+      id: shop.id ?? 0, // Use default id of 0 if undefined
+      userId: shop.userId ?? "",
+      rating: shop.rating ?? 0, // Provide a default value for rating
     });
+    
+    
     forwardShopUpdate(shop); 
   }
 

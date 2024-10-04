@@ -15,7 +15,7 @@ import { FaCheck } from "react-icons/fa";
 import { CgClose } from "react-icons/cg";
 import storeIcon from "../../assets/storeIcon.png";
 import farmIcon from '../../assets/farmIcon.png';
-import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 import { useContextProvider } from "../../ContextProvider";
 
 interface OrderDto {
@@ -102,7 +102,7 @@ const ShopOrderList: React.FC<Props> = ({
   isInLoginSelection,
 }: Props) => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const { token, accountType, showOrder, setShowOrder, isFarmFormOpen, setIsOrderFormOpen, isOrderFormOpen } = useContextProvider();
+  const { token, accountType, showOrder, setShowOrder, isFarmFormOpen, setIsOrderFormOpen, isOrderFormOpen, orderList, setOrderList } = useContextProvider();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -127,7 +127,7 @@ const ShopOrderList: React.FC<Props> = ({
           return statusOrder[a.status] - statusOrder[b.status];
         });
 
-        setOrders(sortedOrders);
+        setOrderList(sortedOrders);
 
         // Manual test
         const testDistance = haversineDistance([42.705, 23.3097], [42.7, 23.3]);
@@ -233,7 +233,7 @@ const ShopOrderList: React.FC<Props> = ({
             height="calc(100% + 19px)"
             overflowY="auto">
             <Box mb={150}>
-              {orders.map((o) => {
+              {orderList.map((o) => {
                 const shopCoords: [number, number] = [
                   o.shop.latitude,
                   o.shop.longitude,

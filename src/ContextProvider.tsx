@@ -1,6 +1,7 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
 import { CartDto } from './components/CartForm.tsx/CartForm';
 import { OrderItem } from './components/OrderList/OrderList';
+import { ShopData } from './components/ShopForm/ShopForm';
 
 interface ContextProps {
   token: string | null;
@@ -54,11 +55,14 @@ interface ContextProps {
   loginId: number | undefined;
   setLoginId: (id: number | undefined) => void;
 
-  cartItems: CartDto[],
+  cartItems: CartDto[];
   setCartItems: (cartItems: CartDto[]) => void;
 
-  orderList: OrderItem[],
-  setOrderList: (orderList: OrderItem[]) => void;
+  orderList: OrderItem[];
+  setOrderList: (orderItems: OrderItem[]) => void;
+
+  shopData: ShopData;
+  setShopData: (data: ShopData) => void;
 }
 
 const Context = createContext<ContextProps | undefined>(undefined);
@@ -91,6 +95,19 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   const [cartItems, setCartItemsState] = useState<CartDto[]>([]);
   const [orderList, setOrderListState] = useState<OrderItem[]>([]);
+  const defaultShopData: ShopData = {
+    id: 0,                         // Default ID as 0 (assuming no shop selected initially)
+    userId: '',                    // Empty string for userId, as no user is associated initially
+    name: '',                      // Empty string for shop name
+    photoFile: null,                // Assuming no photo initially
+    photoId: undefined,             // Undefined for photoId
+    description: '',                // Empty description
+    latitude: 0,                    // Default latitude, can be updated once the location is set
+    longitude: 0,                   // Default longitude
+    rating: 0,                      // Default rating
+    orders: []                      // Empty list of orders initially
+  };
+  const [shopData, setShopDataState] = useState<ShopData>(defaultShopData);
 
   const [showCart, setShowCartState] = useState<boolean>(true);
   const [showDelivery, setShowDeliveryState] = useState<boolean>(true);
@@ -247,9 +264,14 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     localStorage.setItem('cartItems', String(...cartItems));
   }
 
-  const setOrderList = (orderList: OrderItem[]) => {
-    setOrderListState(orderList);
-    localStorage.setItem('orderList', String(...orderList));
+  const setOrderList = (orderItems: OrderItem[]) => {
+    setOrderListState(orderItems);
+    localStorage.setItem('orderList', String(...orderItems));
+  }
+
+  const setShopData = (data: ShopData) => {
+    setShopDataState(data);
+    localStorage.setItem('orderList', String(data));
   }
 
   return (
@@ -300,6 +322,8 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
       handleDeliveryShopClick,
       orderList,
       setOrderList,
+      shopData,
+      setShopData,
     }}>
       {children}
     </Context.Provider>

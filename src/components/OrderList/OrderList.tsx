@@ -14,7 +14,7 @@ import { FaCheck } from "react-icons/fa";
 import { CgClose } from "react-icons/cg";
 import storeIcon from '../../assets/storeIcon.png';
 import { useContextProvider } from "../../ContextProvider";
-import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 
 interface OrderDto {
   id: number;
@@ -220,7 +220,7 @@ const FarmContainer: React.FC<Props> = ({
         <Box className="form-container" >
           <IoMdCloseCircle
             className="closeButton"
-            onClick={() => (setIsDeliveryListOpen(false), setShowDelivery(true))}
+            onClick={() => (setIsDeliveryListOpen(false), setShowDelivery(true), console.log(orderList))}
           />
           <Box mt={140} className="scrollable"
             height="calc(100% + 19px)"

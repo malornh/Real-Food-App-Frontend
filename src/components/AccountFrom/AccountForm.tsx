@@ -204,6 +204,7 @@ const AccountForm = ({
       setInLoginSelection(false);
       setLoginImage("");
       setShowCart(true);
+      setIsFarmFormOpen(false);
     } else {
       if (accountType === 1) {
         setIsAccountFormOpen(true);
@@ -231,6 +232,8 @@ const AccountForm = ({
       handleShopClick(id);
       handleIsShopClicked(true);
       setInLoginSelection(false);
+      setLoginId(id);
+      setShowOrder(true);
     }
     if (accountType === 3) {
       setSelectedFarmId(id);
@@ -238,6 +241,7 @@ const AccountForm = ({
       handleIsShopClicked(false);
       setInLoginSelection(false);
       setShowDelivery(false);
+      setLoginId(id);
     }
   };
 

@@ -19,8 +19,9 @@ import { HiMiniPlusCircle } from "react-icons/hi2";
 import EditProduct from "./EditProduct";
 import defaultProduct from "../../assets/defaultProduct.png";
 import CreateOrder, { Order } from "./CreateOrder";
-import { completePhotoUrl } from "../Images/CompletePhotoUrl";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
 import { useContextProvider } from "../../ContextProvider.tsx";
+import { OrderItem } from "../OrderList/OrderList.tsx";
 
 interface FarmData {
   id: number;
@@ -107,7 +108,7 @@ const FarmForm = ({
     setSelectedOrderProduct(null);
   };
 
-  const handleOrderCreate = (order: Order) => {
+  const handleOrderCreate = (order: OrderItem) => {
     console.log("Order created:", order);
     // Handle order creation logic, e.g., updating state or sending data to the server
   };
@@ -509,7 +510,7 @@ const FarmForm = ({
           onClose={handleCloseOrderModal}
           product={selectedOrderProduct}
           shopId={loginId}
-          onOrderCreate={handleOrderCreate}
+          onOrderCreate={(order) => handleOrderCreate(order)}
         />
       )}
     </div>

@@ -16,6 +16,7 @@ import theme from "../ShopForm/EditShop/theme";
 import { Product } from "./FarmForm";
 import { useContextProvider } from "../../ContextProvider";
 import { OrderItem } from "../OrderList/OrderList";
+import axios from "axios";
 
 export interface Order {
   id?: number;
@@ -32,7 +33,7 @@ interface Props {
   onClose: () => void;
   product: Product;
   shopId: number;
-  onOrderCreate: (order: Order) => void;
+  onOrderCreate: (order: OrderItem) => void;
 }
 
 const CreateOrder: React.FC<Props> = ({
@@ -48,24 +49,22 @@ const CreateOrder: React.FC<Props> = ({
 
   const createOrder = async (order: Order) => {
     try {
-      const response = await fetch(`https://localhost:7218/api/Orders`, {
-        method: "POST",
+      const response = await axios.post(`https://localhost:7218/api/Orders`, order, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(order),
+        }
       });
-
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Error: ${response.status} - ${error}`);
-      }
-
-      const responseOrder: OrderItem = await response.json();
-      setOrderList([...orderList, responseOrder]);
+      console.log("response:");
+      console.log(response.data);
+      console.log("old: ");
+      console.log(orderList);
+      console.log("new: ");
+      setOrderList([...orderList, response.data]);
+      console.log(orderList);
     } catch (error) {
-      console.error("Error creating order:", error);
+      console.error("Error adding new order:", error);
+     
     }
   };
 
