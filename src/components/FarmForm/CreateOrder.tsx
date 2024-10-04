@@ -15,6 +15,7 @@ import {
 import theme from "../ShopForm/EditShop/theme";
 import { Product } from "./FarmForm";
 import { useContextProvider } from "../../ContextProvider";
+import { OrderItem } from "../OrderList/OrderList";
 
 export interface Order {
   id?: number;
@@ -43,7 +44,7 @@ const CreateOrder: React.FC<Props> = ({
 }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [totalPrice, setTotalPrice] = useState(0);
-  const { token } = useContextProvider();
+  const { token, orderList, setOrderList } = useContextProvider();
 
   const createOrder = async (order: Order) => {
     try {
@@ -61,9 +62,8 @@ const CreateOrder: React.FC<Props> = ({
         throw new Error(`Error: ${response.status} - ${error}`);
       }
 
-      const responseOrder = await response.json();
-      onOrderCreate(responseOrder);
-      onClose();
+      const responseOrder: OrderItem = await response.json();
+      setOrderList([...orderList, responseOrder]);
     } catch (error) {
       console.error("Error creating order:", error);
     }
@@ -79,6 +79,7 @@ const CreateOrder: React.FC<Props> = ({
         dateOrdered: new Date().toISOString().split("T")[0],
       };
       await createOrder(newOrder);
+      onClose();
     }
   };
 

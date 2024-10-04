@@ -15,7 +15,7 @@ import { FaCheck } from "react-icons/fa";
 import { CgClose } from "react-icons/cg";
 import storeIcon from "../../assets/storeIcon.png";
 import farmIcon from '../../assets/farmIcon.png';
-import { completePhotoUrl } from "../Images/CompletePhotoUrl";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
 import { useContextProvider } from "../../ContextProvider";
 
 interface OrderDto {
@@ -40,9 +40,7 @@ interface Order {
 }
 
 interface Props {
-  isDeliveryListOpen: (b: boolean) => void;
   shopId: number | undefined;
-  isFarmFormOpen: boolean;
   handleClickedFarm: (farmId: number | undefined) => void;
   isInLoginSelection: boolean;
 }
@@ -99,19 +97,12 @@ const haversineDistance = (
 };
 
 const ShopOrderList: React.FC<Props> = ({
-  isDeliveryListOpen,
   shopId,
-  isFarmFormOpen,
   handleClickedFarm,
   isInLoginSelection,
 }: Props) => {
-  const [showForm, setShowForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
-  const { token, accountType } = useContextProvider();
-
-  useEffect(() => {
-    setShowForm(false);
-  }, [isFarmFormOpen]);
+  const { token, accountType, showOrder, setShowOrder, isFarmFormOpen, setIsOrderFormOpen, isOrderFormOpen } = useContextProvider();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -218,23 +209,23 @@ const ShopOrderList: React.FC<Props> = ({
         top: 0,
         left: 0,
       }}>
-      {!isFarmFormOpen &&
-        !isInLoginSelection &&
-        accountType === 2 &&
-        !showForm && (
+      {!isOrderFormOpen &&
+       accountType == 2 &&
+       !isInLoginSelection && 
+       showOrder && (
           <Image
             src={orderStand}
             className="button-list"
-            style={{ left: showForm ? "calc(40%)" : "35px" }}
-            onClick={() => (setShowForm(true), isDeliveryListOpen(true))}
+            style={{ left: showOrder ? "calc(40%)" : "35px" }}
+            onClick={() => (setShowOrder(false), setIsOrderFormOpen(true))}
           />
         )}
-      {!isInLoginSelection && showForm && (
+      {isOrderFormOpen && !showOrder && (
         <Box className="container-form">
           <IoMdCloseCircle
             className="button-close"
             fontSize={60}
-            onClick={() => (setShowForm(false), isDeliveryListOpen(false))}
+            onClick={() => (setShowOrder(true), setIsOrderFormOpen(false))}
           />
           <Box
             mt={140}

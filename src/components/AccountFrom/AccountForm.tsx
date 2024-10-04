@@ -76,6 +76,8 @@ const AccountForm = ({
           setIsDeliveryListOpen,
           setIsOrderFormOpen,
           setShowCart,
+          setShowOrder,
+          setShowDelivery,
          } = useContextProvider();
 
   useEffect(() => {
@@ -235,7 +237,7 @@ const AccountForm = ({
       handleFarmClick(id);
       handleIsShopClicked(false);
       setInLoginSelection(false);
-      setIsFarmFormOpen(true);
+      setShowDelivery(false);
     }
   };
 

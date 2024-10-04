@@ -28,10 +28,8 @@ const App = () => {
 
   const [isDeliveryListOpen, setIsDeliveryListOpen] = useState(false);
   const [isFarmFormOpen, setIsFarmFormOpen] = useState(false);
-  const [isCartFormOpen, setIsCartFormOpen] = useState(false);
 
   const [newProductId, setNewProductId] = useState<number>();
-  const [newShopId, setNewShopId] = useState<number>();
   const { accountType, setAccountType } = useContextProvider(); 
 
   useEffect(() => {
@@ -82,8 +80,6 @@ const App = () => {
       <ShopOrderList
         shopId={loginId}
         isInLoginSelection={inLoginSelection}
-        isDeliveryListOpen={(b) => setIsDeliveryListOpen(b)}
-        isFarmFormOpen={isFarmFormOpen}
         handleClickedFarm={(farmId) => (
           setClickedMapFarmId(farmId),
           setIsDeliveryListOpen(false),

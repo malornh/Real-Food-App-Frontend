@@ -18,7 +18,7 @@ interface FormErrors {
 }
 
 function LoginRegisterForm() {
-  const { token, setToken, clearToken, setUserId } = useContextProvider();
+  const { token, setToken, clearToken, setUserId, setCartItems } = useContextProvider();
 
   const [formValues, setFormValues] = useState<FormValues>({
     email: '',
@@ -136,6 +136,7 @@ function LoginRegisterForm() {
 
   const handleLogout = () => {
     clearToken(); // Clear the token
+    setCartItems([]);
     setFormValues({ email: '', password: '', confirmPassword: '' }); // Reset form values
   };
 

@@ -1,5 +1,6 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
 import { CartDto } from './components/CartForm.tsx/CartForm';
+import { OrderItem } from './components/OrderList/OrderList';
 
 interface ContextProps {
   token: string | null;
@@ -34,12 +35,19 @@ interface ContextProps {
   showCart: boolean;
   setShowCart: (b: boolean) => void;
 
+  showOrder: boolean;
+  setShowOrder: (b: boolean) => void;
+
+  showDelivery: boolean;
+  setShowDelivery: (b: boolean) => void;
+
   productFarmClick: (farmId: number) => void;
   accountButtonClick: (newLoginId: number | undefined) => void;
 
   handleFarmClick: (id : number | undefined) => void;
   handleShopClick: (id : number | undefined) => void;
   handleCartShopClick: (productId: number, shopId: number | undefined) => void;
+  handleDeliveryShopClick: (id : number | undefined) => void;
 
   inLoginSelection: boolean;
   setInLoginSelection: (b: boolean) => void;
@@ -48,6 +56,9 @@ interface ContextProps {
 
   cartItems: CartDto[],
   setCartItems: (cartItems: CartDto[]) => void;
+
+  orderList: OrderItem[],
+  setOrderList: (orderList: OrderItem[]) => void;
 }
 
 const Context = createContext<ContextProps | undefined>(undefined);
@@ -77,8 +88,13 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [isCartFormOpen, setIsCartFormOpenState] = useState<boolean>(false);
   const [isOrderFormOpen, setIsOrderFormOpenState] = useState<boolean>(false);
   const [isAccountFormOpen, setIsAccountFormOpenState] = useState<boolean>(false);
+
   const [cartItems, setCartItemsState] = useState<CartDto[]>([]);
+  const [orderList, setOrderListState] = useState<OrderItem[]>([]);
+
   const [showCart, setShowCartState] = useState<boolean>(true);
+  const [showDelivery, setShowDeliveryState] = useState<boolean>(true);
+  const [showOrder, setShowOrderState] = useState<boolean>(true);
 
   const setToken = (newToken: string) => {
     setTokenState(newToken);
@@ -161,9 +177,18 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     localStorage.setItem('isAccountFormOpen', String(b));
   }
 
+
   const setShowCart = (b: boolean) => {
     setShowCartState(b);
     localStorage.setItem('showCart', String(b));
+  }
+  const setShowOrder = (b: boolean) => {
+    setShowOrderState(b);
+    localStorage.setItem('showOrder', String(b));
+  }
+  const setShowDelivery = (b: boolean) => {
+    setShowDeliveryState(b);
+    localStorage.setItem('showDelivery', String(b));
   }
 
 
@@ -184,6 +209,14 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     }
   }
 
+  const handleDeliveryShopClick = (id : number | undefined) => {
+    setClickedFarmId(undefined);
+    setClickedShopId(id);
+    setIsShopClicked(true);
+    setIsShopFormOpen(true);
+    setIsAccountFormOpen(true);
+  }
+
   const handleShopClick = (id : number | undefined) => {
     setClickedFarmId(undefined);
     setClickedShopId(id);
@@ -192,6 +225,7 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     setIsShopFormOpen(true);
     setIsDeliveryListOpen(false);
     setIsAccountFormOpen(true);
+    setIsOrderFormOpen(false);
   }
 
   const handleFarmClick = (id : number | undefined) => {
@@ -211,6 +245,11 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
   const setCartItems = (cartItems: CartDto[]) => {
     setCartItemsState(cartItems);
     localStorage.setItem('cartItems', String(...cartItems));
+  }
+
+  const setOrderList = (orderList: OrderItem[]) => {
+    setOrderListState(orderList);
+    localStorage.setItem('orderList', String(...orderList));
   }
 
   return (
@@ -254,6 +293,13 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
       setCartItems,
       showCart,
       setShowCart,
+      showOrder,
+      setShowOrder,
+      showDelivery,
+      setShowDelivery,
+      handleDeliveryShopClick,
+      orderList,
+      setOrderList,
     }}>
       {children}
     </Context.Provider>

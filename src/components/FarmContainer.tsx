@@ -32,6 +32,9 @@ const FarmContainer = ({
           setClickedFarmId,
           isCartFormOpen,
           isOrderFormOpen,
+          setShowDelivery,
+          setShowOrder,
+          setIsOrderFormOpen,
         } = useContextProvider();
 
   useEffect(() => {
@@ -52,7 +55,9 @@ const FarmContainer = ({
   const closeForm = () => {
     setIsFarmFormOpen(false);
 
+    setShowDelivery(true);
     setShowForm(false);
+    setShowOrder(true);
 
     handleIsShopClicked(true);
     setIsFarmFormOpen(false);
@@ -73,7 +78,7 @@ const FarmContainer = ({
       <HiSearchCircle
         className="button"
         style={{ left: showForm ? "calc(40%)" : "25px" }}
-        onClick={()=>(setShowForm(true), setIsFarmFormOpen(true))} //TO-DO: Implement search menu
+        onClick={()=>(setShowForm(true), setIsFarmFormOpen(true), setShowDelivery(false), setShowOrder(false), setIsOrderFormOpen(false))} //TO-DO: Implement search menu
       />}
       {showForm && (
         <div className="container">

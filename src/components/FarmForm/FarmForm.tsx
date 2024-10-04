@@ -19,7 +19,7 @@ import { HiMiniPlusCircle } from "react-icons/hi2";
 import EditProduct from "./EditProduct";
 import defaultProduct from "../../assets/defaultProduct.png";
 import CreateOrder, { Order } from "./CreateOrder";
-import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 import { useContextProvider } from "../../ContextProvider.tsx";
 
 interface FarmData {

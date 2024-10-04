@@ -26,7 +26,7 @@ import ImageCropper from '../ImageCropper/ImageCropper';
 import theme from './theme'; // Import the custom theme
 import MapComponent from './MapComponent';
 import axios from 'axios';
-import { completePhotoUrl } from '../../Images/CompletePhotoUrl.ts';
+import { completePhotoUrl } from '../../Images/CompletePhotoUrl';
 import { useContextProvider } from "../../../ContextProvider.tsx";
 
 export interface Shop {

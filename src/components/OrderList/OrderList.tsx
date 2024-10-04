@@ -26,7 +26,7 @@ interface OrderDto {
   dateOrdered: string;
 }
 
-interface Order {
+export interface OrderItem {
   id: number;
   status: string;
   quantity: number;
@@ -40,7 +40,7 @@ interface Order {
 interface Props {
 }
 
-const mapOrderToOrderDto = (order: Order): OrderDto => {
+const mapOrderToOrderDto = (order: OrderItem): OrderDto => {
   return {
     id: order.id,
     shopId: order.shop.id ?? 0, // Assuming a default value of 0 if shop id is undefined
@@ -93,14 +93,17 @@ const haversineDistance = (
 
 const FarmContainer: React.FC<Props> = ({
 }: Props) => {
-  const [showForm, setShowForm] = useState(false);
-  const [orders, setOrders] = useState<Order[]>([]);
   const { token, 
           setIsOrderFormOpen, 
+          isDeliveryListOpen,
           setIsDeliveryListOpen,
           loginId,
-          isFarmFormOpen,
           handleShopClick,
+          showDelivery,
+          setShowDelivery,
+          handleDeliveryShopClick,
+          orderList,
+          setOrderList,
         } = useContextProvider();
 
   useEffect(() => {
@@ -122,11 +125,11 @@ const FarmContainer: React.FC<Props> = ({
         };
   
         // Sort the orders: Pending first, then Completed, then Canceled
-        const sortedOrders = response.data.sort((a: Order, b: Order) => {
+        const sortedOrders = response.data.sort((a: OrderItem, b: OrderItem) => {
           return statusOrder[a.status] - statusOrder[b.status];
         });
   
-        setOrders(sortedOrders);
+        setOrderList(sortedOrders);
   
         // Manual test
         const testDistance = haversineDistance([42.705, 23.3097], [42.7, 23.3]);
@@ -143,35 +146,39 @@ const FarmContainer: React.FC<Props> = ({
   function handleAcceptOrder(orderId: number | undefined) {
     if (orderId === undefined) return;
 
-    // Find the order to update
-    const orderToUpdate = orders.find((order) => order.id === orderId);
+    const orderToUpdate = orderList.find((order) => order.id === orderId);
     if (!orderToUpdate) return;
 
     const updatedOrder = { ...orderToUpdate, status: "Completed" };
 
-    axios
-      .put(
-        `https://localhost:7218/api/Orders/${orderId}`,
-        mapOrderToOrderDto(updatedOrder)
-      )
-      .then((response) => {
+    const updateOrder = async () => {
+      try {
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    
+        const response = await axios.put(
+          `https://localhost:7218/api/Orders/${orderId}`,
+          mapOrderToOrderDto(updatedOrder),
+          { headers }
+        );
+    
         console.log("Order updated successfully:", response.data);
-        setOrders((prevOrders) =>
-          prevOrders.map((order) =>
+        setOrderList(orderList.map((order) =>
             order.id === orderId ? { ...order, status: "Completed" } : order
           )
         );
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error updating order:", error);
-      });
+      }
+    };
+    
+    updateOrder();
   }
 
   function handleCancelOrder(orderId: number | undefined) {
     if (orderId === undefined) return;
 
     // Find the order to update
-    const orderToUpdate = orders.find((order) => order.id === orderId);
+    const orderToUpdate = orderList.find((order) => order.id === orderId);
     if (!orderToUpdate) return;
 
     const updatedOrder = { ...orderToUpdate, status: "Canceled" };
@@ -183,8 +190,7 @@ const FarmContainer: React.FC<Props> = ({
       )
       .then((response) => {
         console.log("Order updated successfully:", response.data);
-        setOrders((prevOrders) =>
-          prevOrders.map((order) =>
+        setOrderList(orderList.map((order) =>
             order.id === orderId ? { ...order, status: "Canceled" } : order
           )
         );
@@ -201,25 +207,26 @@ const FarmContainer: React.FC<Props> = ({
         top: 0,
         left: 0,
       }}>
-      {!isFarmFormOpen && !showForm && (
+      {!isDeliveryListOpen && showDelivery && (
         <Image
           src={truck}
-          className="list-button"
-          style={{ left: showForm ? "calc(40%)" : "35px" }}
-          onClick={() => (setIsOrderFormOpen(true), setIsDeliveryListOpen(true))}
+          className="truck-button"
+          style={{ left: showDelivery ? "calc(40%)" : "35px" }}
+          onClick={() => (setIsDeliveryListOpen(true), setShowDelivery(false))}
         />
       )}
-      {showForm && (
+      {isDeliveryListOpen &&
+       !showDelivery && (
         <Box className="form-container" >
           <IoMdCloseCircle
             className="closeButton"
-            onClick={() => (setIsOrderFormOpen(false), setIsDeliveryListOpen(false))}
+            onClick={() => (setIsDeliveryListOpen(false), setShowDelivery(true))}
           />
           <Box mt={140} className="scrollable"
             height="calc(100% + 19px)"
             overflowY="auto">
           <Box mb={150}>
-            {orders.map((o) => {
+            {orderList.map((o) => {
               const shopCoords: [number, number] = [
                 o.shop.latitude,
                 o.shop.longitude,
@@ -228,8 +235,6 @@ const FarmContainer: React.FC<Props> = ({
                 o.farm.latitude,
                 o.farm.longitude,
               ];
-              console.log(`Shop Coordinates: ${shopCoords}`);
-              console.log(`Farm Coordinates: ${farmCoords}`);
               const distance = haversineDistance(
                 shopCoords,
                 farmCoords
@@ -283,10 +288,10 @@ const FarmContainer: React.FC<Props> = ({
                       borderRadius={15}
                       src={completePhotoUrl(o.shop.photoId)}
                       alt={`Order ${o.id}`}
-                      onClick={() => handleShopClick(o.shop.id)}
+                      onClick={() => handleDeliveryShopClick(o.shop.id)} // Implement that in context api same as handleShopClick, but not to close FarmContainer.
                     />
                     <Box position="absolute" top={15} left={15} padding={2}>
-                      <Image src={storeIcon} boxSize={35} alt="Shop Icon" opacity={0.8} onClick={()=>handleShopClick(o.shop.id)} />
+                      <Image src={storeIcon} boxSize={35} alt="Shop Icon" opacity={0.8} onClick={()=>handleDeliveryShopClick(o.shop.id)} />
                     </Box>
                   </Box>
                     <Box>

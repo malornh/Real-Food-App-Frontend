@@ -122,11 +122,25 @@ const ShopForm: React.FC<Props> = ({
           token,
           cartItems,
           setCartItems,
+          userId,
          } = useContextProvider();
 
-  const typeList = Array.from(
-    new Set(shopData?.orders.map((o) => o.product.type))
-  ).sort();
+  const adaptedShopData = {
+    ...shopData,
+    orders: Array.from(
+        new Set(
+            (shopData?.orders || []).filter(o => 
+                isShopOwned ? 
+                o.status === "Completed" : 
+                o.status === "Completed" && o.shopPrice !== null
+            )
+        )
+    ).sort()
+};
+
+const typeList = Array.from(
+  new Set(adaptedShopData.orders.map((o) => o.product.type))
+).sort();
 
   useEffect(() => {
     const fetchShopData = async () => {
@@ -137,7 +151,13 @@ const ShopForm: React.FC<Props> = ({
             `https://localhost:7218/api/Shops/${clickedShopId}/OrdersWithFarms`
           );
           const sortedOrders = sortOrders(response.data.orders);
-          setShopData({ ...response.data, orders: sortedOrders });
+          const completedOrders = sortedOrders.filter(o => o.status == "Completed");
+          if(shopData?.userId == userId)
+          {
+            setShopData({ ...response.data, orders: completedOrders });
+          }else{
+            setShopData({ ...response.data, orders: sortedOrders });
+          }
           console.log(shopData);
         }
       } catch (error) {
@@ -268,7 +288,7 @@ const ShopForm: React.FC<Props> = ({
           )}
         </div>
 
-        {shopData?.orders.length === 0 && (
+        {adaptedShopData.orders.length === 0 && (
           <Box
             mt={12}
             style={{
@@ -289,11 +309,11 @@ const ShopForm: React.FC<Props> = ({
         <TabPanels>
           {typeList.map((type) => (
             <TabPanel className="shopTabPanel" key={type as string}>
-              {shopData?.orders
+              {adaptedShopData.orders
                 .filter((o) => o.product.type === type)
                 .filter(
                   (order) =>
-                    (accountType === 2 && loginId === shopData.id) ||
+                    (accountType === 2 && loginId === adaptedShopData.id) ||
                     order.shopPrice !== null
                 )
                 .map((order) => (
@@ -426,7 +446,7 @@ const ShopForm: React.FC<Props> = ({
                         )}
                         {accountType === 2 &&
                           !inLoginSelection &&
-                          loginId === shopData.id &&
+                          loginId === adaptedShopData.id &&
                           isShopOwned && (
                             <FcSettings
                               className="shopProductsettingsButton"

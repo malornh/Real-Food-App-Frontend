@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { IoMdCloseCircle } from "react-icons/io";
-import { Text, Box, Image, Flex, Button } from "@chakra-ui/react";
+import { Text, Box, Image, Flex } from "@chakra-ui/react";
 import { FaWindowClose, FaDirections } from "react-icons/fa";
 import storeIcon from "../../assets/storeIcon.png";
 import './CartForm.css';
@@ -31,13 +31,11 @@ interface Props {
 
 const CartOrders: React.FC<Props> = ({  }: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [productId, setProductId] = useState<number | undefined>(undefined);
   const { token, 
           userId, 
           accountType, 
           isCartFormOpen,
           setIsCartFormOpen,
-          clickedShopId,
           isFarmFormOpen,
           handleCartShopClick,
           cartItems,
@@ -66,32 +64,8 @@ const CartOrders: React.FC<Props> = ({  }: Props) => {
       }
     };
 
-    fetchCartItems();
-  }, [userId]);
-
-  const handleAddToCart = async () => {
-    if (!productId || !clickedShopId) {
-      alert("Product ID and Shop ID are required");
-      return;
-    }
-
-    const newCartDto = {
-      userId,
-      productId,
-      clickedShopId
-    };
-
-    try {
-      const response = await axios.post("https://localhost:7218/api/Carts", newCartDto, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setCartItems([...cartItems, response.data]);
-    } catch (error) {
-      console.error("Error adding product to cart:", error);
-    }
-  };
+    fetchCartItems(); 
+  }, [token]);
 
   const handleRemoveFromCart = async (cartId: number | undefined) => {
     if (cartId === undefined) return;
