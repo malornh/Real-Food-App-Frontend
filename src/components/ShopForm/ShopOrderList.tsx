@@ -210,6 +210,7 @@ const ShopOrderList: React.FC<Props> = ({
         left: 0,
       }}>
       {!isOrderFormOpen &&
+       !isFarmFormOpen &&
        accountType == 2 &&
        !isInLoginSelection && 
        showOrder && (

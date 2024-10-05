@@ -7,7 +7,7 @@ import storeIcon from "../../assets/storeIcon.png";
 import './CartForm.css';
 import cart from '../../assets/cartButton.png';
 import { Shop } from "../ShopForm/EditShop/EditShop";
-import { completePhotoUrl } from "../Images/CompletePhotoUrl.ts";
+import { completePhotoUrl } from "../Images/CompletePhotoUrl";
 import { useContextProvider } from "../../ContextProvider";
 
 interface Product {

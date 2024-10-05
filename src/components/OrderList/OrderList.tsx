@@ -104,6 +104,8 @@ const FarmContainer: React.FC<Props> = ({
           handleDeliveryShopClick,
           orderList,
           setOrderList,
+          accountType,
+          isFarmFormOpen,
         } = useContextProvider();
 
   useEffect(() => {
@@ -207,7 +209,7 @@ const FarmContainer: React.FC<Props> = ({
         top: 0,
         left: 0,
       }}>
-      {!isDeliveryListOpen && showDelivery && (
+      {!isDeliveryListOpen && !isFarmFormOpen && accountType == 3 && showDelivery && (
         <Image
           src={truck}
           className="truck-button"

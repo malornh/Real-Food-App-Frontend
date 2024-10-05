@@ -96,16 +96,16 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [cartItems, setCartItemsState] = useState<CartDto[]>([]);
   const [orderList, setOrderListState] = useState<OrderItem[]>([]);
   const defaultShopData: ShopData = {
-    id: 0,                         // Default ID as 0 (assuming no shop selected initially)
-    userId: '',                    // Empty string for userId, as no user is associated initially
-    name: '',                      // Empty string for shop name
-    photoFile: null,                // Assuming no photo initially
-    photoId: undefined,             // Undefined for photoId
-    description: '',                // Empty description
-    latitude: 0,                    // Default latitude, can be updated once the location is set
-    longitude: 0,                   // Default longitude
-    rating: 0,                      // Default rating
-    orders: []                      // Empty list of orders initially
+    id: 0,                        
+    userId: '',                 
+    name: '',                    
+    photoFile: null,             
+    photoId: undefined,             
+    description: '',              
+    latitude: 0,                  
+    longitude: 0,            
+    rating: 0,                   
+    orders: []                      
   };
   const [shopData, setShopDataState] = useState<ShopData>(defaultShopData);
 
@@ -238,7 +238,6 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     setClickedFarmId(undefined);
     setClickedShopId(id);
     setIsShopClicked(true);
-    setIsFarmFormOpen(false);
     setIsShopFormOpen(true);
     setIsDeliveryListOpen(false);
     setIsAccountFormOpen(true);

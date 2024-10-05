@@ -25,38 +25,39 @@ const FarmContainer = ({
   loginId,
   inLoginSelection,
 }: Props) => {
-  const [showForm, setShowForm] = useState(false);
-  const { setIsFarmFormOpen, 
+  const { 
+          isFarmFormOpen,
+          setIsFarmFormOpen, 
           isDeliveryListOpen, 
           clickedFarmId, 
           setClickedFarmId,
           isCartFormOpen,
           isOrderFormOpen,
           setShowDelivery,
-          setShowOrder,
           setIsOrderFormOpen,
+          showOrder,
+          setShowOrder,
         } = useContextProvider();
 
   useEffect(() => {
     if (clickedFarmId !== undefined) {
-      setShowForm(true);
+      setShowOrder(true);
     } else {
-      setShowForm(false);
+      //setShowOrder(false);
     }
   }, [clickedFarmId]);
 
   const toggleForm = () => {
-    if (showForm) {
+    if (showOrder) {
       resetFarmId();
     }
-    setShowForm((prevState) => !prevState);
+    setShowOrder(!showOrder);
   };
 
   const closeForm = () => {
     setIsFarmFormOpen(false);
 
     setShowDelivery(true);
-    setShowForm(false);
     setShowOrder(true);
 
     handleIsShopClicked(true);
@@ -72,15 +73,17 @@ const FarmContainer = ({
         width: "100vw",
         height: "100vh",
       }}>
-      {!isDeliveryListOpen &&
+      {
+       !isDeliveryListOpen &&
        !isCartFormOpen &&
        !isOrderFormOpen &&
       <HiSearchCircle
         className="button"
-        style={{ left: showForm ? "calc(40%)" : "25px" }}
-        onClick={()=>(setShowForm(true), setIsFarmFormOpen(true), setShowDelivery(false), setShowOrder(false), setIsOrderFormOpen(false))} //TO-DO: Implement search menu
+        style={{ left: isFarmFormOpen ? "calc(40%)" : "25px" }}
+        onClick={()=>(setShowOrder(true), setIsFarmFormOpen(true), setShowDelivery(false), setIsOrderFormOpen(false))} //TO-DO: Implement search menu
       />}
-      {showForm && (
+      {isFarmFormOpen &&
+       showOrder && (
         <div className="container">
           <IoMdCloseCircle className="closeButton" onClick={closeForm} />
           <Box className="categories">
@@ -109,7 +112,7 @@ const FarmContainer = ({
                   forwardFarmUpdate(farm);
                 }}
                 handleFarmDelete={(farmId) => (
-                  forwardFarmDelete(farmId), setShowForm(false)
+                  forwardFarmDelete(farmId), setShowOrder(false)
                 )}
                 loginId={loginId}
                 inLoginSelection={inLoginSelection}

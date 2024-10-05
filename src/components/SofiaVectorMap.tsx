@@ -35,6 +35,9 @@ const SofiaMap: React.FC<Props> = ({
     isShopClicked,
     handleFarmClick,
     handleShopClick,
+    setIsFarmFormOpen,
+    accountType,
+    setShowOrder,
    } = useContextProvider();
 
   console.log(setClickedFarmId);
@@ -145,6 +148,11 @@ const SofiaMap: React.FC<Props> = ({
         marker.on("click", () => {
           if (id !== undefined) {
            handleShopClick(id);
+           setIsFarmFormOpen(false);
+           if(accountType === 2)
+           {
+            setShowOrder(true);
+           }
           }
         });
 
@@ -183,6 +191,7 @@ const SofiaMap: React.FC<Props> = ({
         marker.on("click", () => {
           if (id !== undefined) {
            handleFarmClick(id);
+
           }
         });
 

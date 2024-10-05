@@ -169,7 +169,6 @@ const AccountForm = ({
 
     if (loginId && accountType === 2) {
       handleShopClick(loginId);
-      setIsFarmFormOpen(true);
     }
     if (loginId && accountType === 3) {
       handleFarmClick(loginId);
@@ -181,6 +180,7 @@ const AccountForm = ({
     setClickedFarmId(undefined);
     setClickedShopId(id);
     setIsShopClicked(true);
+    setIsFarmFormOpen(false);
   }
 
   const handleFarmClick = (id: number | undefined) => {
@@ -218,6 +218,7 @@ const AccountForm = ({
         setSelectedFarmId(loginId);
         handleFarmClick(loginId);
         setIsFarmFormOpen(true);
+      setShowOrder(true);
       }
     }
   };
