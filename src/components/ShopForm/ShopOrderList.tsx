@@ -40,9 +40,6 @@ interface Order {
 }
 
 interface Props {
-  shopId: number | undefined;
-  handleClickedFarm: (farmId: number | undefined) => void;
-  isInLoginSelection: boolean;
 }
 
 const mapOrderToOrderDto = (order: Order): OrderDto => {
@@ -97,18 +94,15 @@ const haversineDistance = (
 };
 
 const ShopOrderList: React.FC<Props> = ({
-  shopId,
-  handleClickedFarm,
-  isInLoginSelection,
 }: Props) => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const { token, accountType, showOrder, setShowOrder, isFarmFormOpen, setIsOrderFormOpen, isOrderFormOpen, orderList, setOrderList } = useContextProvider();
+  const { token, accountType, showOrder, setShowOrder, isFarmFormOpen, setIsOrderFormOpen, isOrderFormOpen, orderList, setOrderList, clickedShopId, loginId, inLoginSelection, handleFarmClick } = useContextProvider();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7218/api/Orders/AllShopOrders/${shopId}`, {
+          `https://localhost:7218/api/Orders/AllShopOrders/${loginId}`, {
             headers: {
               Authorization: `Bearer ${token}`
             }
@@ -138,7 +132,7 @@ const ShopOrderList: React.FC<Props> = ({
     };
 
     fetchData();
-  }, [shopId]);
+  }, [loginId]);
 
   function handleAcceptOrder(orderId: number | undefined) {
     if (orderId === undefined) return;
@@ -209,10 +203,10 @@ const ShopOrderList: React.FC<Props> = ({
         top: 0,
         left: 0,
       }}>
-      {!isOrderFormOpen &&
+      {
        !isFarmFormOpen &&
        accountType == 2 &&
-       !isInLoginSelection && 
+       !inLoginSelection && 
        showOrder && (
           <Image
             src={orderStand}
@@ -260,7 +254,7 @@ const ShopOrderList: React.FC<Props> = ({
                           borderRadius={15}
                           src={completePhotoUrl(o.farm.photoId)}
                           alt={`Order ${o.id}`}
-                          onClick={() => handleClickedFarm(o.farm.id)}
+                          onClick={() => handleFarmClick(o.farm.id)}
                         />
                         <Box position="absolute" top={15} left={15} padding={2}>
                           <Image
@@ -268,7 +262,7 @@ const ShopOrderList: React.FC<Props> = ({
                             boxSize={35}
                             alt="Shop Icon"
                             opacity={0.8}
-                            onClick={() => handleClickedFarm(o.farm.id)}
+                            onClick={() => handleFarmClick(o.farm.id)}
                           />
                         </Box>
                       </Box>

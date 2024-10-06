@@ -27,7 +27,7 @@ import theme from '../ShopForm/EditShop/theme';
 import MapComponent from '../ShopForm/EditShop/MapComponent';
 import initialFarmImage from '../../assets/defaultFarm.png';
 import axios from 'axios';
-import { completePhotoUrl } from '../Images/CompletePhotoUrl.ts';
+import { completePhotoUrl } from '../Images/CompletePhotoUrl';
 import { useContextProvider } from '../../ContextProvider.tsx';
 
 export interface Farm {
@@ -180,7 +180,7 @@ const handleSave = async () => {
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={completePhotoUrl(newFarm.photoId)} // This could be the URL or placeholder
+                  initialImage={newFarm.photoId === undefined ? completePhotoUrl("defaultFarm.png") : completePhotoUrl(newFarm.photoId)} // This could be the URL or placeholder
                   onImageChange={(photo)=>handleImageChange(photo)} // Pass the new image file
                 />
                 <MapComponent
@@ -230,14 +230,14 @@ const handleSave = async () => {
                     }
                     placeholder="Enter description"
                     fontSize="20px"
-                    height="455px"
+                    height="435px"
                     width="575px"
                     borderRadius="10px"
                     color="black"
                     background="rgba(254, 190, 65, 0.9)"
                   />
                 </FormControl>
-                <FormControl mb={4}>
+                <FormControl mb={-2} mt={4}>
                   <Input
                     type="number"
                     value={newFarm.defaultDeliveryRadius}

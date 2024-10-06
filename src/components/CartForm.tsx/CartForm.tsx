@@ -26,13 +26,11 @@ export interface CartDto {
 }
 
 interface Props {
-  productId: number | undefined;
 }
 
 const CartOrders: React.FC<Props> = ({  }: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
   const { token, 
-          userId, 
           accountType, 
           isCartFormOpen,
           setIsCartFormOpen,

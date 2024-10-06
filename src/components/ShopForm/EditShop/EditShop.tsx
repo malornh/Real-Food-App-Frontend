@@ -31,7 +31,7 @@ import { useContextProvider } from "../../../ContextProvider.tsx";
 
 export interface Shop {
   id: number | undefined;
-  userId: string;
+  userId: string | null;
   name: string;
   photoFile?: File | null;
   photoId: string | undefined;
@@ -175,11 +175,11 @@ const handleDelete = async () => {
       <Modal isCentered isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
         <ModalContent maxW="68vw" maxH="95%">
-          <ModalBody style={{ overflowY: 'auto' }} mt={-2}>
+          <ModalBody style={{ overflowY: 'auto' }} mt={2}>
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={completePhotoUrl(newShop.photoId)} // Use the image URL or placeholder
+                  initialImage={newShop.photoId === undefined ? completePhotoUrl("defaultStore.png") : completePhotoUrl(newShop.photoId)} // Use the image URL or placeholder
                   onImageChange={(photo)=>handleImageChange(photo)} // Pass the new image file
                 />
                 <MapComponent
@@ -239,7 +239,7 @@ const handleDelete = async () => {
               </Box>
             </Flex>
           </ModalBody>
-          <ModalFooter mb={-6} flexDirection="row" justifyContent="space-between">
+          <ModalFooter mb={-2} flexDirection="row" justifyContent="space-between">
             <Button colorScheme="red" ml={383} width={100} onClick={openDeleteConfirm}>
               Delete Shop
             </Button>

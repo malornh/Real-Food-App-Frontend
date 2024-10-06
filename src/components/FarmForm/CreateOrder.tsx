@@ -55,11 +55,7 @@ const CreateOrder: React.FC<Props> = ({
           Authorization: `Bearer ${token}`
         }
       });
-      console.log("response:");
-      console.log(response.data);
-      console.log("old: ");
-      console.log(orderList);
-      console.log("new: ");
+      
       setOrderList([...orderList, response.data]);
       console.log(orderList);
     } catch (error) {

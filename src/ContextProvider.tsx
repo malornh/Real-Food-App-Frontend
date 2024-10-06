@@ -252,6 +252,8 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     setIsFarmFormOpen(true);
     setIsShopFormOpen(false);
     setIsDeliveryListOpen(false);
+    setIsOrderFormOpen(false);
+    setShowOrder(true)
   }
 
   const handleCartShopClick = (productId: number, shopId: number | undefined) => {

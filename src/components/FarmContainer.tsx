@@ -9,59 +9,40 @@ import { Farm } from './FarmForm/EditFarm';
 import { useContextProvider } from '../ContextProvider';
 
 interface Props {
-  resetFarmId: ()=>void;
   forwardFarmUpdate: (farm: Farm)=>void;
   forwardFarmDelete: (farmId: number)=>void;
-  handleIsShopClicked: (b: boolean)=>void;
-  loginId: number | undefined;
-  inLoginSelection: boolean;
 }
 
 const FarmContainer = ({
-  resetFarmId,
   forwardFarmUpdate,
   forwardFarmDelete,
-  handleIsShopClicked,
-  loginId,
-  inLoginSelection,
 }: Props) => {
   const { 
           isFarmFormOpen,
           setIsFarmFormOpen, 
           isDeliveryListOpen, 
           clickedFarmId, 
-          setClickedFarmId,
           isCartFormOpen,
           isOrderFormOpen,
           setShowDelivery,
           setIsOrderFormOpen,
           showOrder,
           setShowOrder,
+          loginId,
+          inLoginSelection,
         } = useContextProvider();
 
   useEffect(() => {
     if (clickedFarmId !== undefined) {
       setShowOrder(true);
     } else {
-      //setShowOrder(false);
     }
   }, [clickedFarmId]);
 
-  const toggleForm = () => {
-    if (showOrder) {
-      resetFarmId();
-    }
-    setShowOrder(!showOrder);
-  };
-
   const closeForm = () => {
     setIsFarmFormOpen(false);
-
     setShowDelivery(true);
     setShowOrder(true);
-
-    handleIsShopClicked(true);
-    setIsFarmFormOpen(false);
   };
 
   return (

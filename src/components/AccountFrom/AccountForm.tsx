@@ -24,29 +24,19 @@ export interface Card {
 }
 
 interface Props {
-  markerClicked: boolean;
   updatedFarm: Farm | undefined;
   deletedFarmId: number | undefined;
   forwardShopUpdate: (shop: Shop) => void;
   forwardShopDelete: (shopId: number) => void;
-  forwardClickedFarmId: (farmId: number) => void;
   forwardFarmUpdate: (farm: Farm) => void;
-  handleIsShopClicked: (b: boolean) => void; //False means a farm is clicked.
-  handleLoggedAs: (
-    id: number | undefined,
-    inLoginSelection: boolean
-  ) => void;
 }
 
 const AccountForm = ({
-  markerClicked,
   updatedFarm,
   deletedFarmId,
   forwardShopUpdate,
   forwardShopDelete,
   forwardFarmUpdate,
-  handleIsShopClicked,
-  handleLoggedAs,
 }: Props) => {
   const [selectedShopId, setSelectedShopId] = useState<number | undefined>();
   const [selectedFarmId, setSelectedFarmId] = useState<number | undefined>();
@@ -81,7 +71,6 @@ const AccountForm = ({
          } = useContextProvider();
 
   useEffect(() => {
-    handleLoggedAs(loginId, inLoginSelection);
   }, [loginId, inLoginSelection]);
 
   useEffect(() => {
@@ -156,7 +145,7 @@ const AccountForm = ({
     } else {
       setIsShopFormOpen(true);
     }
-  }, [clickedShopId, markerClicked]);
+  }, [clickedShopId]);
 
   useEffect(() => {
     if (clickedShopId === undefined) {
@@ -192,14 +181,14 @@ const AccountForm = ({
 
   const closeForm = () => {
     setIsAccountFormOpen(false);
-    handleIsShopClicked(false);
+    setIsShopClicked(false);
     setInLoginSelection(false);
   };
 
   const toggleAccount = () => {
     if (inLoginSelection) {
       setSelectedShopId(undefined);
-      handleIsShopClicked(false);
+      setIsShopClicked(false);
       setAccountType(1);
       setInLoginSelection(false);
       setLoginImage("");
@@ -231,7 +220,7 @@ const AccountForm = ({
     if (accountType === 2) {
       setSelectedShopId(id);
       handleShopClick(id);
-      handleIsShopClicked(true);
+      setIsShopClicked(true);
       setInLoginSelection(false);
       setLoginId(id);
       setShowOrder(true);
@@ -239,7 +228,7 @@ const AccountForm = ({
     if (accountType === 3) {
       setSelectedFarmId(id);
       handleFarmClick(id);
-      handleIsShopClicked(false);
+      setIsShopClicked(false);
       setInLoginSelection(false);
       setShowDelivery(false);
       setLoginId(id);

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Text, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay, FormControl, Input, Textarea, Box, Flex, ChakraProvider, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, FormLabel } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
 import './EditProduct.css';
@@ -6,7 +6,7 @@ import ImageCropper from '../ShopForm/ImageCropper/ImageCropper';
 import theme from '../ShopForm/EditShop/theme';
 import { Product } from './FarmForm';
 import axios from 'axios';
-import { completePhotoUrl } from '../Images/CompletePhotoUrl';
+import { completePhotoUrl } from '../Images/CompletePhotoUrl.ts';
 import { useContextProvider } from '../../ContextProvider';
 
 interface Props {
@@ -20,8 +20,23 @@ interface Props {
 const EditProduct: React.FC<Props> = ({ isOpen, onClose, product, onProductUpdate, onDelete }) => {
   const [newProduct, setNewProduct] = useState<Product>({ ...product });
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [productTypes, setProductTypes] = useState<string[]>([]);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const { token } = useContextProvider();
+
+
+  useEffect(() => {
+    const fetchProductTypes = async () => {
+      try {
+        const response = await axios.get('https://localhost:7218/api/Products/GetTypes');
+        setProductTypes(response.data);
+      } catch (error: any) {
+        console.error('Error fetching product types:', error.message);
+      }
+    };
+
+    fetchProductTypes();
+  }, []);
 
   const updateProduct = async (product: Product) => {
     try {
@@ -152,7 +167,7 @@ const createProduct = async (product: Product) => {
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={completePhotoUrl(product.photoId)}
+                  initialImage={product.photoId === undefined ? completePhotoUrl("defaultProduct.png") : completePhotoUrl(product.photoId)}
                   onImageChange={handleImageChange}
                 />
                 <Box ml={5}>
@@ -160,21 +175,38 @@ const createProduct = async (product: Product) => {
                     <FormLabel fontSize="14px" mb={1} ml={1} color="gray.500">
                       Product Type
                     </FormLabel>
-                    <Input
-                      value={newProduct.type}
-                      onChange={(e) =>
-                        setNewProduct((prevState) => ({
-                          ...prevState,
-                          type: e.target.value,
-                        }))
-                      }
-                      fontSize="20px"
-                      height="70px"
-                      width="370px"
-                      borderRadius="10px"
-                      color="black"
-                      background="rgba(254, 190, 65, 0.9)"
-                    />
+                    <>
+  {/* Input field that functions as both a dropdown and text input */}
+  <input
+    list="productTypesList"  // Links to the <datalist> for dropdown functionality
+    value={newProduct.type}
+    onChange={(e) =>
+      setNewProduct((prevState) => ({
+        ...prevState,
+        type: e.target.value, // User can either select from dropdown or type new value
+      }))
+    }
+    placeholder=" Add New or select from the list"
+    style={{
+      fontSize: "20px",
+      height: "70px",
+      width: "370px",
+      borderRadius: "10px",
+      color: "black",
+      background: "rgba(254, 190, 65, 0.9)",
+    }}
+  />
+
+  {/* Datalist providing dropdown options */}
+  <datalist id="productTypesList">
+    {productTypes.map((type, index) => (
+      <option key={index} value={type}>
+        {type}
+      </option>
+    ))}
+  </datalist>
+</>
+
                   </FormControl>
                   <FormControl mb={4} mt={4}>
                     <FormLabel fontSize="14px" mb={1} ml={1} color="gray.500">
