@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Flex, Button, Input, Heading, Tabs, TabList, TabPanels, TabPanel, Tab, Text } from '@chakra-ui/react';
 import axios from 'axios'; // Import Axios
+import ForgotPasswordModal from './ForgotPassword';
 import './LoginRegisterForm.css';
 import { useContextProvider } from '../../ContextProvider';
 
@@ -18,7 +19,7 @@ interface FormErrors {
 }
 
 function LoginRegisterForm() {
-  const { token, setToken, clearToken, setUserId, setCartItems } = useContextProvider();
+  const { token, setToken, clearToken, setUserId, setCartItems, isForgotPasswordOpen, setIsForgotPasswordOpen } = useContextProvider();
 
   const [formValues, setFormValues] = useState<FormValues>({
     email: '',
@@ -174,7 +175,13 @@ function LoginRegisterForm() {
                 value={formValues.password}
                 onChange={handleInputChange}
               />
-              <Button className="submit-btn" mb="4" onClick={handleSubmit}>Login</Button>
+              <Button 
+                className="submit-btn" 
+                mb="4" 
+                onClick={handleSubmit}
+              >
+                Login
+              </Button>
             </TabPanel>
 
             <TabPanel>
@@ -213,9 +220,20 @@ function LoginRegisterForm() {
               
               <Button className="submit-btn" onClick={handleSubmit}>Register</Button>
             </TabPanel>
+            <Button 
+                onClick={() => setIsForgotPasswordOpen(true)} 
+                variant="link" 
+                colorScheme="blue"
+                background={'transparent'}
+                color={'black'}
+                marginLeft={90}
+              >
+                Forgot Password?
+              </Button>
           </TabPanels>
         </Tabs>
       )}
+      {isForgotPasswordOpen && <ForgotPasswordModal />}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import OrderList from "./components/OrderList/OrderList";
 import ShopOrderList from "./components/ShopForm/ShopOrderList";
 import CartForm from "./components/CartForm.tsx/CartForm";
 import { useContextProvider } from "./ContextProvider";
+import ResetPassword from "./components/LoginRegisterForm/ResetPassword";
 
 const App = () => {
 
@@ -24,11 +25,17 @@ const App = () => {
 
   const [isFarmFormOpen, setIsFarmFormOpen] = useState(false);
 
-  const { accountType, setIsDeliveryListOpen, setIsShopClicked } = useContextProvider(); 
+  const { accountType, resetToken, setResetToken } = useContextProvider(); 
 
   useEffect(() => {
     setClickedMapFarmId(updatedFarm?.id);
   }, [updatedFarm]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get('token');
+    setResetToken(tokenFromUrl);
+  });
 
   return (
     <div>
@@ -54,6 +61,7 @@ const App = () => {
       />
       <CartForm
       />
+      {resetToken !== null && <ResetPassword />}
     </div>
   );
 };

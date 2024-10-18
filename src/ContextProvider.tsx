@@ -6,6 +6,8 @@ import { ShopData } from './components/ShopForm/ShopForm';
 interface ContextProps {
   token: string | null;
   setToken: (token: string) => void;
+  resetToken: string | null;
+  setResetToken: (resetToken: string | null) => void;
   clearToken: () => void;
   userId: string | null;
   setUserId: (userId: string) => void;
@@ -63,6 +65,9 @@ interface ContextProps {
 
   shopData: ShopData;
   setShopData: (data: ShopData) => void;
+
+  isForgotPasswordOpen: boolean;
+  setIsForgotPasswordOpen: (b: boolean) => void;
 }
 
 const Context = createContext<ContextProps | undefined>(undefined);
@@ -77,6 +82,7 @@ export const useContextProvider = () => {
 
 export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [token, setTokenState] = useState<string | null>(null);
+  const [resetToken, setResetTokenState] = useState<string | null>(null);
   const [userId, setUserIdState] = useState<string | null>(null);
   const [accountType, setAccountTypeState] = useState(1); // 1 
   const [clickedFarmId, setClickedFarmIdState] = useState<number | undefined>(undefined);
@@ -84,6 +90,7 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [isShopClicked, setIsShopClickedState] = useState<boolean>(true); // False if a farm is clicked
   const [inLoginSelection, setInLoginSelectionState] = useState<boolean>(false);
   const [loginId, setLoginIdState] = useState<number | undefined>(undefined);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpenState] = useState<boolean>(false);
 
   // New state variables
   const [isDeliveryListOpen, setIsDeliveryListOpenState] = useState<boolean>(false);
@@ -122,6 +129,17 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     setTokenState(null);
     localStorage.removeItem('jwtToken');
   };
+
+  const setResetToken = (newResetToken: string | null) => {
+    setResetTokenState(newResetToken);
+    if(newResetToken !== null)
+    {
+      localStorage.setItem('resetToken', newResetToken);
+    }else
+    {
+      localStorage.setItem('resetToken', '');
+    }
+  }
 
   const setUserId = (newUserId: string) => {
     setUserIdState(newUserId);
@@ -275,11 +293,18 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     localStorage.setItem('orderList', String(data));
   }
 
+  const setIsForgotPasswordOpen = (b: boolean) => {
+    setIsForgotPasswordOpenState(b);
+    localStorage.setItem('isForgotPasswordOpen', String(b));
+  }
+
   return (
     <Context.Provider value={{ 
       token, 
       setToken, 
       clearToken, 
+      resetToken,
+      setResetToken,
       userId, 
       setUserId, 
       clearUserId, 
@@ -325,6 +350,8 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
       setOrderList,
       shopData,
       setShopData,
+      isForgotPasswordOpen,
+      setIsForgotPasswordOpen,
     }}>
       {children}
     </Context.Provider>
