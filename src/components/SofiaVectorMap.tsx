@@ -134,10 +134,10 @@ const SofiaMap: React.FC<Props> = ({
               ? "border-radius: 50px; background: blue; font-size: 30px;"
               : ""
           }">
-                    <img src="${customShopIcon}" alt="Icon" style="width: 50px; height: 50px;">
-                    <div id="custom-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -2px; background-color: lime; border-radius: 20px; border: 1px solid black;">5/5</div>
+                    <img src="${customShopIcon}" alt="Icon" style="width: 60px; height: 60px;">
+                    <div id="custom-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -10px; background-color: lime; border-radius: 20px; border: 1px solid black;">5/5</div>
                  </div>`,
-          iconSize: [50, 50],
+          iconSize: [60, 50],
           iconAnchor: [25, 50],
         });
 
@@ -177,10 +177,10 @@ const SofiaMap: React.FC<Props> = ({
               ? "border-radius: 50px; background: green; font-size: 30px;"
               : ""
           }">
-                    <img src="${customFarmIcon}" alt="Icon" style="width: 50px; height: 50px;">
-                    <div id="farm-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -2px; background-color: yellow; border-radius: 20px; border: 1px solid black;">5/5</div>
+                    <img src="${customFarmIcon}" alt="Icon" style="width: 60px; height: 60px;">
+                    <div id="farm-icon-${id}" style="text-align: center; font-size: 15px; font-weight: bold; margin-top: -10px; background-color: yellow; border-radius: 20px; border: 1px solid black;">5/5</div>
                  </div>`,
-          iconSize: [50, 50],
+          iconSize: [60, 50],
           iconAnchor: [25, 50],
         });
 

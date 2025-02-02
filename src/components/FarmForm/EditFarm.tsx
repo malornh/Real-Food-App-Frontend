@@ -180,7 +180,7 @@ const handleSave = async () => {
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={newFarm.photoUrl === undefined ? completePhotoUrl("defaultFarm.png") : completePhotoUrl(newFarm.photoUrl)} // This could be the URL or placeholder
+                  initialImage={newFarm.photoUrl === undefined ? "https://freeimage.host/i/2ZsxPbS" : completePhotoUrl(newFarm.photoUrl)} // This could be the URL or placeholder
                   onImageChange={(photo)=>handleImageChange(photo)} // Pass the new image file
                 />
                 <MapComponent

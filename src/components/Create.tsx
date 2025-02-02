@@ -42,7 +42,7 @@ const Create = ({ isOpen, onClose, userId, handleNewShop, handleNewFarm }: Props
           name: "",
           description: "",
           photoFile: null,
-          photoUrl: undefined,
+          photoUrl: "https://freeimage.host/i/2ZLW6rJ",
           latitude: 42.693,
           longitude: 23.319,
           rating: undefined,
@@ -56,7 +56,7 @@ const Create = ({ isOpen, onClose, userId, handleNewShop, handleNewFarm }: Props
         name: "",
         description: "",
         photoFile: null,
-        photoUrl: undefined,
+        photoUrl: "https://freeimage.host/i/2ZsxPbS",
         latitude: 42.693,
         longitude: 23.319,
         defaultDeliveryRadius: undefined, // Set a default delivery radius
