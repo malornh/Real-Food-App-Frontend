@@ -44,7 +44,7 @@ const AccountForm = ({
   const [userShops, setUserShops] = useState<Shop[]>();
   const [userFarms, setUserFarms] = useState<Farm[]>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [loginImage, setLoginImage] = useState("");
+  const [loginImage, setLoginImage] = useState<string | undefined>("");
   const { 
           token, 
           userId, 
@@ -212,7 +212,7 @@ const AccountForm = ({
     }
   };
 
-  const handleCardClick = (id: number, image: string) => {
+  const handleCardClick = (id: number, image: string | undefined) => {
     setLoginId(id);
     setLoginImage(image);
     setIsDeliveryListOpen(false);
@@ -340,10 +340,10 @@ const AccountForm = ({
                     className="cardStyle"
                     onClick={() =>
                       shop.id !== undefined &&
-                      handleCardClick(shop.id, completePhotoUrl(shop.photoId))
+                      handleCardClick(shop.id, completePhotoUrl(shop.photoUrl))
                     }>
                     <img
-                      src={completePhotoUrl(shop.photoId)}
+                      src={completePhotoUrl(shop.photoUrl)}
                       alt={shop.name}
                       style={{
                         width: "80px",
@@ -373,10 +373,10 @@ const AccountForm = ({
                     className="cardStyle"
                     onClick={() =>
                       farm.id !== undefined &&
-                      handleCardClick(farm.id, completePhotoUrl(farm.photoId))
+                      handleCardClick(farm.id, completePhotoUrl(farm.photoUrl))
                     }>
                     <img
-                      src={completePhotoUrl(farm.photoId)}
+                      src={completePhotoUrl(farm.photoUrl)}
                       alt={farm.name}
                       style={{
                         width: "80px",

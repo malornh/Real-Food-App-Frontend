@@ -250,7 +250,7 @@ const FarmContainer: React.FC<Props> = ({
                       padding={10}
                       boxSize={130}
                       borderRadius={15}
-                      src={completePhotoUrl(o.product.photoId)}
+                      src={completePhotoUrl(o.product.photoUrl)}
                       alt={`Order ${o.id}`}
                     />
                     <Flex direction={"column"}>
@@ -288,7 +288,7 @@ const FarmContainer: React.FC<Props> = ({
                     <Image
                       boxSize={130}
                       borderRadius={15}
-                      src={completePhotoUrl(o.shop.photoId)}
+                      src={completePhotoUrl(o.shop.photoUrl)}
                       alt={`Order ${o.id}`}
                       onClick={() => handleDeliveryShopClick(o.shop.id)} // Implement that in context api same as handleShopClick, but not to close FarmContainer.
                     />

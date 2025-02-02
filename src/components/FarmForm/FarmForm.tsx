@@ -28,7 +28,7 @@ interface FarmData {
   userId: string | null;
   name: string;
   photoFile?: File | null;  // Changed this to be File type
-  photoId: string | undefined;
+  photoUrl: string | undefined;
   description?: string;
   latitude: number;
   longitude: number;
@@ -49,7 +49,7 @@ export interface Product {
   minUnitOrder: number;
   dateUpdated: string;
   photoFile?: File | null;
-  photoId: string | undefined;
+  photoUrl: string | undefined;
   type: string;
   rating: number | null;
 }
@@ -118,7 +118,7 @@ const FarmForm = ({
       id,
       userId,
       photoFile,
-      photoId,
+      photoUrl,
       name,
       description,
       latitude,
@@ -130,7 +130,7 @@ const FarmForm = ({
       id: id,
       userId: userId,
       photoFile: photoFile,
-      photoId: photoId,
+      photoUrl: photoUrl,
       name: name,
       description: description || "", // Using empty string as default for optional field
       latitude: latitude,
@@ -155,7 +155,7 @@ const FarmForm = ({
       deliveryRadius: 0,
       minUnitOrder: 0,
       dateUpdated: currentDate,
-      photoId: undefined,
+      photoUrl: undefined,
       type: "",
       rating: null,
     };
@@ -229,7 +229,7 @@ const FarmForm = ({
     <div>
       {farmData && (
         <div className="farmCategoriesContainer">
-          <img src={completePhotoUrl(farmData.photoId)} className="farmImage" />
+          <img src={completePhotoUrl(farmData.photoUrl)} className="farmImage" />
           <div className="farmInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="farmTitle">{farmData.name}</h1>
@@ -319,7 +319,7 @@ const FarmForm = ({
                         <Box boxSize={130}>
                           <img
                             className="original-image"
-                            src={completePhotoUrl(p.photoId)}
+                            src={completePhotoUrl(p.photoUrl)}
                             alt="Original Image"
                           />
                         </Box>
@@ -480,7 +480,7 @@ const FarmForm = ({
                 id: farm.id ?? prevData.id,
                 name: farm.name,
                 photoFile: farm.photoFile,
-                photoId: farm.photoId,
+                photoUrl: farm.photoUrl,
                 latitude: farm.latitude,
                 longitude: farm.longitude,
               };

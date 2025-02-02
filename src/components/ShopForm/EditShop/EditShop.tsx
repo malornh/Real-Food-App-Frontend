@@ -34,7 +34,7 @@ export interface Shop {
   userId: string | null;
   name: string;
   photoFile?: File | null;
-  photoId: string | undefined;
+  photoUrl: string | undefined;
   description: string;
   latitude: number;
   longitude: number;
@@ -179,7 +179,7 @@ const handleDelete = async () => {
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={newShop.photoId === undefined ? completePhotoUrl("defaultStore.png") : completePhotoUrl(newShop.photoId)} // Use the image URL or placeholder
+                  initialImage={newShop.photoUrl === undefined ? completePhotoUrl("defaultStore.png") : completePhotoUrl(newShop.photoUrl)} // Use the image URL or placeholder
                   onImageChange={(photo)=>handleImageChange(photo)} // Pass the new image file
                 />
                 <MapComponent

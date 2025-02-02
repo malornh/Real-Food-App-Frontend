@@ -13,7 +13,7 @@ import { useContextProvider } from "../../ContextProvider";
 interface Product {
   id: number;
   name: string;
-  photoId: string | undefined;
+  photoUrl: string | undefined;
   pricePerUnit: number;
   quantity: number;
 }
@@ -126,7 +126,7 @@ const CartOrders: React.FC<Props> = ({  }: Props) => {
                       padding={10}
                       boxSize={130}
                       borderRadius={15}
-                      src={completePhotoUrl(cart.product.photoId)}
+                      src={completePhotoUrl(cart.product.photoUrl)}
                       alt={`Cart ${cart.id}`}
                     />
                     <Flex direction={"column"}>
@@ -143,7 +143,7 @@ const CartOrders: React.FC<Props> = ({  }: Props) => {
                       <Image
                         boxSize={130}
                         borderRadius={15}
-                        src={completePhotoUrl(cart.shop.photoId)}
+                        src={completePhotoUrl(cart.shop.photoUrl)}
                         alt={`Shop ${cart.product.id}`}
                         onClick={() => handleCartShopClick(cart.product.id, cart.shop.id)}
                       />

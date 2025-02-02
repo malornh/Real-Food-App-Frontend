@@ -252,7 +252,7 @@ const ShopOrderList: React.FC<Props> = ({
                         <Image
                           boxSize={130}
                           borderRadius={15}
-                          src={completePhotoUrl(o.farm.photoId)}
+                          src={completePhotoUrl(o.farm.photoUrl)}
                           alt={`Order ${o.id}`}
                           onClick={() => handleFarmClick(o.farm.id)}
                         />
@@ -278,7 +278,7 @@ const ShopOrderList: React.FC<Props> = ({
                         padding={10}
                         boxSize={130}
                         borderRadius={15}
-                        src={completePhotoUrl(o.product.photoId)}
+                        src={completePhotoUrl(o.product.photoUrl)}
                         alt={`Order ${o.id}`}
                       />
                       <Flex direction={"column"}>

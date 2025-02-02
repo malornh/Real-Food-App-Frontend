@@ -167,7 +167,7 @@ const createProduct = async (product: Product) => {
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={product.photoId === undefined ? completePhotoUrl("defaultProduct.png") : completePhotoUrl(product.photoId)}
+                  initialImage={product.photoUrl === undefined ? completePhotoUrl("defaultProduct.png") : completePhotoUrl(product.photoUrl)}
                   onImageChange={handleImageChange}
                 />
                 <Box ml={5}>

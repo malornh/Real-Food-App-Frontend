@@ -126,7 +126,7 @@ const SofiaMap: React.FC<Props> = ({
         }
       });
 
-      shops.forEach(({ id, name, photoId, description, latitude, longitude }) => {
+      shops.forEach(({ id, name, photoUrl, description, latitude, longitude }) => {
         const customIcon = L.divIcon({
           className: "custom-div-icon",
           html: `<div style="color: black; ${
@@ -162,9 +162,9 @@ const SofiaMap: React.FC<Props> = ({
 
         if (id === clickedShopId && isShopClicked === true) {
           if (isFarmFormOpen) {
-            mapRef.current?.setView([latitude, longitude + 0.06], 13); // To be optimized. It's hardcoded for now.
+            mapRef.current?.setView([latitude, longitude - 0.06], 13); // Left side
           } else {
-            mapRef.current?.setView([latitude, longitude], 13); // To be optimized. It's hardcoded for now.
+            mapRef.current?.setView([latitude, longitude + 0.06], 13); // Right side
           }
         }
       });

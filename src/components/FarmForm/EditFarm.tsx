@@ -35,7 +35,7 @@ export interface Farm {
   userId: string | null;
   name: string;
   photoFile?: File | null;
-  photoId: string | undefined;
+  photoUrl: string | undefined;
   description: string;
   latitude: number;
   longitude: number;
@@ -180,7 +180,7 @@ const handleSave = async () => {
             <Flex>
               <Box mt={-5} ml={-6}>
                 <ImageCropper
-                  initialImage={newFarm.photoId === undefined ? completePhotoUrl("defaultFarm.png") : completePhotoUrl(newFarm.photoId)} // This could be the URL or placeholder
+                  initialImage={newFarm.photoUrl === undefined ? completePhotoUrl("defaultFarm.png") : completePhotoUrl(newFarm.photoUrl)} // This could be the URL or placeholder
                   onImageChange={(photo)=>handleImageChange(photo)} // Pass the new image file
                 />
                 <MapComponent

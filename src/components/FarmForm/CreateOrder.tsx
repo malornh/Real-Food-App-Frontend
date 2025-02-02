@@ -90,8 +90,8 @@ const CreateOrder: React.FC<Props> = ({
     }
   };
   
-  function completePhotoUrl(photoId: string | undefined){
-    return 'https://realfoodapp.b-cdn.net/' + photoId;
+  function completePhotoUrl(photoUrl: string | undefined){
+    return photoUrl;
   }
 
   return (
@@ -110,7 +110,7 @@ const CreateOrder: React.FC<Props> = ({
                 mb={5}
                 borderRadius={10}
                 boxSize={280}
-                src={completePhotoUrl(product.photoId)}
+                src={completePhotoUrl(product.photoUrl)}
               />
               <Box mt={2}>
                 <Text mb={2} fontSize={40} color={"black"}>

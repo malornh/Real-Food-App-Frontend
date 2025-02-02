@@ -27,7 +27,7 @@ export interface ShopData {
   userId: string;
   name: string;
   photoFile?: File | null;
-  photoId: string | undefined;
+  photoUrl: string | undefined;
   description: string;
   latitude: number;
   longitude: number;
@@ -55,7 +55,7 @@ interface ProductDetails {
   type: string;
   pricePerUnit: number;
   unitOfMeasurement: number;
-  photoId: string | undefined;
+  photoUrl: string | undefined;
   rating: number | null;
   dateUpdated: string;
 }
@@ -63,7 +63,7 @@ interface ProductDetails {
 interface Farm {
   id: number;
   name: string;
-  photoId: string | undefined;
+  photoUrl: string | undefined;
 }
 
 interface Props {
@@ -159,7 +159,6 @@ const typeList = Array.from(
           }else{
             setShopData({ ...response.data, orders: sortedOrders });
           }
-          console.log(shopData);
         }
       } catch (error) {
         console.error(error);
@@ -193,7 +192,7 @@ const typeList = Array.from(
     id: shop.id,
     userId: shop.userId,
     photoFile: shop.photoFile,
-    photoId: shop.photoId,
+    photoUrl: shop.photoUrl,
     name: shop.name,
     description: shop.description,
     latitude: shop.latitude,
@@ -206,7 +205,7 @@ const typeList = Array.from(
       ...(shopData || {}),
       name: shop.name,
       description: shop.description,
-      photoId: shop.photoId,
+      photoUrl: shop.photoUrl,
       latitude: shop.latitude,
       longitude: shop.longitude,
       id: shop.id ?? 0, // Use default id of 0 if undefined
@@ -257,7 +256,7 @@ const typeList = Array.from(
     <div>
       {shopData && (
         <div className="shopCardContainer">
-          <img src={completePhotoUrl(shopData.photoId)} className="shopImage" />
+          <img src={completePhotoUrl(shopData.photoUrl)} className="shopImage" />
           <div className="shopInfoContainer">
             <div style={{ display: "flex", width: "330px", marginLeft: "5px" }}>
               <h1 className="shopTitle">{shopData.name}</h1>
@@ -345,7 +344,7 @@ const typeList = Array.from(
                             <div className="flip-card-front">
                               <img
                                 className="original-image"
-                                src={completePhotoUrl(order.product.photoId)}
+                                src={completePhotoUrl(order.product.photoUrl)}
                                 alt="Original Image"
                               />
                             </div>
@@ -355,7 +354,7 @@ const typeList = Array.from(
                                 onClick={() => (
                                   productFarmClick(order.shortFarm.id)
                                 )}
-                                src={completePhotoUrl(order.shortFarm.photoId)}
+                                src={completePhotoUrl(order.shortFarm.photoUrl)}
                                 alt="Hover Image"
                               />
                             </div>

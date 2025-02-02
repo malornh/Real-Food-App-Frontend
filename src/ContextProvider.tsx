@@ -107,7 +107,7 @@ export const ContextProvider: React.FC<{ children: ReactNode }> = ({ children })
     userId: '',                 
     name: '',                    
     photoFile: null,             
-    photoId: undefined,             
+    photoUrl: undefined,             
     description: '',              
     latitude: 0,                  
     longitude: 0,            

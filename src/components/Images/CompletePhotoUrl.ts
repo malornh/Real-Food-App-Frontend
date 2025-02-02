@@ -1,3 +1,4 @@
-export function completePhotoUrl(photoId: string | undefined) {
-    return 'https://realfoodapp.b-cdn.net/' + photoId;
+export function completePhotoUrl(photoUrl: string | undefined) {
+  console.log("LOG: " + photoUrl);
+    return photoUrl;
   }
